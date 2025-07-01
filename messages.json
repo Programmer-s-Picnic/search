@@ -1,4 +1,3 @@
-
 {
   "2025-06-17": {
     "content": "✅ Always use clear, meaningful variable names.\nExample:\nuser_age = 25  # ✅ Easy to understand",
@@ -55,5 +54,129 @@
   "2025-06-30": {
     "content": "✅ Measure execution time for performance testing using the time module.\nExample:\nimport time\nstart = time.time()\nsum = 0\nfor i in range(1000000):\n    sum += i\nend = time.time()\nprint(f\"Execution time: {end - start:.2f} seconds\")",
     "link": "https://docs.python.org/3/library/time.html"
+  },
+  "2025-07-01": {
+    "content": "✅ Python Tip: Use list slicing for reversing lists.\nExample:\nnumbers = [1, 2, 3, 4, 5]\nprint(numbers[::-1])",
+    "link": "https://docs.python.org/3/tutorial/introduction.html#lists"
+  },
+  "2025-07-02": {
+    "content": "✅ Java Tip: Always close streams using try-with-resources.\nExample:\ntry (BufferedReader reader = new BufferedReader(new FileReader(\"file.txt\"))) {\n    System.out.println(reader.readLine());\n} catch (IOException e) {\n    e.printStackTrace();\n}",
+    "link": "https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html"
+  },
+  "2025-07-03": {
+    "content": "✅ Flutter/Dart Tip: Use async/await for asynchronous operations.\nExample:\nFuture<String> fetchData() async {\n  await Future.delayed(Duration(seconds: 2));\n  return 'Data Loaded';\n}\n\nvoid main() async {\n  print(await fetchData());\n}",
+    "link": "https://dart.dev/codelabs/async-await"
+  },
+  "2025-07-04": {
+    "content": "✅ Python Tip: Use dictionary comprehensions for quick dict creation.\nExample:\nsquares = {x: x*x for x in range(5)}\nprint(squares)",
+    "link": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
+  },
+  "2025-07-05": {
+    "content": "✅ Java Tip: Prefer StringBuilder for string concatenation inside loops.\nExample:\nStringBuilder sb = new StringBuilder();\nfor (int i = 0; i < 5; i++) {\n    sb.append(i);\n}\nSystem.out.println(sb.toString());",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html"
+  },
+  "2025-07-06": {
+    "content": "✅ Flutter/Dart Tip: Use setState() to trigger UI updates in StatefulWidgets.\nExample:\nsetState(() {\n  counter++;\n});",
+    "link": "https://docs.flutter.dev/development/ui/interactive"
+  },
+  "2025-07-07": {
+    "content": "✅ Python Tip: Use pathlib for modern file path handling.\nExample:\nfrom pathlib import Path\nfile_path = Path(\"data.txt\")\nprint(file_path.read_text())",
+    "link": "https://docs.python.org/3/library/pathlib.html"
+  },
+  "2025-07-08": {
+    "content": "✅ Java Tip: Use Optional to avoid null pointer exceptions.\nExample:\nOptional<String> name = Optional.ofNullable(null);\nSystem.out.println(name.orElse(\"Unknown\"));",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html"
+  },
+  "2025-07-09": {
+    "content": "✅ Flutter/Dart Tip: Use MediaQuery for responsive layout sizing.\nExample:\nvar screenWidth = MediaQuery.of(context).size.width;",
+    "link": "https://api.flutter.dev/flutter/widgets/MediaQuery-class.html"
+  },
+  "2025-07-10": {
+    "content": "✅ Python Tip: Use Counter from collections for frequency counting.\nExample:\nfrom collections import Counter\nprint(Counter(['a', 'b', 'a', 'c']))",
+    "link": "https://docs.python.org/3/library/collections.html#collections.Counter"
+  },
+  "2025-07-11": {
+    "content": "✅ Java Tip: Always override equals() and hashCode() when necessary.\nExample:\n@Override\npublic boolean equals(Object o) { /*...*/ }\n@Override\npublic int hashCode() { /*...*/ }",
+    "link": "https://docs.oracle.com/javase/tutorial/java/concepts/object.html"
+  },
+  "2025-07-12": {
+    "content": "✅ Flutter/Dart Tip: Use const constructors for widgets when possible.\nExample:\nconst myWidget = Text('Hello', style: TextStyle(fontSize: 20));",
+    "link": "https://dart.dev/guides/language/language-tour#constant-constructors"
+  },
+  "2025-07-13": {
+    "content": "✅ Python Tip: Use unpacking for swapping values.\nExample:\na, b = 5, 10\na, b = b, a\nprint(a, b)",
+    "link": "https://docs.python.org/3/tutorial/datastructures.html#tuples-and-sequences"
+  },
+  "2025-07-14": {
+    "content": "✅ Java Tip: Use Streams API for data filtering and mapping.\nExample:\nList<String> result = list.stream()\n    .filter(s -> s.startsWith(\"A\"))\n    .collect(Collectors.toList());",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html"
+  },
+  "2025-07-15": {
+    "content": "✅ Flutter/Dart Tip: Use ListView.builder for efficient large lists.\nExample:\nListView.builder(\n  itemCount: items.length,\n  itemBuilder: (context, index) {\n    return Text(items[index]);\n  },\n);",
+    "link": "https://api.flutter.dev/flutter/widgets/ListView-class.html"
+  },
+  "2025-07-16": {
+    "content": "✅ Python Tip: Use zip() and unpacking to transpose a matrix.\nExample:\nmatrix = [[1, 2], [3, 4], [5, 6]]\nprint(list(zip(*matrix)))",
+    "link": "https://docs.python.org/3/library/functions.html#zip"
+  },
+  "2025-07-17": {
+    "content": "✅ Java Tip: Use synchronized blocks for thread safety.\nExample:\nsynchronized(this) {\n    // critical section\n}",
+    "link": "https://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html"
+  },
+  "2025-07-18": {
+    "content": "✅ Flutter/Dart Tip: Use FutureBuilder for async UI rendering.\nExample:\nFutureBuilder(\n  future: fetchData(),\n  builder: (context, snapshot) {\n    if (snapshot.hasData) return Text(snapshot.data);\n    else return CircularProgressIndicator();\n  },\n);",
+    "link": "https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html"
+  },
+  "2025-07-19": {
+    "content": "✅ Python Tip: Use enumerate() for index-value pairs in loops.\nExample:\nfor index, value in enumerate(['a', 'b', 'c']):\n    print(index, value)",
+    "link": "https://docs.python.org/3/library/functions.html#enumerate"
+  },
+  "2025-07-20": {
+    "content": "✅ Java Tip: Use Collections.sort with custom Comparators.\nExample:\nCollections.sort(list, (a, b) -> a.length() - b.length());",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html"
+  },
+  "2025-07-21": {
+    "content": "✅ Flutter/Dart Tip: Use AnimatedContainer for smooth UI transitions.\nExample:\nAnimatedContainer(\n  duration: Duration(seconds: 1),\n  width: isLarge ? 200 : 100,\n);",
+    "link": "https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html"
+  },
+  "2025-07-22": {
+    "content": "✅ Python Tip: Use generators for memory-efficient iteration.\nExample:\ndef count_up_to(n):\n    count = 1\n    while count <= n:\n        yield count\n        count += 1",
+    "link": "https://docs.python.org/3/tutorial/classes.html#generators"
+  },
+  "2025-07-23": {
+    "content": "✅ Java Tip: Use Executors for thread pool management.\nExample:\nExecutorService executor = Executors.newFixedThreadPool(3);\nexecutor.execute(() -> System.out.println(\"Task executed\"));",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html"
+  },
+  "2025-07-24": {
+    "content": "✅ Flutter/Dart Tip: Use Provider for simple state management.\nExample:\nProvider.of<Counter>(context).increment();",
+    "link": "https://pub.dev/packages/provider"
+  },
+  "2025-07-25": {
+    "content": "✅ Python Tip: Use contextlib for creating custom context managers.\nExample:\nfrom contextlib import contextmanager\n@contextmanager\ndef open_file(name):\n    f = open(name, 'w')\n    yield f\n    f.close()",
+    "link": "https://docs.python.org/3/library/contextlib.html"
+  },
+  "2025-07-26": {
+    "content": "✅ Java Tip: Use AtomicInteger for lock-free thread-safe counters.\nExample:\nAtomicInteger count = new AtomicInteger(0);\ncount.incrementAndGet();",
+    "link": "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html"
+  },
+  "2025-07-27": {
+    "content": "✅ Flutter/Dart Tip: Use GestureDetector to handle touch events.\nExample:\nGestureDetector(\n  onTap: () => print(\"Tapped!\"),\n  child: Container(color: Colors.blue),\n);",
+    "link": "https://api.flutter.dev/flutter/widgets/GestureDetector-class.html"
+  },
+  "2025-07-28": {
+    "content": "✅ Python Tip: Use functools.lru_cache for memoization.\nExample:\nfrom functools import lru_cache\n@lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n-1) + fib(n-2)",
+    "link": "https://docs.python.org/3/library/functools.html#functools.lru_cache"
+  },
+  "2025-07-29": {
+    "content": "✅ Java Tip: Use lambda expressions for cleaner code.\nExample:\nlist.forEach(item -> System.out.println(item));",
+    "link": "https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html"
+  },
+  "2025-07-30": {
+    "content": "✅ Flutter/Dart Tip: Use LayoutBuilder for responsive widget sizing.\nExample:\nLayoutBuilder(\n  builder: (context, constraints) {\n    return Text(\"Max Width: ${constraints.maxWidth}\");\n  },\n);",
+    "link": "https://api.flutter.dev/flutter/widgets/LayoutBuilder-class.html"
+  },
+  "2025-07-31": {
+    "content": "✅ Python Tip: Use type hints for better readability and tooling support.\nExample:\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"",
+    "link": "https://docs.python.org/3/library/typing.html"
   }
 }
