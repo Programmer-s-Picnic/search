@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Reel Creator</title>
+  <style>
+    body { font-family: Arial, margin: 20px; }
+    video { max-width: 100%; margin-top: 10px; }
+    input, button, select { margin: 5px; }
+    canvas { display: none; }
+  </style>
+</head>
+<body>
+
+<h2>🎬 Simple Reel Creator (Browser JS)</h2>
+
+<input type="file" id="videoInput" accept="video/*"><br>
+
+<video id="videoPlayer" controls></video><br>
+
+<label>Start Time (sec):</label>
+<input type="number" id="startTime" value="0" step="0.1"><br>
+
+<label>End Time (sec):</label>
+<input type="number" id="endTime" value="5" step="0.1"><br>
+
+<label>Filter:</label>
+<select id="filterSelect">
+  <option value="none">None</option>
+  <option value="grayscale">Grayscale</option>
+  <option value="sepia">Sepia</option>
+</select><br>
+
+<label>Text Overlay:</label>
+<input type="text" id="overlayText" placeholder="Your Text..."><br>
+
+<button onclick="generatePreview()">▶️ Generate Preview</button>
+
+<canvas id="canvas"></canvas>
+
+<script>
+let video = document.getElementById('videoPlayer');
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+
+document.getElementById('videoInput').addEventListener('change', function(e) {
+  let file = e.target.files[0];
+  if (file) {
+    let url = URL.createObjectURL(file);
+    video.src = url;
+  }
+});
+
+function generatePreview() {
+  let start = parseFloat(document.getElementById('startTime').value);
+  let end = parseFloat(document.getElementById('endTime').value);
+  let filter = document.getElementById('filterSelect').value;
+  let text = document.getElementById('overlayText').value;
+
+  video.currentTime = start;
+
+  let interval = setInterval(() => {
+    if (video.currentTime >= end || video.currentTime >= video.duration) {
+      clearInterval(interval);
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.filter = (filter === 'none') ? 'none' : filter + '(1)';
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    if (text.trim()) {
+      ctx.font = '30px Arial';
+      ctx.fillStyle = 'white';
+      ctx.fillText(text, 20, 50);
+    }
+
+    // Optional: Save frames, show preview, or export as images
+  }, 100);
+  video.play();
+}
+</script>
+
+</body>
+</html>

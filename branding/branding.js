@@ -205,7 +205,7 @@ if (localStorage.getItem('messageSeenDate') !== today) {
 
 // Manual show button
 const showMessageBtn = document.createElement('button');
-showMessageBtn.textContent = "📬 Show Today’s Python Tip";
+showMessageBtn.textContent = "📬 Show Today’s Programming Tip";
 showMessageBtn.className = "messages_XYZ_show-message-btn";
 showMessageBtn.onclick = () => {
   fetch(messageJsonUrl)
@@ -231,7 +231,7 @@ function showModalMessage(message) {
 
   modalBox.innerHTML = `
     <span class="messages_XYZ_modal-close" title="Close">&times;</span>
-    <h2>📩 Today’s Python Tip</h2>
+    <h2>📩 Today’s Programming Tip</h2>
     <div>
     <button onclick="doCopy(event)">Copy</button>
     <pre  style="background-color:white;color:black;">${message.content}</pre>

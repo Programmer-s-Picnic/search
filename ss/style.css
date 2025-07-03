@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+h1 {
+  margin: 10px 0;
+}
+
+#container {
+  width: 100vw;
+  height: 90vh;
+  display: block;
+}
