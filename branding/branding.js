@@ -46,7 +46,7 @@ style.innerHTML = `
     font-family: 'Lora', serif;
   }
 
-  /* 3D Flipping Image */
+  /* 3D Flipping Image */       
   .flip-container {
     width: 80px;
     height: 80px;
