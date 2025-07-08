@@ -83,6 +83,8 @@
             }
             if(count<=0)
             {
+                lblCount.innerHTML = `Found:${count}`;
+            memsg.innerHTML = lblCount.innerHTML;
                 location=`https://www.google.com/search?q=${input}`;
                 return;
             }
