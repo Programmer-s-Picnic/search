@@ -1,9 +1,0 @@
-{
-    "description": "Quicksort is an efficient, in-place sorting algorithm that uses a divide-and-conquer approach.",
-    "complexity": "O(n log n)",
-    "code": {
-        "python": "quicksort_python.json",
-        "javascript": "quicksort_javascript.json",
-        "java": "quicksort_java.json"
-    }
-}

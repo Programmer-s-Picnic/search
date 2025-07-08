@@ -1,9 +1,0 @@
-{
-    "description": "Selection sort is a simple, in-place sorting algorithm .",
-    "complexity": "O(n2)",
-    "code": {
-        "python": "quicksort_python.json",
-        "javascript": "quicksort_javascript.json",
-        "java": "quicksort_java.json"
-    }
-}
