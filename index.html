@@ -81,6 +81,11 @@
                 }
                 console.log(quizLinks[i].classList);
             }
+            if(count<=0)
+            {
+                location=`https://www.google.com/search?q=${input}`;
+                return;
+            }
             lblCount.innerHTML = `Found:${count}`;
             memsg.innerHTML = lblCount.innerHTML;
             // memsg.style.display="block";
