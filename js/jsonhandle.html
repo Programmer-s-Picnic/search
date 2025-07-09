@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive JSON Processing with Save/Recover Options</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0044cc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+        button {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003399;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .key-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .key-list li {
+            background-color: #e0e7ff;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .copy-button {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #0044cc;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .copy-button:hover {
+            background-color: #003399;
+        }
+        .state-controls {
+            margin-top: 20px;
+        }
+        .how-to-use {
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .toggle-button {
+            background-color: #00838f;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .toggle-button:hover {
+            background-color: #006064;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Interactive JSON Processing in JavaScript</h1>
+
+    <button id="toggleHowToUseBtn" class="toggle-button">Show Instructions</button>
+
+    <div class="how-to-use" id="howToUseSection">
+        <h2>How to Use this Page</h2>
+        <p>This page helps you interact with and process JSON data in various ways:</p>
+        <ul>
+            <li><strong>Load JSON from a File:</strong> Upload a JSON file from your computer to analyze its contents.</li>
+            <li><strong>Analyze JSON from a URL:</strong> Enter a URL that returns a JSON response to fetch and analyze the data.</li>
+            <li><strong>Analyze JSON from Text:</strong> Paste or write JSON directly into the textarea, and then analyze or extract the keys from the JSON.</li>
+            <li><strong>Save State:</strong> You can save the current state of the page (URL, JSON text, etc.) to a file or browser local storage, and recover it later.</li>
+            <li><strong>Copy to Clipboard:</strong> Use the "Copy to Clipboard" buttons to quickly copy parsed JSON or extracted keys.</li>
+            <li><strong>Save JSON to File:</strong> Download the JSON from the textarea as a `.json` file.</li>
+        </ul>
+        <p>Click "Hide Instructions" to collapse this section.</p>
+    </div>
+
+    <h2>1. Load JSON from a File</h2>
+    <input type="file" id="fileInput" accept=".json">
+    <button id="loadJsonBtn">Load JSON</button>
+
+    <h2>2. Analyze JSON from a URL</h2>
+    <p>Enter a URL that returns a JSON response and click "Fetch and Analyze".</p>
+    <input type="text" id="jsonUrl" placeholder="Enter URL...">
+    <button id="fetchJsonBtn">Fetch and Analyze</button>
+
+    <h2>3. Analyze JSON from Text</h2>
+    <p>Write or paste your JSON below, and click "Analyze JSON" to see the parsed data, "Extract Keys" to retrieve all keys, or "Save to File" to download the JSON.</p>
+    <textarea id="jsonTextarea" placeholder=='{"name": "Champak Roy", "profession":"Author", "city": "Varanasi"}'></textarea>
+    <button id="analyzeJsonBtn">Analyze JSON</button>
+    <button id="extractKeysBtn">Extract Keys</button>
+    <button id="saveJsonBtn">Save to File</button>
+
+    <div class="result">
+        <h3>Parsed JSON Data</h3>
+        <pre id="textareaJsonResult">Result will be displayed here...</pre>
+        <div class="copy-button" id="copyParsedJson">Copy Parsed JSON</div>
+    </div>
+
+    <div class="result">
+        <h3>Extracted JSON Keys</h3>
+        <ul id="jsonKeysResult" class="key-list"></ul>
+        <div class="copy-button" id="copyExtractedKeys">Copy Extracted Keys</div>
+    </div>
+
+    <div class="state-controls">
+        <h2>4. Save and Recover State</h2>
+        <button id="saveStateBtn">Save State to Disk</button>
+        <button id="loadStateBtn">Recover State from Disk</button>
+        <button id="saveStateToLocalStorageBtn">Save State to LocalStorage</button>
+        <button id="loadStateFromLocalStorageBtn">Reload from LocalStorage</button>
+    </div>
+</div>
+
+<script>
+    // Toggle How to Use section
+    const toggleHowToUseBtn = document.getElementById('toggleHowToUseBtn');
+    const howToUseSection = document.getElementById('howToUseSection');
+
+    toggleHowToUseBtn.addEventListener('click', function() {
+        if (howToUseSection.style.display === 'none' || howToUseSection.style.display === '') {
+            howToUseSection.style.display = 'block';
+            toggleHowToUseBtn.textContent = 'Hide Instructions';
+        } else {
+            howToUseSection.style.display = 'none';
+            toggleHowToUseBtn.textContent = 'Show Instructions';
+        }
+    });
+
+    // Load JSON from file
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file && file.type === 'application/json') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('jsonTextarea').value = e.target.result;
+            };
+            reader.readAsText(file);
+        } else {
+            alert('Please upload a valid JSON file.');
+        }
+    });
+
+    // Fetch and analyze JSON from a URL
+    document.getElementById('fetchJsonBtn').addEventListener('click', () => {
+        const url = document.getElementById('jsonUrl').value;
+        if (!url) {
+            alert('Please enter a valid URL');
+            return;
+        }
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('textareaJsonResult').textContent = JSON.stringify(data, null, 4);
+            })
+            .catch(error => {
+                document.getElementById('textareaJsonResult').textContent = 'Error fetching data: ' + error;
+            });
+    });
+
+    // Analyze JSON from textarea input
+    document.getElementById('analyzeJsonBtn').addEventListener('click', () => {
+        const jsonText = document.getElementById('jsonTextarea').value;
+
+        try {
+            const parsedData = JSON.parse(jsonText);
+            document.getElementById('textareaJsonResult').textContent = JSON.stringify(parsedData, null, 4);
+        } catch (error) {
+            document.getElementById('textareaJsonResult').textContent = 'Invalid JSON: ' + error.message;
+        }
+    });
+
+    // Extract all keys from the parsed JSON
+    document.getElementById('extractKeysBtn').addEventListener('click', () => {
+        const jsonText = document.getElementById('jsonTextarea').value;
+
+        try {
+            const parsedData = JSON.parse(jsonText);
+            const keys = Object.keys(parsedData);
+            const keyList = document.getElementById('jsonKeysResult');
+            keyList.innerHTML = ''; // Clear existing keys
+            keys.forEach(key => {
+                const li = document.createElement('li');
+                li.textContent = key;
+                keyList.appendChild(li);
+            });
+        } catch (error) {
+            alert('Invalid JSON: ' + error.message);
+        }
+    });
+
+    // Save JSON from textarea to file
+    document.getElementById('saveJsonBtn').addEventListener('click', () => {
+        const jsonText = document.getElementById('jsonTextarea').value;
+        const blob = new Blob([jsonText], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // Save current state (URL, textarea content) to a file
+    document.getElementById('saveStateBtn').addEventListener('click', () => {
+        const state = {
+            jsonUrl: document.getElementById('jsonUrl').value,
+            jsonText: document.getElementById('jsonTextarea').value,
+            timestamp: new Date().toLocaleString()
+        };
+
+        const blob = new Blob([JSON.stringify(state, null, 4)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'state.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // Recover state from a JSON file
+    document.getElementById('loadStateBtn').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.addEventListener('change', event => {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const state = JSON.parse(e.target.result);
+                    document.getElementById('jsonUrl').value = state.jsonUrl || '';
+                    document.getElementById('jsonTextarea').value = state.jsonText || '';
+                    alert('State restored from: ' + state.timestamp);
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please upload a valid JSON file.');
+            }
+        });
+        input.click();
+    });
+
+    // Save the current state to localStorage
+    document.getElementById('saveStateToLocalStorageBtn').addEventListener('click', () => {
+        const state = {
+            jsonUrl: document.getElementById('jsonUrl').value,
+            jsonText: document.getElementById('jsonTextarea').value,
+            timestamp: new Date().toLocaleString()
+        };
+
+        localStorage.setItem('jsonState', JSON.stringify(state));
+        alert('State saved to localStorage.');
+    });
+
+    // Reload the state from localStorage
+    document.getElementById('loadStateFromLocalStorageBtn').addEventListener('click', () => {
+        const state = JSON.parse(localStorage.getItem('jsonState'));
+
+        if (state) {
+            document.getElementById('jsonUrl').value = state.jsonUrl || '';
+            document.getElementById('jsonTextarea').value = state.jsonText || '';
+            alert('State restored from: ' + state.timestamp);
+        } else {
+            alert('No saved state found in localStorage.');
+        }
+    });
+
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = text;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+        alert('Copied to clipboard');
+    }
+
+    // Copy parsed JSON data to clipboard
+    document.getElementById('copyParsedJson').addEventListener('click', () => {
+        const jsonText = document.getElementById('textareaJsonResult').textContent;
+        copyToClipboard(jsonText);
+    });
+
+    // Copy extracted keys to clipboard
+    document.getElementById('copyExtractedKeys').addEventListener('click', () => {
+        const keys = Array.from(document.getElementById('jsonKeysResult').children)
+            .map(li => li.textContent)
+            .join('\n');
+        copyToClipboard(keys);
+    });
+
+    // Save state to localStorage when the page is unloaded
+    window.addEventListener('beforeunload', () => {
+        const state = {
+            jsonUrl: document.getElementById('jsonUrl').value,
+            jsonText: document.getElementById('jsonTextarea').value,
+            timestamp: new Date().toLocaleString()
+        };
+        localStorage.setItem('jsonState', JSON.stringify(state));
+    });
+
+</script>
+
+</body>
+</html>

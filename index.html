@@ -27,7 +27,7 @@
         <a href="#">Contact</a>
         <a href="#">About</a>
     </nav>
-
+    <iframe id="searchdiv" style=" z-index: 1000; width: 100%;height: 300px;border-style: ridge;display: none;" src="https://varanasisoftwarejunction.blogspot.com/search?q=sql"></iframe>
     <div id="search-bar">
         <input type="text" placeholder="Search programs..." id="quizSearch" onkeyup="filterQuizzes()">
         <br><label id="lblCount"></label>
@@ -81,11 +81,11 @@
                 }
                 console.log(quizLinks[i].classList);
             }
-            if(count<=0)
-            {
+            if (count <= 0) {
                 lblCount.innerHTML = `Found:${count}`;
-            memsg.innerHTML = lblCount.innerHTML;
-                location=`https://www.google.com/search?q=${input}`;
+                memsg.innerHTML = lblCount.innerHTML;
+                document.getElementById("searchdiv").src = `https://varanasisoftwarejunction.blogspot.com/search?q=${input}`;
+                document.getElementById("searchdiv").style.display="block";
                 return;
             }
             lblCount.innerHTML = `Found:${count}`;
