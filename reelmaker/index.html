@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JavaScript Reel Maker</title>
-  <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
+  <script src="js/gif.js"></script>
 
   <style>
   body {
@@ -176,7 +176,7 @@
     const gif = new GIF({
       workers: 2,
       quality: 10,
-      workerScript: "https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.worker.js"
+      workerScript: "js/gif.worker.js"
     });
 
     let index = 0;
