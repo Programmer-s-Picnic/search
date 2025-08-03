@@ -121,32 +121,34 @@
       const reader = new FileReader();
 
       reader.onload = function (e) {
-        preview.innerHTML = '';
+  preview.innerHTML = '';       // clear previous
+  preview.offsetHeight;         // force browser to reflow
 
-        const container = document.createElement('div');
-        container.className = 'reel-container';
+  const container = document.createElement('div');
+  container.className = 'reel-container';
 
-        const overlayText = document.createElement('div');
-        overlayText.className = 'reel-overlay';
-        overlayText.textContent = text;
+  const overlayText = document.createElement('div');
+  overlayText.className = 'reel-overlay';
+  overlayText.textContent = text;
 
-        if (file.type.startsWith('image/')) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          container.appendChild(img);
-        } else if (file.type.startsWith('video/')) {
-          const video = document.createElement('video');
-          video.src = e.target.result;
-          video.controls = true;
-          container.appendChild(video);
-        }
+  if (file.type.startsWith('image/')) {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    container.appendChild(img);
+  } else if (file.type.startsWith('video/')) {
+    const video = document.createElement('video');
+    video.src = e.target.result;
+    video.controls = true;
+    container.appendChild(video);
+  }
 
-        container.appendChild(overlayText);
-        preview.appendChild(container);
+  container.appendChild(overlayText);
+  preview.appendChild(container);
 
-        index++;
-        setTimeout(showNext, 2000); // Show each slide for 2 seconds
-      };
+  index++;
+  setTimeout(showNext, 2000); // Show each for 2 seconds
+};
+
 
       reader.readAsDataURL(file);
     }
