@@ -19,17 +19,7 @@
     background: #fff;
   }
 
-  .reel-container {
-    position: relative;
-    width: 270px;
-    height: 480px;
-    margin: 0 auto;
-    border: 2px solid #ccc;
-    overflow: hidden;
-    border-radius: 10px;
-    background-color: #000;
-  }
-
+  
   .reel-overlay {
     position: absolute;
     bottom: 20px;
@@ -41,6 +31,28 @@
     text-shadow: 1px 1px 3px black;
     text-align: center;
   }
+.reel-container {
+  position: relative;
+  width: 270px;
+  height: 480px;
+  margin: 0 auto;
+  border: 2px solid #ccc;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #000;
+  animation: fadeZoom 1s ease;
+}
+
+@keyframes fadeZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
   .reel-container img,
   .reel-container video {
