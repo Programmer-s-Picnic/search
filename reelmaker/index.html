@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JavaScript Reel Maker</title>
-  
+  <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
+
   <style>
   body {
     font-family: sans-serif;
@@ -80,6 +81,9 @@
 <br><br>
 
   <button onclick="createReel()" style="padding:10px 20px; font-size:16px;">🎥 Create Reel</button>
+<button onclick="exportGIF()" style="padding:10px 20px; font-size:16px;">📤 Export as GIF</button>
+<br><br>
+<small id="gifStatus"></small>
 
   <div id="preview"></div>
 
@@ -154,6 +158,74 @@
     }
 
     showNext();
+  }
+</script>
+<script>
+  function exportGIF() {
+    const files = document.getElementById('mediaInput').files;
+    const text = document.getElementById('reelText').value;
+    const status = document.getElementById('gifStatus');
+
+    if (files.length === 0) {
+      alert("Upload at least one image or video to export.");
+      return;
+    }
+
+    status.textContent = "Creating GIF... please wait.";
+
+    const gif = new GIF({
+      workers: 2,
+      quality: 10,
+      workerScript: "https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.worker.js"
+    });
+
+    let index = 0;
+
+    function processNext() {
+      if (index >= files.length) {
+        gif.render();
+        return;
+      }
+
+      const file = files[index];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 270;
+        canvas.height = 480;
+        const ctx = canvas.getContext('2d');
+
+        const img = new Image();
+        img.onload = function () {
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "white";
+          ctx.font = "20px sans-serif";
+          ctx.fillText(text, 20, canvas.height - 30);
+          gif.addFrame(canvas, { delay: 2000 });
+          index++;
+          processNext();
+        };
+
+        img.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    gif.on('finished', function(blob) {
+      status.textContent = "";
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'reel.gif';
+      link.textContent = '⬇️ Download your GIF';
+      status.appendChild(link);
+    });
+
+    processNext();
   }
 </script>
 
