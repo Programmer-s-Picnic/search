@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Reel Maker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f0f8ff;
+    }
+    #preview {
+      margin-top: 30px;
+      border: 2px dashed #aaa;
+      padding: 20px;
+      min-height: 250px;
+      background: #fff;
+    }
+    .reel-container {
+      position: relative;
+      display: inline-block;
+    }
+    .reel-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px black;
+    }
+    img, video {
+      max-width: 90vw;
+      max-height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎬 JavaScript Reel Maker</h2>
+<h2>Select Images and Video</h2>
+  <input type="file" id="mediaInput" accept="image/*,video/*" multiple />
+  <br><br>
+<h2>Message</h2>
+  <input type="text" id="reelText" placeholder="Enter your message..." style="padding:8px; width:60%;" />
+  <br><br>
+  <h2>Background Music</h2>
+<input type="file" id="bgMusic" accept="audio/*" />
+<br><br>
+
+  <button onclick="createReel()" style="padding:10px 20px; font-size:16px;">🎥 Create Reel</button>
+
+  <div id="preview"></div>
+
+  
+  <script>
+  function createReel() {
+    const preview = document.getElementById('preview');
+    const files = document.getElementById('mediaInput').files;
+    const text = document.getElementById('reelText').value;
+    const musicFile = document.getElementById('bgMusic').files[0];
+
+    preview.innerHTML = '';
+
+    if (files.length === 0) {
+      preview.innerHTML = '<p>Please upload at least one image or video.</p>';
+      return;
+    }
+
+    let index = 0;
+
+    // 🎵 Optional: Load and play background music
+    let audio;
+    if (musicFile) {
+      const musicReader = new FileReader();
+      musicReader.onload = function (e) {
+        audio = new Audio(e.target.result);
+        audio.play();
+      };
+      musicReader.readAsDataURL(musicFile);
+    }
+
+    function showNext() {
+      if (index >= files.length) {
+        if (audio) audio.pause();
+        return;
+      }
+
+      const file = files[index];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        preview.innerHTML = '';
+
+        const container = document.createElement('div');
+        container.className = 'reel-container';
+
+        const overlayText = document.createElement('div');
+        overlayText.className = 'reel-overlay';
+        overlayText.textContent = text;
+
+        if (file.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          container.appendChild(img);
+        } else if (file.type.startsWith('video/')) {
+          const video = document.createElement('video');
+          video.src = e.target.result;
+          video.controls = true;
+          container.appendChild(video);
+        }
+
+        container.appendChild(overlayText);
+        preview.appendChild(container);
+
+        index++;
+        setTimeout(showNext, 2000); // Show each slide for 2 seconds
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    showNext();
+  }
+</script>
+
+</body>
+</html>
