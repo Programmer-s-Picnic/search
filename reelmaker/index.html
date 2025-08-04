@@ -87,7 +87,14 @@
 
   <div id="preview"></div>
 
-  
+  <button onclick="exportMP4()" style="padding:10px 20px; font-size:16px;">🎥 Export as MP4</button>
+<br><br>
+<small id="mp4Status"></small>
+<button onclick="exportMP4WithMusic()" style="padding:10px 20px; font-size:16px;">
+🎧 Export as MP4 with Background Music
+</button>
+<small id="mp4Status"></small>
+
   <script>
   function createReel() {
     const preview = document.getElementById('preview');
@@ -227,6 +234,165 @@
 
     processNext();
   }
+</script>
+<script>
+  function exportMP4() {
+    const files = document.getElementById('mediaInput').files;
+    const text = document.getElementById('reelText').value;
+    const status = document.getElementById('mp4Status');
+
+    if (files.length === 0) {
+      alert("Upload at least one image to export.");
+      return;
+    }
+
+    status.textContent = "Rendering MP4... please wait.";
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 270;
+    canvas.height = 480;
+    const ctx = canvas.getContext('2d');
+
+    const stream = canvas.captureStream(30); // 30 FPS
+    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'reel.webm';
+      link.textContent = '⬇️ Download MP4 (WebM)';
+      status.innerHTML = '';
+      status.appendChild(link);
+    };
+
+    recorder.start();
+
+    let index = 0;
+
+    function drawNext() {
+      if (index >= files.length) {
+        recorder.stop();
+        return;
+      }
+
+      const file = files[index];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'white';
+          ctx.font = '20px sans-serif';
+          ctx.fillText(text, 20, canvas.height - 30);
+          index++;
+          setTimeout(drawNext, 2000); // 2s per frame
+        };
+        img.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    drawNext();
+  }
+</script>
+<script>
+function exportMP4WithMusic() {
+  const files = document.getElementById('mediaInput').files;
+  const text = document.getElementById('reelText').value;
+  const musicFile = document.getElementById('bgMusic').files[0];
+  const status = document.getElementById('mp4Status');
+  status.textContent = "Rendering MP4 with background music...";
+
+  if (files.length === 0 || !musicFile) {
+    alert("Please upload both images and a music file.");
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 270;
+  canvas.height = 480;
+  const ctx = canvas.getContext('2d');
+
+  const videoStream = canvas.captureStream(30); // 30 FPS
+
+  // Load background music into WebAudio
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioSource = audioContext.createMediaStreamDestination();
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    audioContext.decodeAudioData(e.target.result, function (buffer) {
+      const sourceNode = audioContext.createBufferSource();
+      sourceNode.buffer = buffer;
+      sourceNode.connect(audioSource);
+      sourceNode.start();
+
+      // Combine video and audio streams
+      const mixedStream = new MediaStream([
+        ...videoStream.getVideoTracks(),
+        ...audioSource.stream.getAudioTracks()
+      ]);
+
+      const recorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
+      const chunks = [];
+
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'reel_with_music.webm';
+        link.textContent = '⬇️ Download Reel with Music';
+        status.innerHTML = '';
+        status.appendChild(link);
+      };
+
+      recorder.start();
+
+      let index = 0;
+
+      function drawNext() {
+        if (index >= files.length) {
+          recorder.stop();
+          return;
+        }
+
+        const file = files[index];
+        const imgReader = new FileReader();
+
+        imgReader.onload = function (ev) {
+          const img = new Image();
+          img.onload = function () {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '20px sans-serif';
+            ctx.fillText(text, 20, canvas.height - 30);
+            index++;
+            setTimeout(drawNext, 2000); // 2s per slide
+          };
+          img.src = ev.target.result;
+        };
+
+        imgReader.readAsDataURL(file);
+      }
+
+      drawNext();
+    });
+  };
+
+  reader.readAsArrayBuffer(musicFile);
+}
 </script>
 
 </body>
