@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bubble Sort Animation</title>
+    <style>
+        #datadiv {
+            width: 80%;
+            height: 400px;
+            position: relative;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 20%;
+            background-color: #FFFFE0;
+        }
+
+        .sortbox {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            background-color: #ADD8E6;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3),
+                /* Bottom-right shadow */
+                -2px -2px 5px rgba(255, 255, 255, 0.7);
+            /* Top-left highlight */
+        }
+
+        #inputbox {
+            width: 300px;
+            margin-left: 10%;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="button" value="Go Up" onclick="goUp(document.getElementById('box0'), document.getElementById('box1'))">
+        ; <input type="text" onchange="placeOnDiv()" onkeyup="placeOnDiv()" id="inputbox"
+        placeholder="Enter numbers separated by commas" style="width: 300px; margin-left: 10%; margin-top: 20px;">
+    <div id="datadiv"></div>
+
+    <script>
+        const datadiv = document.getElementById("datadiv");
+        const datainput = document.getElementById("inputbox");
+        function getValueAfterRemovingPx(value) {
+            if (value.endsWith("px")) {
+                return parseInt(value.slice(0, -2), 10);
+            }
+            return parseInt(value, 10);
+        }
+        function doSwap(id1, id2, delay) {
+            const elem1 = document.getElementById(id1);
+            const elem2 = document.getElementById(id2);
+            const onex = elem1.style.left;
+            const oney = elem1.style.top;
+            const twox = elem2.style.left;
+            const twoy = elem2.style.top;
+
+        }
+        let currentfn = 0;
+        function goUp(elem1, elem2) {
+            let toppos1 = getValueAfterRemovingPx(elem1.style.top) - 5;
+            let toppos2 = getValueAfterRemovingPx(elem2.style.top) - 5;
+            elem1.style.top = toppos1 + "px";
+            elem2.style.top = toppos2 + "px";
+
+        }
+
+        function placeOnDiv() {
+            let inputValues = datainput.value;
+            inputValues = inputValues.split(',');
+            datadiv.innerHTML = ""; // Clear previous elements
+            const startleft = 10;
+            const starttop = 150;
+            const leftincrement = 60;
+            const topincrement = 60;
+            const n = inputValues.length;
+            for (let i = 0; i <= n - 1; i++) {
+                let value = Number(inputValues[i].trim());
+                const newelement = document.createElement("div");
+                newelement.className = "sortbox";
+                newelement.id = "box" + i;
+                newelement.textContent = value;
+                newelement.style.left = startleft + (i * leftincrement + 5) + "px";
+                newelement.style.top = `${starttop}px`;//+ (i * topincrement) + "px";
+                datadiv.appendChild(newelement);
+            }
+
+        }
+        // placeOnDiv();
+    </script>
+</body>
+
+</html>

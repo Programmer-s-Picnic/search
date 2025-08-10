@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,351 +8,376 @@
   <script src="js/gif.js"></script>
 
   <style>
-  body {
-    font-family: sans-serif;
-    text-align: center;
-    padding: 20px;
-    background-color: #f0f8ff;
-  }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f0f8ff;
+    }
 
-  #preview {
-    margin-top: 30px;
-    padding: 20px;
-    background: #fff;
-  }
+    #preview {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff;
+    }
 
-  
-  .reel-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 1px 1px 3px black;
-    text-align: center;
-  }
-.reel-container {
-  position: relative;
-  width: 270px;
-  height: 480px;
-  margin: 0 auto;
-  border: 2px solid #ccc;
-  overflow: hidden;
-  border-radius: 10px;
-  background-color: #000;
-  animation: fadeZoom 1s ease;
-}
 
-@keyframes fadeZoom {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+    .reel-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px black;
+      text-align: center;
+    }
 
-  .reel-container img,
-  .reel-container video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-  }
-</style>
+    .reel-container {
+      position: relative;
+      width: 270px;
+      height: 480px;
+      margin: 0 auto;
+      border: 2px solid #ccc;
+      overflow: hidden;
+      border-radius: 10px;
+      background-color: #000;
+      animation: fadeZoom 1s ease;
+    }
+
+    @keyframes fadeZoom {
+      0% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .reel-container img,
+    .reel-container video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes flipY {
+      from {
+        transform: rotateY(180deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rotateX {
+      from {
+        transform: rotateX(90deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: rotateX(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes spinIn {
+      from {
+        transform: rotate(360deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .animated {
+      animation-duration: 1s;
+      animation-fill-mode: both;
+    }
+  </style>
 
 
 </head>
+
 <body>
   <h2>🎬 JavaScript Reel Maker</h2>
-<h2>Select Images and Video</h2>
+  <h2>Select Images and Video</h2>
   <input type="file" id="mediaInput" accept="image/*,video/*" multiple />
   <br><br>
-<h2>Message</h2>
+  <h2>Message</h2>
   <input type="text" id="reelText" placeholder="Enter your message..." style="padding:8px; width:60%;" />
-  <br><br>
+  <br>
+  <h2>Select Animation</h2>
+  <select id="animationType" style="padding: 8px; font-size: 16px;">
+    <option value="fadeIn">Fade In</option>
+    <option value="zoomIn">Zoom In</option>
+    <option value="flipY">Flip Y</option>
+    <option value="rotateX">Rotate X</option>
+    <option value="bounceIn">Bounce In</option>
+    <option value="slideUp">Slide Up</option>
+    <option value="spinIn">Spin In</option>
+  </select>
+
+
+
+  <br>
   <h2>Background Music</h2>
-<input type="file" id="bgMusic" accept="audio/*" />
-<br><br>
+  <input type="file" id="bgMusic" accept="audio/*" />
+  <br><br>
 
   <button onclick="createReel()" style="padding:10px 20px; font-size:16px;">🎥 Create Reel</button>
-<button onclick="exportGIF()" style="padding:10px 20px; font-size:16px;">📤 Export as GIF</button>
-<br><br>
-<small id="gifStatus"></small>
+  <button onclick="exportGIF()" style="padding:10px 20px; font-size:16px;">📤 Export as GIF</button>
+  <br><br>
+  <small id="gifStatus"></small>
 
   <div id="preview"></div>
 
   <button onclick="exportMP4()" style="padding:10px 20px; font-size:16px;">🎥 Export as MP4</button>
-<br><br>
-<small id="mp4Status"></small>
-<button onclick="exportMP4WithMusic()" style="padding:10px 20px; font-size:16px;">
-🎧 Export as MP4 with Background Music
-</button>
-<small id="mp4Status"></small>
+  <br><br>
+  <small id="mp4Status"></small>
+  <button onclick="exportMP4WithMusic()" style="padding:10px 20px; font-size:16px;">
+    🎧 Export as MP4 with Background Music
+  </button>
+  <small id="mp4Status"></small>
 
   <script>
-  function createReel() {
-    const preview = document.getElementById('preview');
-    const files = document.getElementById('mediaInput').files;
-    const text = document.getElementById('reelText').value;
-    const musicFile = document.getElementById('bgMusic').files[0];
+    function createReel() {
+      const preview = document.getElementById('preview');
+      const files = document.getElementById('mediaInput').files;
+      const text = document.getElementById('reelText').value;
+      const musicFile = document.getElementById('bgMusic').files[0];
+      const animation = document.getElementById('animationType').value; // 🆕 Get selected animation
 
-    preview.innerHTML = '';
+      preview.innerHTML = '';
 
-    if (files.length === 0) {
-      preview.innerHTML = '<p>Please upload at least one image or video.</p>';
-      return;
-    }
-
-    let index = 0;
-
-    // 🎵 Optional: Load and play background music
-    let audio;
-    if (musicFile) {
-      const musicReader = new FileReader();
-      musicReader.onload = function (e) {
-        audio = new Audio(e.target.result);
-        audio.play();
-      };
-      musicReader.readAsDataURL(musicFile);
-    }
-
-    function showNext() {
-      if (index >= files.length) {
-        if (audio) audio.pause();
+      if (files.length === 0) {
+        preview.innerHTML = '<p>Please upload at least one image or video.</p>';
         return;
       }
 
-      const file = files[index];
-      const reader = new FileReader();
+      let index = 0;
 
-      reader.onload = function (e) {
-  preview.innerHTML = '';       // clear previous
-  preview.offsetHeight;         // force browser to reflow
-
-  const container = document.createElement('div');
-  container.className = 'reel-container';
-
-  const overlayText = document.createElement('div');
-  overlayText.className = 'reel-overlay';
-  overlayText.textContent = text;
-
-  if (file.type.startsWith('image/')) {
-    const img = document.createElement('img');
-    img.src = e.target.result;
-    container.appendChild(img);
-  } else if (file.type.startsWith('video/')) {
-    const video = document.createElement('video');
-    video.src = e.target.result;
-    video.controls = true;
-    container.appendChild(video);
-  }
-
-  container.appendChild(overlayText);
-  preview.appendChild(container);
-
-  index++;
-  setTimeout(showNext, 2000); // Show each for 2 seconds
-};
-
-
-      reader.readAsDataURL(file);
-    }
-
-    showNext();
-  }
-</script>
-<script>
-  function exportGIF() {
-    const files = document.getElementById('mediaInput').files;
-    const text = document.getElementById('reelText').value;
-    const status = document.getElementById('gifStatus');
-
-    if (files.length === 0) {
-      alert("Upload at least one image or video to export.");
-      return;
-    }
-
-    status.textContent = "Creating GIF... please wait.";
-
-    const gif = new GIF({
-      workers: 2,
-      quality: 10,
-      workerScript: "js/gif.worker.js"
-    });
-
-    let index = 0;
-
-    function processNext() {
-      if (index >= files.length) {
-        gif.render();
-        return;
+      // 🎵 Optional: Load and play background music
+      let audio;
+      if (musicFile) {
+        const musicReader = new FileReader();
+        musicReader.onload = function (e) {
+          audio = new Audio(e.target.result);
+          audio.play();
+        };
+        musicReader.readAsDataURL(musicFile);
       }
 
-      const file = files[index];
-      const reader = new FileReader();
+      function showNext() {
+        if (index >= files.length) {
+          if (audio) audio.pause();
+          return;
+        }
 
-      reader.onload = function (e) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 270;
-        canvas.height = 480;
-        const ctx = canvas.getContext('2d');
+        const file = files[index];
+        const reader = new FileReader();
 
-        const img = new Image();
-        img.onload = function () {
-          ctx.fillStyle = "black";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "white";
-          ctx.font = "20px sans-serif";
-          ctx.fillText(text, 20, canvas.height - 30);
-          gif.addFrame(canvas, { delay: 2000 });
+        reader.onload = function (e) {
+          preview.innerHTML = '';        // clear previous
+          preview.offsetHeight;          // force browser to reflow
+
+          const container = document.createElement('div');
+          container.className = `reel-container animated`; // 🆕 animated base class
+          container.style.animationName = animation;       // 🆕 set animation
+
+          const overlayText = document.createElement('div');
+          overlayText.className = 'reel-overlay';
+          overlayText.textContent = text;
+
+          if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            container.appendChild(img);
+          } else if (file.type.startsWith('video/')) {
+            const video = document.createElement('video');
+            video.src = e.target.result;
+            video.controls = true;
+            container.appendChild(video);
+          }
+
+          container.appendChild(overlayText);
+          preview.appendChild(container);
+
           index++;
-          processNext();
+          setTimeout(showNext, 2000); // Show each for 2 seconds
         };
 
-        img.src = e.target.result;
-      };
+        reader.readAsDataURL(file);
+      }
 
-      reader.readAsDataURL(file);
+      showNext();
     }
 
-    gif.on('finished', function(blob) {
-      status.textContent = "";
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'reel.gif';
-      link.textContent = '⬇️ Download your GIF';
-      status.appendChild(link);
-    });
+  </script>
+  <script>
+    function exportGIF() {
+      const files = document.getElementById('mediaInput').files;
+      const text = document.getElementById('reelText').value;
+      const status = document.getElementById('gifStatus');
 
-    processNext();
-  }
-</script>
-<script>
-  function exportMP4() {
-    const files = document.getElementById('mediaInput').files;
-    const text = document.getElementById('reelText').value;
-    const status = document.getElementById('mp4Status');
-
-    if (files.length === 0) {
-      alert("Upload at least one image to export.");
-      return;
-    }
-
-    status.textContent = "Rendering MP4... please wait.";
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 270;
-    canvas.height = 480;
-    const ctx = canvas.getContext('2d');
-
-    const stream = canvas.captureStream(30); // 30 FPS
-    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-
-    const chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'reel.webm';
-      link.textContent = '⬇️ Download MP4 (WebM)';
-      status.innerHTML = '';
-      status.appendChild(link);
-    };
-
-    recorder.start();
-
-    let index = 0;
-
-    function drawNext() {
-      if (index >= files.length) {
-        recorder.stop();
+      if (files.length === 0) {
+        alert("Upload at least one image or video to export.");
         return;
       }
 
-      const file = files[index];
-      const reader = new FileReader();
+      status.textContent = "Creating GIF... please wait.";
 
-      reader.onload = function (e) {
-        const img = new Image();
-        img.onload = function () {
-          ctx.fillStyle = 'black';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = 'white';
-          ctx.font = '20px sans-serif';
-          ctx.fillText(text, 20, canvas.height - 30);
-          index++;
-          setTimeout(drawNext, 2000); // 2s per frame
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        workerScript: "js/gif.worker.js"
+      });
+
+      let index = 0;
+
+      function processNext() {
+        if (index >= files.length) {
+          gif.render();
+          return;
+        }
+
+        const file = files[index];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const canvas = document.createElement('canvas');
+          canvas.width = 270;
+          canvas.height = 480;
+          const ctx = canvas.getContext('2d');
+
+          const img = new Image();
+          img.onload = function () {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "20px sans-serif";
+            ctx.fillText(text, 20, canvas.height - 30);
+            gif.addFrame(canvas, { delay: 2000 });
+            index++;
+            processNext();
+          };
+
+          img.src = e.target.result;
         };
-        img.src = e.target.result;
-      };
 
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      }
+
+      gif.on('finished', function (blob) {
+        status.textContent = "";
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'reel.gif';
+        link.textContent = '⬇️ Download your GIF';
+        status.appendChild(link);
+      });
+
+      processNext();
     }
+  </script>
+  <script>
+    function exportMP4() {
+      const files = document.getElementById('mediaInput').files;
+      const text = document.getElementById('reelText').value;
+      const status = document.getElementById('mp4Status');
 
-    drawNext();
-  }
-</script>
-<script>
-function exportMP4WithMusic() {
-  const files = document.getElementById('mediaInput').files;
-  const text = document.getElementById('reelText').value;
-  const musicFile = document.getElementById('bgMusic').files[0];
-  const status = document.getElementById('mp4Status');
-  status.textContent = "Rendering MP4 with background music...";
+      if (files.length === 0) {
+        alert("Upload at least one image to export.");
+        return;
+      }
 
-  if (files.length === 0 || !musicFile) {
-    alert("Please upload both images and a music file.");
-    return;
-  }
+      status.textContent = "Rendering MP4... please wait.";
 
-  const canvas = document.createElement('canvas');
-  canvas.width = 270;
-  canvas.height = 480;
-  const ctx = canvas.getContext('2d');
+      const canvas = document.createElement('canvas');
+      canvas.width = 270;
+      canvas.height = 480;
+      const ctx = canvas.getContext('2d');
 
-  const videoStream = canvas.captureStream(30); // 30 FPS
+      const stream = canvas.captureStream(30); // 30 FPS
+      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
-  // Load background music into WebAudio
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const audioSource = audioContext.createMediaStreamDestination();
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    audioContext.decodeAudioData(e.target.result, function (buffer) {
-      const sourceNode = audioContext.createBufferSource();
-      sourceNode.buffer = buffer;
-      sourceNode.connect(audioSource);
-      sourceNode.start();
-
-      // Combine video and audio streams
-      const mixedStream = new MediaStream([
-        ...videoStream.getVideoTracks(),
-        ...audioSource.stream.getAudioTracks()
-      ]);
-
-      const recorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
       const chunks = [];
-
       recorder.ondataavailable = e => chunks.push(e.data);
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'reel_with_music.webm';
-        link.textContent = '⬇️ Download Reel with Music';
+        link.download = 'reel.webm';
+        link.textContent = '⬇️ Download MP4 (WebM)';
         status.innerHTML = '';
         status.appendChild(link);
       };
@@ -367,9 +393,9 @@ function exportMP4WithMusic() {
         }
 
         const file = files[index];
-        const imgReader = new FileReader();
+        const reader = new FileReader();
 
-        imgReader.onload = function (ev) {
+        reader.onload = function (e) {
           const img = new Image();
           img.onload = function () {
             ctx.fillStyle = 'black';
@@ -379,21 +405,109 @@ function exportMP4WithMusic() {
             ctx.font = '20px sans-serif';
             ctx.fillText(text, 20, canvas.height - 30);
             index++;
-            setTimeout(drawNext, 2000); // 2s per slide
+            setTimeout(drawNext, 2000); // 2s per frame
           };
-          img.src = ev.target.result;
+          img.src = e.target.result;
         };
 
-        imgReader.readAsDataURL(file);
+        reader.readAsDataURL(file);
       }
 
       drawNext();
-    });
-  };
+    }
+  </script>
+  <script>
+    function exportMP4WithMusic() {
+      const files = document.getElementById('mediaInput').files;
+      const text = document.getElementById('reelText').value;
+      const musicFile = document.getElementById('bgMusic').files[0];
+      const status = document.getElementById('mp4Status');
+      status.textContent = "Rendering MP4 with background music...";
 
-  reader.readAsArrayBuffer(musicFile);
-}
-</script>
+      if (files.length === 0 || !musicFile) {
+        alert("Please upload both images and a music file.");
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 270;
+      canvas.height = 480;
+      const ctx = canvas.getContext('2d');
+
+      const videoStream = canvas.captureStream(30); // 30 FPS
+
+      // Load background music into WebAudio
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioSource = audioContext.createMediaStreamDestination();
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        audioContext.decodeAudioData(e.target.result, function (buffer) {
+          const sourceNode = audioContext.createBufferSource();
+          sourceNode.buffer = buffer;
+          sourceNode.connect(audioSource);
+          sourceNode.start();
+
+          // Combine video and audio streams
+          const mixedStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            ...audioSource.stream.getAudioTracks()
+          ]);
+
+          const recorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
+          const chunks = [];
+
+          recorder.ondataavailable = e => chunks.push(e.data);
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'reel_with_music.webm';
+            link.textContent = '⬇️ Download Reel with Music';
+            status.innerHTML = '';
+            status.appendChild(link);
+          };
+
+          recorder.start();
+
+          let index = 0;
+
+          function drawNext() {
+            if (index >= files.length) {
+              recorder.stop();
+              return;
+            }
+
+            const file = files[index];
+            const imgReader = new FileReader();
+
+            imgReader.onload = function (ev) {
+              const img = new Image();
+              img.onload = function () {
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = '20px sans-serif';
+                ctx.fillText(text, 20, canvas.height - 30);
+                index++;
+                setTimeout(drawNext, 2000); // 2s per slide
+              };
+              img.src = ev.target.result;
+            };
+
+            imgReader.readAsDataURL(file);
+          }
+
+          drawNext();
+        });
+      };
+
+      reader.readAsArrayBuffer(musicFile);
+    }
+  </script>
 
 </body>
+
 </html>
