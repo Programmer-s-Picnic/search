@@ -116,7 +116,7 @@
         let responseMap = {};
 
         // Load JSON file
-        fetch('responses.json')
+        fetch('https://varanasi-software-junction.github.io/search/champakai/responses.json')
             .then(response => response.json())
             .then(data => responseMap = data)
             .catch(err => console.error('Error loading JSON:', err));
