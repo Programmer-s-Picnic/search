@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punctuation Lesson - Learning Sutras</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e6f2ff;
+      color: #003366;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #004080;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+    section {
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 900px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #004080;
+      margin-bottom: 10px;
+    }
+    pre {
+      background: #f4faff;
+      padding: 12px;
+      border-left: 4px solid #004080;
+      overflow-x: auto;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+    .example {
+      background: #e6f2ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .explanation {
+      background: #f9fcff;
+      border-left: 3px solid #0059b3;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+    }
+    button {
+      background: #004080;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0059b3;
+    }
+    .answer {
+      display: none;
+      margin-top: 10px;
+    }
+    footer {
+      text-align: center;
+      background: #004080;
+      color: white;
+      padding: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    📘 Lesson on Punctuation – Learning Sutras
+  </header>
+
+  <!-- Template Example -->
+  <section>
+    <h2>1. Period / Full Stop ( . )</h2>
+    <p>Used to <b>end a sentence</b>.</p>
+    <button onclick="toggleAnswer('ans1', this)">Show Example</button>
+    <div id="ans1" class="answer">
+      <div class="example">
+        - She is a teacher.<br>
+        - I like programming.
+      </div>
+      <div class="explanation">
+        Marks the end of a statement.  
+        <b>Example:</b> "This is a sentence."
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Comma ( , )</h2>
+    <p>Used for a <b>short pause</b> or to <b>separate items</b>.</p>
+    <button onclick="toggleAnswer('ans2', this)">Show Example</button>
+    <div id="ans2" class="answer">
+      <div class="example">
+        - I bought apples, bananas, and oranges.<br>
+        - After lunch, we went to the park.
+      </div>
+      <div class="explanation">
+        Prevents confusion by dividing parts of a sentence.  
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Colon ( : )</h2>
+    <p>Used to <b>introduce a list, explanation, or example</b>.</p>
+    <button onclick="toggleAnswer('ans3', this)">Show Example</button>
+    <div id="ans3" class="answer">
+      <div class="example">
+        - I need three things: a pen, a notebook, and a ruler.<br>
+        - Remember this: honesty is the best policy.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Semicolon ( ; )</h2>
+    <p>Used to <b>join two related sentences</b> or complex lists.</p>
+    <button onclick="toggleAnswer('ans4', this)">Show Example</button>
+    <div id="ans4" class="answer">
+      <div class="example">
+        - I have a meeting tomorrow; I need to prepare today.<br>
+        - We visited Paris, France; Rome, Italy; and Berlin, Germany.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Exclamation Mark ( ! )</h2>
+    <p>Shows <b>strong emotion</b> (surprise, excitement, anger).</p>
+    <button onclick="toggleAnswer('ans5', this)">Show Example</button>
+    <div id="ans5" class="answer">
+      <div class="example">
+        - Wow! That’s amazing.<br>
+        - Stop! Don’t touch that.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Question Mark ( ? )</h2>
+    <p>Used at the <b>end of a question</b>.</p>
+    <button onclick="toggleAnswer('ans6', this)">Show Example</button>
+    <div id="ans6" class="answer">
+      <div class="example">
+        - How are you?<br>
+        - Did you finish your homework?
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>7. Quotation Marks ( “ ” )</h2>
+    <p>Used to <b>show direct speech</b> or quotations.</p>
+    <button onclick="toggleAnswer('ans7', this)">Show Example</button>
+    <div id="ans7" class="answer">
+      <div class="example">
+        - She said, “I am learning Python.”<br>
+        - “What time is it?” asked Ravi.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>8. Apostrophe ( ’ )</h2>
+    <p>Shows <b>possession</b> or <b>contraction</b>.</p>
+    <button onclick="toggleAnswer('ans8', this)">Show Example</button>
+    <div id="ans8" class="answer">
+      <div class="example">
+        - This is Ravi’s book. (possession)<br>
+        - Don’t = Do not, It’s = It is (contraction)
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>9. Hyphen ( - )</h2>
+    <p>Joins words together.</p>
+    <button onclick="toggleAnswer('ans9', this)">Show Example</button>
+    <div id="ans9" class="answer">
+      <div class="example">
+        - well-known<br>
+        - twenty-one<br>
+        - mother-in-law
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>10. Dash ( — )</h2>
+    <p>Used for <b>extra information or emphasis</b>.</p>
+    <button onclick="toggleAnswer('ans10', this)">Show Example</button>
+    <div id="ans10" class="answer">
+      <div class="example">
+        - She was late — as usual.<br>
+        - I need three things — time, patience, and energy.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>11. Parentheses ( ( ) )</h2>
+    <p>Used to add <b>extra information</b>.</p>
+    <button onclick="toggleAnswer('ans11', this)">Show Example</button>
+    <div id="ans11" class="answer">
+      <div class="example">
+        - He finally answered (after thinking for five minutes).<br>
+        - My brother (who lives in Delhi) is visiting us.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>12. Ellipsis ( … )</h2>
+    <p>Shows <b>pause</b> or something left out.</p>
+    <button onclick="toggleAnswer('ans12', this)">Show Example</button>
+    <div id="ans12" class="answer">
+      <div class="example">
+        - I was thinking… maybe we should go.<br>
+        - He said he would call me at 8… but he didn’t.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Learning Sutras | Champak Roy
+  </footer>
+
+  <script>
+    function toggleAnswer(id, btn) {
+      const el = document.getElementById(id);
+      if (el.style.display === "block") {
+        el.style.display = "none";
+        btn.innerText = "Show Example";
+      } else {
+        el.style.display = "block";
+        btn.innerText = "Hide Example";
+      }
+    }
+  </script>
+</body>
+</html>
