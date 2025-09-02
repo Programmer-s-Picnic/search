@@ -1,109 +1,190 @@
 {
+  "Founder of C": {
+    "keywords": [
+      "dennis ",
+      "ritchie",
+      "dennis-ritchie"
+    ],
+    "response": "Dennis Ritchie was an American computer scientist who was born in Bronxville, New York, in 1941. He graduated from Harvard University with degrees in physics and applied mathematics and later earned a Ph.D. in mathematics. In 1967, he joined Bell Laboratories, where he would make his most significant contributions to the field of computer science. Ritchie is most famous for two pivotal creations: the C programming language and the co-development of the Unix operating system. The C programming language, which he created in the early 1970s, was designed to be a general-purpose, low-level language that could be used for system programming. This led to a key development: he and his colleague Ken Thompson were able to rewrite the Unix kernel in C, making the operating system portable and adaptable to different computer platforms.  Throughout his career, Ritchie received numerous honors for his work, including the Turing Award in 1983 and the National Medal of Technology in 1999, both shared with Ken Thompson. He retired in 2007 and passed away in 2011. His legacy endures through the widespread use of Unix and C, which have had a profound and lasting impact on modern computing."
+  },
   "if else": {
-    "keywords": ["if", "if else", "if-else", "decision", "conditional"],
+    "keywords": [
+      "if",
+      "if else",
+      "if-else",
+      "decision",
+      "conditional"
+    ],
     "response": "✅ IF-ELSE IN C:\n\n👉 Explanation:\nDecision-making block. Executes code based on condition.\n\n👉 Syntax:\n```c\nif(condition) {\n  // true\n} else {\n  // false\n}\n```\n\n👉 Example:\n```c\nint age=20;\nif(age>=18) printf(\"Adult\");\nelse printf(\"Minor\");\n```\n\n👉 To-Do:\n- Check even/odd\n- Check positive/negative"
   },
-
   "ternary": {
-    "keywords": ["ternary", "conditional operator", "short if"],
+    "keywords": [
+      "ternary",
+      "conditional operator",
+      "short if"
+    ],
     "response": "✅ TERNARY OPERATOR:\n\n👉 Syntax:\n```c\n(condition) ? true_result : false_result;\n```\n\n👉 Example:\n```c\nint num=5;\nprintf(\"%s\", (num%2==0)?\"Even\":\"Odd\");\n```\n\n👉 To-Do:\n- Greater of two numbers\n- Pass/Fail check"
   },
-
   "switch": {
-    "keywords": ["switch", "case", "multiple choice", "multi-way decision"],
+    "keywords": [
+      "switch",
+      "case",
+      "multiple choice",
+      "multi-way decision"
+    ],
     "response": "✅ SWITCH CASE:\n\n👉 Example:\n```c\nint day=3;\nswitch(day){\n case 1: printf(\"Monday\"); break;\n case 2: printf(\"Tuesday\"); break;\n default: printf(\"Other day\");\n}\n```\n\n👉 To-Do:\n- Day display\n- Simple calculator"
   },
-
   "for loop": {
-    "keywords": ["for", "for loop", "loops"],
+    "keywords": [
+      "for",
+      "for loop",
+      "loops"
+    ],
     "response": "✅ FOR LOOP:\n\n👉 Example:\n```c\nfor(int i=1;i<=5;i++) printf(\"%d \",i);\n```\n\n👉 To-Do:\n- Print 1 to 10\n- Factorial"
   },
-
   "while loop": {
-    "keywords": ["while", "while loop"],
+    "keywords": [
+      "while",
+      "while loop"
+    ],
     "response": "✅ WHILE LOOP:\n\n👉 Example:\n```c\nint i=1;\nwhile(i<=5){\n printf(\"%d \",i);\n i++;\n}\n```\n\n👉 To-Do:\n- Sum till 10\n- Display even numbers"
   },
-
   "do while loop": {
-    "keywords": ["do while", "do-while", "exit controlled loop"],
+    "keywords": [
+      "do while",
+      "do-while",
+      "exit controlled loop"
+    ],
     "response": "✅ DO-WHILE:\n\n👉 Example:\n```c\nint i=1;\ndo{\n printf(\"%d \",i);\n i++;\n}while(i<=5);\n```\n\n👉 To-Do:\n- Display menu repeatedly\n- Print numbers"
   },
-
   "arrays": {
-    "keywords": ["array", "arrays"],
+    "keywords": [
+      "array",
+      "arrays"
+    ],
     "response": "✅ ARRAYS:\n\n👉 Example:\n```c\nint a[5] = {1,2,3,4,5};\n```\n\n👉 To-Do:\n- Sum of elements\n- Largest element"
   },
-
   "strings": {
-    "keywords": ["string", "strings"],
+    "keywords": [
+      "string",
+      "strings"
+    ],
     "response": "✅ STRINGS:\n\n👉 Example:\n```c\nchar name[10] = \"Champak\";\nprintf(\"%s\",name);\n```\n\n👉 To-Do:\n- Count vowels\n- String length"
   },
-
   "pointers": {
-    "keywords": ["pointer", "pointers", "address", "dereference"],
+    "keywords": [
+      "pointer",
+      "pointers",
+      "address",
+      "dereference"
+    ],
     "response": "✅ POINTERS:\n\n👉 Example:\n```c\nint x=10;\nint *p=&x;\nprintf(\"%d\",*p);\n```\n\n👉 To-Do:\n- Swap numbers using pointers\n- Print address of variables"
   },
-
   "functions": {
-    "keywords": ["function", "functions"],
+    "keywords": [
+      "function",
+      "functions"
+    ],
     "response": "✅ FUNCTIONS:\n\n👉 Example:\n```c\nint add(int a,int b){\n return a+b;\n}\n```\n\n👉 To-Do:\n- Factorial function\n- GCD using function"
   },
-
   "recursion": {
-    "keywords": ["recursion", "recursive", "function calling itself"],
+    "keywords": [
+      "recursion",
+      "recursive",
+      "function calling itself"
+    ],
     "response": "✅ RECURSION:\n\n👉 Example:\n```c\nint fact(int n){\n if(n==0)return 1;\n return n*fact(n-1);\n}\n```\n\n👉 To-Do:\n- Factorial\n- Fibonacci"
   },
-
   "structures": {
-    "keywords": ["structure", "structures", "struct"],
+    "keywords": [
+      "structure",
+      "structures",
+      "struct"
+    ],
     "response": "✅ STRUCTURES:\n\n👉 Example:\n```c\nstruct Student{\n char name[20];\n int age;\n};\n```\n\n👉 To-Do:\n- Create Employee struct\n- Store student details"
   },
-
   "union": {
-    "keywords": ["union", "unions"],
+    "keywords": [
+      "union",
+      "unions"
+    ],
     "response": "✅ UNIONS:\n\n👉 Example:\n```c\nunion Data{\n int i;\n float f;\n};\n```\n\n👉 To-Do:\n- Demonstrate memory sharing\n- Define union for employee"
   },
-
   "file handling": {
-    "keywords": ["file", "file handling", "files", "fopen", "fclose"],
+    "keywords": [
+      "file",
+      "file handling",
+      "files",
+      "fopen",
+      "fclose"
+    ],
     "response": "✅ FILE HANDLING:\n\n👉 Example:\n```c\nFILE *fp;\nfp=fopen(\"file.txt\",\"w\");\nfprintf(fp,\"Hello\");\nfclose(fp);\n```\n\n👉 To-Do:\n- Write data to file\n- Read from file"
   },
-
   "macros": {
-    "keywords": ["macro", "macros", "define"],
+    "keywords": [
+      "macro",
+      "macros",
+      "define"
+    ],
     "response": "✅ MACROS:\n\n👉 Example:\n```c\n#define PI 3.14\n```\n\n👉 To-Do:\n- Create macros for square\n- Max of two numbers macro"
   },
-
   "typedef": {
-    "keywords": ["typedef", "type alias"],
+    "keywords": [
+      "typedef",
+      "type alias"
+    ],
     "response": "✅ TYPEDEF:\n\n👉 Example:\n```c\ntypedef unsigned int uint;\nuint x=5;\n```\n\n👉 To-Do:\n- Typedef for structure\n- Alias int as myInt"
   },
-
   "dynamic memory allocation": {
-    "keywords": ["malloc", "calloc", "realloc", "free", "dynamic memory"],
+    "keywords": [
+      "malloc",
+      "calloc",
+      "realloc",
+      "free",
+      "dynamic memory"
+    ],
     "response": "✅ DYNAMIC MEMORY ALLOCATION:\n\n👉 Example:\n```c\nint *p=(int*)malloc(5*sizeof(int));\n```\n\n👉 To-Do:\n- Allocate array dynamically\n- Free memory after use"
   },
-
   "storage classes": {
-    "keywords": ["storage class", "auto", "static", "register", "extern"],
+    "keywords": [
+      "storage class",
+      "auto",
+      "static",
+      "register",
+      "extern"
+    ],
     "response": "✅ STORAGE CLASSES:\n\n👉 Types:\n- auto\n- static\n- extern\n- register\n\n👉 Example:\n```c\nstatic int count=0;\n```"
   },
-
   "preprocessor": {
-    "keywords": ["preprocessor", "preprocessor directives", "#define", "#include", "#ifdef"],
+    "keywords": [
+      "preprocessor",
+      "preprocessor directives",
+      "#define",
+      "#include",
+      "#ifdef"
+    ],
     "response": "✅ PREPROCESSOR DIRECTIVES:\n\n👉 Examples:\n```c\n#include<stdio.h>\n#define PI 3.14\n```"
   },
-
   "header files": {
-    "keywords": ["header", "header files", "tags", "include files"],
+    "keywords": [
+      "header",
+      "header files",
+      "tags",
+      "include files"
+    ],
     "response": "✅ HEADER FILES:\n\n👉 Examples:\n- stdio.h\n- conio.h\n- string.h\n- math.h\n- stdlib.h\n\n👉 Example:\n```c\n#include<stdio.h>\n```"
   },
-
   "operators": {
-    "keywords": ["operators", "arithmetic", "relational", "logical", "bitwise", "assignment"],
+    "keywords": [
+      "operators",
+      "arithmetic",
+      "relational",
+      "logical",
+      "bitwise",
+      "assignment"
+    ],
     "response": "✅ OPERATORS IN C:\n\n👉 Types:\n- Arithmetic (+,-,*,/,%)\n- Relational (==, !=, >, <)\n- Logical (&&, ||, !)\n- Bitwise (&,|,^,~)\n- Assignment (=, +=, -=)\n\n👉 Example:\n```c\nint a=10, b=20;\nprintf(\"%d\", a+b);\n```"
   },
-
   "default": {
     "keywords": [],
     "response": "Sorry Champak! I don't have that topic yet. Try keywords like: loops, arrays, strings, pointers, recursion, macros, storage classes, etc."
