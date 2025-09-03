@@ -1,0 +1,10 @@
+[
+    {
+        "id": 1,
+        "email": "fhh@gmail.com",
+        "password": "123456",
+        "confirmpassword": "123456",
+        "updated_at": "2025-08-31T12:03:21.000000Z",
+        "created_at": "2025-08-31T12:03:21.000000Z"
+    }
+]
