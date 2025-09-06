@@ -1,751 +1,477 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relational Operators & if–else — Interactive Blog</title>
-    <style>
-        :root {
-            --bg: #f3f7ff;
-            --card: #ffffff;
-            --ink: #0f2544;
-            --muted: #5f6f8f;
-            --ok: #0e9f6e;
-            --no: #d64545;
-            --accent: #0b72e7;
-            --border: #dbe6ff;
-            --soft: #f0f6ff;
-            --ring: 0 0 0 3px rgba(11, 114, 231, .18);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relational Operators & if–else — Interactive Blog</title>
+  <style>
+    :root{
+      --bg:#f3f7ff;
+      --card:#ffffff;
+      --ink:#0f2544;
+      --muted:#5f6f8f;
+      --ok:#0e9f6e;
+      --no:#d64545;
+      --accent:#0b72e7;
+      --border:#dbe6ff;
+      --soft:#f0f6ff;
+      --ring: 0 0 0 3px rgba(11,114,231,.18);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:linear-gradient(180deg,var(--bg),#ffffff 60%);color:var(--ink)}
+    .ccc_wrap{max-width:920px;margin:auto;padding:28px 18px}
+    .ccc_header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .ccc_brand{font-weight:800;font-size:clamp(20px,3.5vw,32px)}
+    .ccc_tag{color:var(--muted);font-size:14px}
+    .ccc_card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 12px 24px rgba(17,42,88,.06)}
+    .ccc_grid{display:grid;gap:14px}
+    @media(min-width:860px){.ccc_grid{grid-template-columns:1.1fr .9fr}}
 
-        * {
-            box-sizing: border-box
-        }
+    h2{margin:.1em 0 .4em;font-size:clamp(20px,3vw,26px)}
+    h3{margin:1em 0 .3em;font-size:clamp(18px,2.4vw,22px)}
+    p{margin:.4em 0;color:var(--ink)}
 
-       
+    .ccc_inputs{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+    .ccc_label{font-size:13px;color:var(--muted)}
+    input[type=number]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink);outline:none}
+    input[type=number]:focus{box-shadow:var(--ring);border-color:var(--accent)}
+    .ccc_button{border:0;border-radius:12px;padding:10px 14px;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+    .ccc_button.ghost{background:transparent;border:1px solid #2a3c67}
 
-        .wrap {
-            margin: auto;
-            padding: 28px 18px
-        }
+    .ccc_op-table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    .ccc_op-table th{font-size:13px;color:var(--muted);text-align:left;padding:4px 10px}
+    .ccc_row{display:grid;grid-template-columns:120px 1fr 110px;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--soft)}
+    .ccc_expr{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;word-break:break-word}
 
-        header {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px
-        }
+    .ccc_pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:800;font-size:12px}
+    .ccc_true{background:#e8fbf3;color:#0e5e45;border:1px solid #bdebd7}
+    .ccc_false{background:#ffefef;color:#7a2e2e;border:1px solid #f3c1c1}
 
-        .brand {
-            font-weight: 800;
-            font-size: clamp(20px, 3.5vw, 32px)
-        }
+    .ccc_demo{display:grid;gap:12px}
+    .ccc_select{padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink)}
+    .ccc_result{padding:12px 14px;border:1px dashed #2a3c67;border-radius:12px}
+    .ccc_kbd{font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;padding:.35rem .55rem;border-radius:8px;background:#0f1a30;border:1px solid #21345f;color:#fff}
 
-        .tag {
-            color: var(--muted);
-            font-size: 14px
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px;
-            box-shadow: 0 12px 24px rgba(17, 42, 88, .06)
-        }
-
-        .grid {
-            display: grid;
-            gap: 14px
-        }
-
-        @media(min-width:860px) {
-            .grid {
-                grid-template-columns: 1.1fr .9fr
-            }
-        }
-
-        h2 {
-            margin: .1em 0 .4em;
-            font-size: clamp(20px, 3vw, 26px)
-        }
-
-        h3 {
-            margin: 1em 0 .3em;
-            font-size: clamp(18px, 2.4vw, 22px)
-        }
-
-        p {
-            margin: .4em 0;
-            color: var(--ink)
-        }
-
-        .inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 10px;
-            align-items: end
-        }
-
-        label {
-            font-size: 13px;
-            color: var(--muted)
-        }
-
-        input[type=number] {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--ink);
-            outline: none
-        }
-
-        input[type=number]:focus {
-            box-shadow: var(--ring);
-            border-color: var(--accent)
-        }
-
-        button {
-            border: 0;
-            border-radius: 12px;
-            padding: 10px 14px;
-            background: var(--accent);
-            color: white;
-            font-weight: 700;
-            cursor: pointer
-        }
-
-        button.ghost {
-            color: teal;
-            background-color: #FFFFE0 ;
-            border: 1px solid #2a3c67
-        }
-
-        .op-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px
-        }
-
-        .op-table th {
-            font-size: 13px;
-            color: var(--muted);
-            text-align: left;
-            padding: 4px 10px
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 120px 1fr 110px;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--soft)
-        }
-
-        .expr {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            word-break: break-word
-        }
-
-        .pill {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-weight: 800;
-            font-size: 12px
-        }
-
-        .true {
-            background: #e8fbf3;
-            color: #0e5e45;
-            border: 1px solid #bdebd7
-        }
-
-        .false {
-            background: #ffefef;
-            color: #7a2e2e;
-            border: 1px solid #f3c1c1
-        }
-
-        .demo {
-            display: grid;
-            gap: 12px
-        }
-
-        select {
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--ink)
-        }
-
-        .result {
-            padding: 12px 14px;
-            border: 1px dashed #2a3c67;
-            border-radius: 12px
-        }
-
-        .kbd {
-            font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            padding: .35rem .55rem;
-            border-radius: 8px;
-            color: teal;
-            background: wheat;
-            border: 1px solid #21345f
-        }
-
-        .note {
-            color: var(--muted);
-            font-size: 14px
-        }
-
-        footer {
-            margin-top: 26px;
-            color: var(--muted);
-            font-size: 13px
-        }
-
-        /* Prose styling for the essay */
-        .prose {
-            line-height: 1.8
-        }
-
-        .prose p {
-            margin: .6em 0;
-            color: var(--ink)
-        }
-
-        .prose ul {
-            padding-left: 1.2rem
-        }
-
-        .prose li {
-            margin: .3em 0
-        }
-
-        .prose strong {
-            color: #fff
-        }
-
-        /* Pro, light-blue CTA + progress styles */
-        .cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid var(--border);
-            background: var(--accent);
-            color: #fff;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            text-decoration: none
-        }
-
-        .cta.ghost {
-            background: lightblue;
-            color: yellow
-        }
-
-        .cta:focus {
-            box-shadow: var(--ring);
-            outline: 0
-        }
-
-        .progress {
-            height: 10px;
-            background: #eaf1ff;
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            overflow: hidden
-        }
-
-        .progress>span {
-            display: block;
-            height: 100%;
-            background: var(--accent);
-            width: 0%
-        }
-
-        .checks {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px
-        }
-
-        .checks label {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: var(--soft);
-            border: 1px solid var(--border);
-            padding: 10px 12px;
-            border-radius: 10px
-        }
-    </style>
+    .ccc_note{color:var(--muted);font-size:14px}
+    .ccc_footer{margin-top:26px;color:var(--muted);font-size:13px}
+      /* Prose styling for the essay */
+    .ccc_prose{line-height:1.8}
+    .ccc_prose p{margin:.6em 0;color:var(--ink)}
+    .ccc_prose ul{padding-left:1.2rem}
+    .ccc_prose li{margin:.3em 0}
+    .ccc_prose strong{color:#fff}
+      /* Pro, light-blue CTA + progress styles */
+    .ccc_cta{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--accent);color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;text-decoration:none}
+    .ccc_cta.ghost{background:transparent;color:var(--accent)}
+    .ccc_cta:focus{box-shadow:var(--ring);outline:0}
+    .ccc_progress{height:10px;background:#eaf1ff;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .ccc_progress > span{display:block;height:100%;background:var(--accent);width:0%}
+    .ccc_checks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .ccc_checks label{display:flex;gap:10px;align-items:center;background:var(--soft);border:1px solid var(--border);padding:10px 12px;border-radius:10px}
+  </style>
 </head>
-
 <body>
-    <div class="">
-        <header>
-            <div>
-                <div class="brand">Relational Operators × <span style="color:teal">if–else</span></div>
-                <div class="tag">An interactive blog post — type values for <strong>a</strong> and <strong>b</strong>,
-                    and see which comparisons are <em>true</em> vs <em>false</em>.</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-                <a class="cta ghost"
-                    href="https://wa.me/?text=Hi%2C%20I%27d%20like%20help%20with%20Relational%20Operators%20blog"
-                    target="_blank" rel="noopener">Contact on WhatsApp</a>
-                <button id="btnReset" class="ghost">Reset</button>
-            </div>
-        </header>
+  <div class="ccc_wrap">
+    <header class="ccc_header">
+      <div>
+        <div class="ccc_brand">Relational Operators × <span style="color:var(--accent)">if–else</span></div>
+        <div class="ccc_tag">An interactive blog post — type values for <strong>a</strong> and <strong>b</strong>, and see which comparisons are <em>true</em> vs <em>false</em>.</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="ccc_cta ghost" href="https://wa.me/?text=Hi%2C%20I%27d%20like%20help%20with%20Relational%20Operators%20blog" target="_blank" rel="noopener">Contact on WhatsApp</a>
+        <button id="btnReset" class="ccc_button ghost">Reset</button>
+      </div>
+    </header>
 
-        <article class="card prose">
-            <h2>Essay: Relational Operators &amp; If–Else</h2>
-            <p>
-                In programming, decision‑making is essential. A program often needs to choose one path over another—
-                for example, to approve a login, assign a grade, or show a warning. These choices are driven by
-                <strong>relational operators</strong> working together with the <strong>if–else</strong> statement.
-            </p>
-            <h3>What are Relational Operators?</h3>
-            <p>
-                Relational operators compare two values and yield a Boolean result: <em>true</em> or <em>false</em>.
-                They do not change the values; they simply test the relationship between them. The most common ones are:
-            </p>
-            <ul>
-                <li><strong>==</strong> (equal to) — checks whether two values are the same.</li>
-                <li><strong>!=</strong> (not equal to) — checks whether two values differ.</li>
-                <li><strong>&gt;</strong> (greater than) — true when the left value is larger than the right.</li>
-                <li><strong>&lt;</strong> (less than) — true when the left value is smaller than the right.</li>
-                <li><strong>&gt;=</strong> (greater than or equal to) — true when the left is larger than or equal to
-                    the right.</li>
-                <li><strong>&lt;=</strong> (less than or equal to) — true when the left is smaller than or equal to the
-                    right.</li>
-            </ul>
-            <p>
-                Because a comparison returns only <em>true</em> or <em>false</em>, these operators fit naturally inside
-                conditions.
-            </p>
-            <h3>How If–Else Uses Them</h3>
-            <p>
-                The <code>if</code> statement evaluates a condition. If it is <em>true</em>, the <code>if</code> block
-                runs;
-                otherwise, the <code>else</code> block runs. Here is a classic example that checks eligibility based on
-                age:
-            </p>
-            <pre class="expr" style="white-space:pre-wrap">int age = 16;
+    <article class="ccc_card ccc_prose">
+      <h2>Essay: Relational Operators &amp; If–Else</h2>
+      <p>
+        In programming, decision-making is essential. A program often needs to choose one path over another—
+        for example, to approve a login, assign a grade, or show a warning. These choices are driven by
+        <strong>relational operators</strong> working together with the <strong>if–else</strong> statement.
+      </p>
+      <h3>What are Relational Operators?</h3>
+      <p>
+        Relational operators compare two values and yield a Boolean result: <em>true</em> or <em>false</em>.
+        They do not change the values; they simply test the relationship between them. The most common ones are:
+      </p>
+      <ul>
+        <li><strong>==</strong> (equal to) — checks whether two values are the same.</li>
+        <li><strong>!=</strong> (not equal to) — checks whether two values differ.</li>
+        <li><strong>&gt;</strong> (greater than) — true when the left value is larger than the right.</li>
+        <li><strong>&lt;</strong> (less than) — true when the left value is smaller than the right.</li>
+        <li><strong>&gt;=</strong> (greater than or equal to) — true when the left is larger than or equal to the right.</li>
+        <li><strong>&lt;=</strong> (less than or equal to) — true when the left is smaller than or equal to the right.</li>
+      </ul>
+      <p>
+        Because a comparison returns only <em>true</em> or <em>false</em>, these operators fit naturally inside conditions.
+      </p>
+      <h3>How If–Else Uses Them</h3>
+      <p>
+        The <code>if</code> statement evaluates a condition. If it is <em>true</em>, the <code>if</code> block runs;
+        otherwise, the <code>else</code> block runs. Here is a classic example that checks eligibility based on age:
+      </p>
+      <pre class="ccc_expr" style="white-space:pre-wrap">int age = 16;
 
 if (age &gt;= 18) {
     printf("You can vote");
 } else {
     printf("You are too young to vote");
 }</pre>
-            <p>
-                In this program, the relational operator <code>&gt;=</code> compares <code>age</code> with
-                <code>18</code>.
-                If the result is <em>true</em>, the first message is printed; otherwise, the second.
-            </p>
-            <h3>Why They Matter</h3>
-            <p>
-                Together, relational operators and if–else enable programs to react to data: validate inputs, branch
-                logic,
-                and implement algorithms such as searching and sorting. Without them, code would execute in a straight
-                line with
-                no ability to choose different actions based on conditions.
-            </p>
-            <p class="note">Scroll down to the interactive section to try the operators live with your own values for
-                <strong>a</strong> and <strong>b</strong>.</p>
-        </article>
+      <p>
+        In this program, the relational operator <code>&gt;=</code> compares <code>age</code> with <code>18</code>.
+        If the result is <em>true</em>, the first message is printed; otherwise, the second.
+      </p>
+      <h3>Why They Matter</h3>
+      <p>
+        Together, relational operators and if–else enable programs to react to data: validate inputs, branch logic,
+        and implement algorithms such as searching and sorting. Without them, code would execute in a straight line with
+        no ability to choose different actions based on conditions.
+      </p>
+      <p class="ccc_note">Scroll down to the interactive section to try the operators live with your own values for <strong>a</strong> and <strong>b</strong>.</p>
+    </article>
 
-        <section class="grid">
-            <article class="card">
-                <h2>1) Enter values</h2>
-                <div class="inputs">
-                    <div>
-                        <label for="a">a</label>
-                        <input type="number" id="a" placeholder="Enter a" step="any" />
-                    </div>
-                    <div>
-                        <label for="b">b</label>
-                        <input type="number" id="b" placeholder="Enter b" step="any" />
-                    </div>
-                    <div style="display:flex;gap:8px">
-                        <button id="btnSwap" title="Swap a and b">Swap</button>
-                        <button id="btnExamples" class="ghost" title="Try sample values">Try examples</button>
-                    </div>
-                </div>
+    <section class="ccc_grid" style="margin-top:12px">
+      <article class="ccc_card">
+        <h2>1) Enter values</h2>
+        <div class="ccc_inputs">
+          <div>
+            <label for="a" class="ccc_label">a</label>
+            <input type="number" id="a" placeholder="Enter a" step="any" />
+          </div>
+          <div>
+            <label for="b" class="ccc_label">b</label>
+            <input type="number" id="b" placeholder="Enter b" step="any" />
+          </div>
+          <hr>
+          <div style="display:flex;gap:8px">
+            <button id="btnSwap" class="ccc_button" title="Swap a and b">Swap</button>
+            <button id="btnExamples" class="ccc_button ghost" title="Try sample values">Try examples</button>
+          </div>
+        </div>
 
-                <p class="note">Tip: You can use arrow keys while focused in a number field to change values. The
-                    comparisons update instantly.</p>
-            </article>
+        <p class="ccc_note">Tip: You can use arrow keys while focused in a number field to change values. The comparisons update instantly.</p>
+      </article>
 
-            <article class="card">
-                <h2>2) What are relational operators?</h2>
-                <p>They compare two values and return a Boolean — either <span class="pill true">true</span> or <span
-                        class="pill false">false</span>. We’ll evaluate all six common operators below.</p>
-                <ul>
-                    <li><strong>==</strong> equal to</li>
-                    <li><strong>!=</strong> not equal to</li>
-                    <li><strong>&gt;</strong> greater than</li>
-                    <li><strong>&lt;</strong> less than</li>
-                    <li><strong>&gt;=</strong> greater than or equal to</li>
-                    <li><strong>&lt;=</strong> less than or equal to</li>
-                </ul>
-            </article>
-        </section>
+      <article class="ccc_card">
+        <h2>2) What are relational operators?</h2>
+        <p>They compare two values and return a Boolean — either <span class="ccc_pill ccc_true">true</span> or <span class="ccc_pill ccc_false">false</span>. We’ll evaluate all six common operators below.</p>
+        <ul>
+          <li><strong>==</strong> equal to</li>
+          <li><strong>!=</strong> not equal to</li>
+          <li><strong>&gt;</strong> greater than</li>
+          <li><strong>&lt;</strong> less than</li>
+          <li><strong>&gt;=</strong> greater than or equal to</li>
+          <li><strong>&lt;=</strong> less than or equal to</li>
+        </ul>
+      </article>
+    </section>
 
-        <article class="card" aria-live="polite">
-            <h2>3) Live evaluation</h2>
-            <div class="row">
-                <div><strong>==</strong></div>
-                <div class="expr" id="e_eq">a == b</div>
-                <div id="r_eq" class="pill">—</div>
-            </div>
-            <div class="row">
-                <div><strong>!=</strong></div>
-                <div class="expr" id="e_ne">a != b</div>
-                <div id="r_ne" class="pill">—</div>
-            </div>
-            <div class="row">
-                <div><strong>&gt;</strong></div>
-                <div class="expr" id="e_gt">a &gt; b</div>
-                <div id="r_gt" class="pill">—</div>
-            </div>
-            <div class="row">
-                <div><strong>&lt;</strong></div>
-                <div class="expr" id="e_lt">a &lt; b</div>
-                <div id="r_lt" class="pill">—</div>
-            </div>
-            <div class="row">
-                <div><strong>&gt;=</strong></div>
-                <div class="expr" id="e_ge">a &gt;= b</div>
-                <div id="r_ge" class="pill">—</div>
-            </div>
-            <div class="row">
-                <div><strong>&lt;=</strong></div>
-                <div class="expr" id="e_le">a &lt;= b</div>
-                <div id="r_le" class="pill">—</div>
-            </div>
-        </article>
+    <article class="ccc_card" aria-live="polite" style="margin-top:12px">
+      <h2>3) Live evaluation</h2>
+      <div class="ccc_row"><div><strong>==</strong></div><div class="ccc_expr" id="e_eq">a == b</div><div id="r_eq" class="ccc_pill">—</div></div>
+      <div class="ccc_row"><div><strong>!=</strong></div><div class="ccc_expr" id="e_ne">a != b</div><div id="r_ne" class="ccc_pill">—</div></div>
+      <div class="ccc_row"><div><strong>&gt;</strong></div><div class="ccc_expr" id="e_gt">a &gt; b</div><div id="r_gt" class="ccc_pill">—</div></div>
+      <div class="ccc_row"><div><strong>&lt;</strong></div><div class="ccc_expr" id="e_lt">a &lt; b</div><div id="r_lt" class="ccc_pill">—</div></div>
+      <div class="ccc_row"><div><strong>&gt;=</strong></div><div class="ccc_expr" id="e_ge">a &gt;= b</div><div id="r_ge" class="ccc_pill">—</div></div>
+      <div class="ccc_row"><div><strong>&lt;=</strong></div><div class="ccc_expr" id="e_le">a &lt;= b</div><div id="r_le" class="ccc_pill">—</div></div>
+    </article>
 
-        <article class="card">
-            <h2>4) if–else in action</h2>
-            <div class="demo">
-                <div class="inputs" style="grid-template-columns:1fr 1fr;">
-                    <div>
-                        <label for="cond">Pick a condition</label>
-                        <select id="cond" aria-label="Choose condition">
-                            <option value="==">a == b</option>
-                            <option value="!=">a != b</option>
-                            <option value=">">a &gt; b</option>
-                            <option value="<">a &lt; b</option>
-                            <option value=">=">a &gt;= b</option>
-                            <option value="<=">a &lt;= b</option>
-                        </select>
-                    </div>
-                    <div style="align-self:end;display:flex;gap:8px;justify-content:flex-end">
-                        <button id="btnExplain" class="ghost">Show pseudo‑code</button>
-                    </div>
-                </div>
+    <article class="ccc_card" style="margin-top:12px">
+      <h2>4) if–else in action</h2>
+      <div class="ccc_demo">
+        <div class="ccc_inputs" style="grid-template-columns:1fr 1fr;">
+          <div>
+            <label for="cond" class="ccc_label">Pick a condition</label>
+            <select id="cond" class="ccc_select" aria-label="Choose condition">
+              <option value="==">a == b</option>
+              <option value="!=">a != b</option>
+              <option value=">">a &gt; b</option>
+              <option value="<">a &lt; b</option>
+              <option value=">=">a &gt;= b</option>
+              <option value="<=">a &lt;= b</option>
+            </select>
+          </div>
+          <div style="align-self:end;display:flex;gap:8px;justify-content:flex-end">
+            <button id="btnExplain" class="ccc_button ghost">Show pseudo-code</button>
+          </div>
+        </div>
 
-                <div id="ifElseResult" class="result">Choose a condition to see which branch runs.</div>
-            </div>
-            <p class="note">Under the hood, each condition evaluates to true/false. The <span class="kbd">if</span>
-                block runs when it’s true; otherwise the <span class="kbd">else</span> block runs.</p>
-        </article>
+        <div id="ifElseResult" class="ccc_result">Choose a condition to see which branch runs.</div>
+      </div>
+      <p class="ccc_note">Under the hood, each condition evaluates to true/false. The <span class="ccc_kbd">if</span> block runs when it’s true; otherwise the <span class="ccc_kbd">else</span> block runs.</p>
+    </article>
 
-        <article class="card prose">
-            <h2>5) Assignments (with answers)</h2>
-            <p>Practice these and expand them as mini‑programs. Click to show/hide the answers.</p>
-            <ol>
-                <li>
-                    <p><strong>Compare two numbers:</strong> Read <code>a</code> and <code>b</code>. Print which one is
-                        larger or if they are equal.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr" style="white-space:pre-wrap">if (a > b) {
+    <article class="ccc_card ccc_prose" style="margin-top:12px">
+      <h2>5) Assignments (with answers)</h2>
+      <p>Practice these and expand them as mini-programs. Click to show/hide the answers.</p>
+      <ol>
+        <li>
+          <p><strong>Compare two numbers:</strong> Read <code>a</code> and <code>b</code>. Print which one is larger or if they are equal.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr" style="white-space:pre-wrap">if (a > b) {
     printf("a is greater");
 } else if (a < b) {
     printf("b is greater");
 } else {
     printf("a and b are equal");
 }</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Equality check:</strong> Print <code>"Equal"</code> if <code>a == b</code> otherwise
-                        <code>"Not equal"</code>.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">if (a == b) printf("Equal"); else printf("Not equal");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Number in range:</strong> Print <code>"In Range"</code> if <code>a</code> is between 10
-                        and 20 (inclusive).</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">if (a >= 10 && a <= 20) printf("In Range"); else printf("Out of Range");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Absolute difference:</strong> Print the absolute difference between <code>a</code> and
-                        <code>b</code> using only relational operators and subtraction.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">int diff;
+          </details>
+        </li>
+        <li>
+          <p><strong>Equality check:</strong> Print <code>"Equal"</code> if <code>a == b</code> otherwise <code>"Not equal"</code>.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">if (a == b) printf("Equal"); else printf("Not equal");</pre>
+          </details>
+        </li>
+        <li>
+          <p><strong>Number in range:</strong> Print <code>"In Range"</code> if <code>a</code> is between 10 and 20 (inclusive).</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">if (a >= 10 && a <= 20) printf("In Range"); else printf("Out of Range");</pre>
+          </details>
+        </li>
+        <li>
+          <p><strong>Absolute difference:</strong> Print the absolute difference between <code>a</code> and <code>b</code> using only relational operators and subtraction.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">int diff;
 if (a >= b) diff = a - b; else diff = b - a;
 printf("%d", diff);</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Min and Max:</strong> Set <code>max</code> to the larger of <code>a</code>,
-                        <code>b</code>; set <code>min</code> to the smaller.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">int max, min;
+          </details>
+        </li>
+        <li>
+          <p><strong>Min and Max:</strong> Set <code>max</code> to the larger of <code>a</code>, <code>b</code>; set <code>min</code> to the smaller.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">int max, min;
 if (a >= b) { max = a; min = b; }
 else        { max = b; min = a; }</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Sign comparison:</strong> Print <code>"Same sign"</code> if <code>a</code> and
-                        <code>b</code> are both non‑negative or both negative; else <code>"Different"</code>.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">if ((a >= 0 && b >= 0) || (a < 0 && b < 0)) printf("Same sign");
+          </details>
+        </li>
+        <li>
+          <p><strong>Sign comparison:</strong> Print <code>"Same sign"</code> if <code>a</code> and <code>b</code> are both non-negative or both negative; else <code>"Different"</code>.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">if ((a >= 0 && b >= 0) || (a < 0 && b < 0)) printf("Same sign");
 else printf("Different");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Close enough (tolerance):</strong> For floating values, print <code>"Close"</code> if
-                        <code>|a - b| <= 0.001</code>.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">double diff = (a >= b) ? (a - b) : (b - a);
+          </details>
+        </li>
+        <li>
+          <p><strong>Close enough (tolerance):</strong> For floating values, print <code>"Close"</code> if <code>|a - b| <= 0.001</code>.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">double diff = (a >= b) ? (a - b) : (b - a);
 if (diff <= 0.001) printf("Close"); else printf("Far");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Odd/even relation:</strong> If both numbers are even or both odd, print
-                        <code>"Same parity"</code>; otherwise <code>"Different parity"</code>.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">int aEven = (a % 2 == 0);
+          </details>
+        </li>
+        <li>
+          <p><strong>Odd/even relation:</strong> If both numbers are even or both odd, print <code>"Same parity"</code>; otherwise <code>"Different parity"</code>.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">int aEven = (a % 2 == 0);
 int bEven = (b % 2 == 0);
 if ((aEven && bEven) || (!aEven && !bEven)) printf("Same parity");
 else printf("Different parity");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Grade boundary:</strong> Given a mark <code>a</code>, print <code>"Pass"</code> if
-                        <code>a >= 33</code> else <code>"Fail"</code>.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">if (a >= 33) printf("Pass"); else printf("Fail");</pre>
-                    </details>
-                </li>
-                <li>
-                    <p><strong>Between two numbers:</strong> Given <code>x</code>, check if it lies between
-                        <code>a</code> and <code>b</code> regardless of which is larger.</p>
-                    <details>
-                        <summary>Answer</summary>
-                        <pre class="expr">int low, high;
+          </details>
+        </li>
+        <li>
+          <p><strong>Grade boundary:</strong> Given a mark <code>a</code>, print <code>"Pass"</code> if <code>a >= 33</code> else <code>"Fail"</code>.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">if (a >= 33) printf("Pass"); else printf("Fail");</pre>
+          </details>
+        </li>
+        <li>
+          <p><strong>Between two numbers:</strong> Given <code>x</code>, check if it lies between <code>a</code> and <code>b</code> regardless of which is larger.</p>
+          <details><summary>Answer</summary>
+<pre class="ccc_expr">int low, high;
 if (a <= b) { low = a; high = b; } else { low = b; high = a; }
 if (x >= low && x <= high) printf("Yes"); else printf("No");</pre>
-                    </details>
-                </li>
-            </ol>
-        </article>
+          </details>
+        </li>
+      </ol>
+    </article>
 
-        <article class="card prose">
-            <h2>6) Contact & Progress</h2>
-            <p>If you have questions or want to share your solutions, reach out directly:</p>
-            <p><a href="https://wa.me/919335874326" target="_blank"
-                    style="display:inline-block;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none">💬
-                    Contact on WhatsApp</a></p>
-                    
-        </article>
+    <article class="ccc_card ccc_prose" style="margin-top:12px">
+      <h2>6) Contact & Progress</h2>
+      <p>If you have questions or want to share your solutions, reach out directly:</p>
+      <p><a href="https://wa.me/919999999999" target="_blank" style="display:inline-block;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none">💬 Contact on WhatsApp</a></p>
+      <h3>Assignments Checklist</h3>
+      <ul style="list-style:none;padding:0">
+        <li><label><input type="checkbox"> Assignment 1</label></li>
+        <li><label><input type="checkbox"> Assignment 2</label></li>
+        <li><label><input type="checkbox"> Assignment 3</label></li>
+        <li><label><input type="checkbox"> Assignment 4</label></li>
+        <li><label><input type="checkbox"> Assignment 5</label></li>
+        <li><label><input type="checkbox"> Assignment 6</label></li>
+        <li><label><input type="checkbox"> Assignment 7</label></li>
+        <li><label><input type="checkbox"> Assignment 8</label></li>
+        <li><label><input type="checkbox"> Assignment 9</label></li>
+        <li><label><input type="checkbox"> Assignment 10</label></li>
+      </ul>
+    </article>
 
-        <article class="card" id="progressCard">
-            <h2>6) Track your progress</h2>
-            <p>Select the assignments you’ve completed. Your progress is saved in your browser.</p>
-            <div class="checks">
-                <label><input type="checkbox" class="assign-check" data-i="0"> 1) Compare two numbers</label>
-                <label><input type="checkbox" class="assign-check" data-i="1"> 2) Equality check</label>
-                <label><input type="checkbox" class="assign-check" data-i="2"> 3) Number in range</label>
-                <label><input type="checkbox" class="assign-check" data-i="3"> 4) Absolute difference</label>
-                <label><input type="checkbox" class="assign-check" data-i="4"> 5) Min and Max</label>
-                <label><input type="checkbox" class="assign-check" data-i="5"> 6) Sign comparison</label>
-                <label><input type="checkbox" class="assign-check" data-i="6"> 7) Close enough (tolerance)</label>
-                <label><input type="checkbox" class="assign-check" data-i="7"> 8) Odd/even relation</label>
-                <label><input type="checkbox" class="assign-check" data-i="8"> 9) Grade boundary</label>
-                <label><input type="checkbox" class="assign-check" data-i="9"> 10) Between two numbers</label>
-            </div>
-            <p id="progressText" class="note" style="margin-top:10px">Completed 0/10</p>
-            <div class="progress"><span id="progressBar"></span></div>
-        </article>
+    <article class="ccc_card" id="progressCard" style="margin-top:12px">
+      <h2>6) Track your progress</h2>
+      <p>Select the assignments you’ve completed. Your progress is saved in your browser.</p>
+      <div class="ccc_checks">
+        <label><input type="checkbox" class="ccc_assign_check" data-i="0"> 1) Compare two numbers</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="1"> 2) Equality check</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="2"> 3) Number in range</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="3"> 4) Absolute difference</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="4"> 5) Min and Max</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="5"> 6) Sign comparison</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="6"> 7) Close enough (tolerance)</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="7"> 8) Odd/even relation</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="8"> 9) Grade boundary</label>
+        <label><input type="checkbox" class="ccc_assign_check" data-i="9"> 10) Between two numbers</label>
+      </div>
+      <p id="progressText" class="ccc_note" style="margin-top:10px">Completed 0/10</p>
+      <div class="ccc_progress"><span id="progressBar"></span></div>
+    </article>
 
-        <footer>
-            Built for learners: clean, responsive, keyboard‑friendly. 
-            <div style="margin-top:16px;display:flex;justify-content:center">
-             <!--  <a class="cta"
-                    href="https://wa.me/?text=Hi%2C%20I%27m%20viewing%20your%20Relational%20Operators%20blog%20and%20had%20a%20question"
-                    target="_blank" rel="noopener">Contact on WhatsApp</a>-->
-            </div>
-        </footer>
-    </div>
+    <footer class="ccc_footer" style="margin-top:16px">
+      Built for learners: clean, responsive, keyboard-friendly. Drop this file into any site or Blogger post (as an HTML gadget) to teach comparisons interactively.
+      <div style="margin-top:16px;display:flex;justify-content:center">
+        <a class="ccc_cta" href="https://wa.me/?text=Hi%2C%20I%27m%20viewing%20your%20Relational%20Operators%20blog%20and%20had%20a%20question" target="_blank" rel="noopener">Contact on WhatsApp</a>
+      </div>
+    </footer>
+  </div>
 
-    <script>
-        (function () {
-            const $ = (id) => document.getElementById(id);
-            const aEl = $('a');
-            const bEl = $('b');
-            const fields = {
-                e_eq: $('e_eq'), r_eq: $('r_eq'),
-                e_ne: $('e_ne'), r_ne: $('r_ne'),
-                e_gt: $('e_gt'), r_gt: $('r_gt'),
-                e_lt: $('e_lt'), r_lt: $('r_lt'),
-                e_ge: $('e_ge'), r_ge: $('r_ge'),
-                e_le: $('e_le'), r_le: $('r_le'),
-            };
-            const condEl = $('cond');
-            const ifElseResult = $('ifElseResult');
-            const btnReset = $('btnReset');
-            const btnSwap = $('btnSwap');
-            const btnExamples = $('btnExamples');
-            const btnExplain = $('btnExplain');
+<script>
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const aEl = $('a');
+  const bEl = $('b');
+  const fields = {
+    e_eq:$('e_eq'), r_eq:$('r_eq'),
+    e_ne:$('e_ne'), r_ne:$('r_ne'),
+    e_gt:$('e_gt'), r_gt:$('r_gt'),
+    e_lt:$('e_lt'), r_lt:$('r_lt'),
+    e_ge:$('e_ge'), r_ge:$('r_ge'),
+    e_le:$('e_le'), r_le:$('r_le'),
+  };
+  const condEl = $('cond');
+  const ifElseResult = $('ifElseResult');
+  const btnReset = $('btnReset');
+  const btnSwap = $('btnSwap');
+  const btnExamples = $('btnExamples');
+  const btnExplain = $('btnExplain');
 
-            // Default values
-            aEl.value = 10; bEl.value = 5;
+  // Default values
+  aEl.value = 10; bEl.value = 5;
 
-            const parse = (el) => {
-                const v = parseFloat(el.value);
-                return Number.isFinite(v) ? v : 0;
-            };
+  const parse = (el)=>{
+    const v = parseFloat(el.value);
+    return Number.isFinite(v) ? v : 0;
+  };
 
-            function render() {
-                const a = parse(aEl), b = parse(bEl);
-                // Expressions text
-                fields.e_eq.innerText = `${fmt(a)} == ${fmt(b)}`;
-                fields.e_ne.innerText = `${fmt(a)} != ${fmt(b)}`;
-                fields.e_gt.innerHTML = `${esc(a)} &gt; ${esc(b)}`;
-                fields.e_lt.innerHTML = `${esc(a)} &lt; ${esc(b)}`;
-                fields.e_ge.innerHTML = `${esc(a)} &gt;= ${esc(b)}`;
-                fields.e_le.innerHTML = `${esc(a)} &lt;= ${esc(b)}`;
+  function render(){
+    const a = parse(aEl), b = parse(bEl);
+    // Expressions text
+    fields.e_eq.innerText = `${fmt(a)} == ${fmt(b)}`;
+    fields.e_ne.innerText = `${fmt(a)} != ${fmt(b)}`;
+    fields.e_gt.innerHTML = `${esc(a)} &gt; ${esc(b)}`;
+    fields.e_lt.innerHTML = `${esc(a)} &lt; ${esc(b)}`;
+    fields.e_ge.innerHTML = `${esc(a)} &gt;= ${esc(b)}`;
+    fields.e_le.innerHTML = `${esc(a)} &lt;= ${esc(b)}`;
 
-                // Results
-                setPill(fields.r_eq, a == b);
-                setPill(fields.r_ne, a != b);
-                setPill(fields.r_gt, a > b);
-                setPill(fields.r_lt, a < b);
-                setPill(fields.r_ge, a >= b);
-                setPill(fields.r_le, a <= b);
+    // Results
+    setPill(fields.r_eq, a==b);
+    setPill(fields.r_ne, a!=b);
+    setPill(fields.r_gt, a>b);
+    setPill(fields.r_lt, a<b);
+    setPill(fields.r_ge, a>=b);
+    setPill(fields.r_le, a<=b);
 
-                // Update if-else preview
-                updateIfElse();
-            }
+    // Update if-else preview
+    updateIfElse();
+  }
 
-            function fmt(n) {
-                // Render integers without trailing .0
-                return Number.isInteger(n) ? String(n) : String(n);
-            }
-            function esc(n) { return fmt(n); }
+  function fmt(n){
+    // Render integers without trailing .0
+    return Number.isInteger(n) ? String(n) : String(n);
+  }
+  function esc(n){ return fmt(n); }
 
-            function setPill(el, truth) {
-                el.textContent = truth ? 'true' : 'false';
-                el.classList.toggle('true', truth);
-                el.classList.toggle('false', !truth);
-            }
+  function setPill(el, truth){
+    el.textContent = truth ? 'true' : 'false';
+    el.classList.remove('ccc_true','ccc_false');
+    el.classList.add(truth ? 'ccc_true' : 'ccc_false');
+  }
 
-            function updateIfElse() {
-                const a = parse(aEl), b = parse(bEl);
-                const op = condEl.value;
-                const truth = evaluate(a, b, op);
-                const branch = truth ? 'if-block' : 'else-block';
-                ifElseResult.innerHTML = `Condition <span class="kbd">a ${op} b</span> is <span class="pill ${truth ? 'true' : 'false'}">${truth}</span> → Executing <span class="kbd">${branch}</span>.`;
-            }
+  function updateIfElse(){
+    const a = parse(aEl), b = parse(bEl);
+    const op = condEl.value;
+    const truth = evaluate(a,b,op);
+    const branch = truth ? 'if-block' : 'else-block';
+    ifElseResult.innerHTML = `Condition <span class="ccc_kbd">a ${op} b</span> is <span class="ccc_pill ${truth?'ccc_true':'ccc_false'}">${truth}</span> → Executing <span class="ccc_kbd">${branch}</span>.`;
+  }
 
-            function evaluate(a, b, op) {
-                switch (op) {
-                    case '==': return a == b;
-                    case '!=': return a != b;
-                    case '>': return a > b;
-                    case '<': return a < b;
-                    case '>=': return a >= b;
-                    case '<=': return a <= b;
-                }
-                return false;
-            }
+  function evaluate(a,b,op){
+    switch(op){
+      case '==': return a==b;
+      case '!=': return a!=b;
+      case '>': return a>b;
+      case '<': return a<b;
+      case '>=': return a>=b;
+      case '<=': return a<=b;
+    }
+    return false;
+  }
 
-            function cycleExamples() {
-                const samples = [
-                    [3, 3], [2, 7], [7, 2], [5, 5.0], [4.2, 4.21], [-1, 0], [10, -10]
-                ];
-                const a = parse(aEl), b = parse(bEl);
-                let i = samples.findIndex(([x, y]) => x === a && y === b);
-                i = (i + 1) % samples.length;
-                const [na, nb] = samples[i];
-                aEl.value = na; bEl.value = nb; render();
-            }
+  function cycleExamples(){
+    const samples = [
+      [3,3],[2,7],[7,2],[5,5.0],[4.2,4.21],[-1,0],[10,-10]
+    ];
+    const a = parse(aEl), b = parse(bEl);
+    let i = samples.findIndex(([x,y])=>x===a && y===b);
+    i = (i+1) % samples.length;
+    const [na, nb] = samples[i];
+    aEl.value = na; bEl.value = nb; render();
+  }
 
-            // Events
-            ['input', 'change'].forEach(ev => {
-                aEl.addEventListener(ev, render);
-                bEl.addEventListener(ev, render);
-                condEl.addEventListener(ev, updateIfElse);
-            });
+  // Events
+  ['input','change'].forEach(ev=>{
+    aEl.addEventListener(ev, render);
+    bEl.addEventListener(ev, render);
+    condEl.addEventListener(ev, updateIfElse);
+  });
 
-            btnReset.addEventListener('click', () => { aEl.value = 10; bEl.value = 5; condEl.value = '=='; render(); });
-            btnSwap.addEventListener('click', () => { const av = aEl.value; aEl.value = bEl.value; bEl.value = av; render(); });
-            btnExamples.addEventListener('click', cycleExamples);
-            btnExplain.addEventListener('click', () => {
-                const op = condEl.value;
-                const a = parse(aEl), b = parse(bEl);
-                const pseudo = `if (a ${op} b) {\n    // runs when condition is true\n} else {\n    // runs when condition is false\n}`;
-                ifElseResult.innerHTML = `<div class="result"><div style="margin-bottom:6px">Pseudo‑code:</div><pre class="expr" style="white-space:pre-wrap;margin:0">${pseudo}</pre></div>`;
-            });
+  btnReset.addEventListener('click',()=>{ aEl.value=10; bEl.value=5; condEl.value='=='; render(); });
+  btnSwap.addEventListener('click',()=>{ const av=aEl.value; aEl.value=bEl.value; bEl.value=av; render(); });
+  btnExamples.addEventListener('click', cycleExamples);
+  btnExplain.addEventListener('click',()=>{
+    const op = condEl.value;
+    const a = parse(aEl), b = parse(bEl);
+    const pseudo = `if (a ${op} b) {\n    // runs when condition is true\n} else {\n    // runs when condition is false\n}`;
+    ifElseResult.innerHTML = `<div class="ccc_result"><div style="margin-bottom:6px">Pseudo-code:</div><pre class="ccc_expr" style="white-space:pre-wrap;margin:0">${pseudo}</pre></div>`;
+  });
 
-            // First paint
-            // Progress tracker
-            const PROG_KEY = 'assignProgress';
-            const checks = Array.from(document.querySelectorAll('.assign-check'));
-            const pText = document.getElementById('progressText');
-            const pBar = document.getElementById('progressBar');
+  // First paint
+  // Progress tracker
+  const PROG_KEY = 'assignProgress';
+  const checks = Array.from(document.querySelectorAll('.ccc_assign_check'));
+  const pText = document.getElementById('progressText');
+  const pBar = document.getElementById('progressBar');
 
-            function loadProgress() {
-                try {
-                    const saved = JSON.parse(localStorage.getItem(PROG_KEY) || '[]');
-                    saved.forEach((v, i) => { if (checks[i]) checks[i].checked = !!v; });
-                } catch (e) { }
-                updateProgress();
-            }
-            function saveProgress() {
-                const arr = checks.map(ch => ch.checked ? 1 : 0);
-                localStorage.setItem(PROG_KEY, JSON.stringify(arr));
-            }
-            function updateProgress() {
-                const total = checks.length;
-                const done = checks.filter(ch => ch.checked).length;
-                pText.textContent = `Completed ${done}/${total}`;
-                const pct = Math.round((done / total) * 100);
-                pBar.style.width = pct + '%';
-            }
-            checks.forEach(ch => ch.addEventListener('change', () => { saveProgress(); updateProgress(); }));
+  function loadProgress(){
+    try{ const saved = JSON.parse(localStorage.getItem(PROG_KEY) || '[]');
+      saved.forEach((v,i)=>{ if(checks[i]) checks[i].checked = !!v; });
+    }catch(e){}
+    updateProgress();
+  }
+  function saveProgress(){
+    const arr = checks.map(ch=>ch.checked?1:0);
+    localStorage.setItem(PROG_KEY, JSON.stringify(arr));
+  }
+  function updateProgress(){
+    const total = checks.length;
+    const done = checks.filter(ch=>ch.checked).length;
+    pText.textContent = `Completed ${done}/${total}`;
+    const pct = Math.round((done/total)*100);
+    pBar.style.width = pct + '%';
+  }
+  checks.forEach(ch=> ch.addEventListener('change', ()=>{ saveProgress(); updateProgress(); }));
 
-            // First paint
-            render();
-            loadProgress();
-        })();
-    </script>
+  // First paint
+  render();
+  loadProgress();
+})();
+</script>
 </body>
-
 </html>
