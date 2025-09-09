@@ -1,0 +1,135 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School – Modern Cards</title>
+<style>
+  :root{--b:#1f3a66;--a:#2f7ff6;--bg:#f2f6fc}
+  *{box-sizing:border-box} body{margin:0;font-family:Segoe UI,Arial;background:var(--bg);color:#243}
+  .top{background:#fff;border-bottom:1px solid #e6eefc}
+  .row{max-width:1100px;margin:auto;display:flex;gap:1rem;justify-content:space-between;align-items:center;padding:.7rem 1rem}
+  .menu a{margin:0 .5rem}
+  .auth a{margin-left:.5rem;padding:.4rem .7rem;border-radius:8px;border:1px solid var(--a);color:var(--a)}
+  .auth a.primary{background:var(--a);color:#fff}
+  .hero{background:linear-gradient(120deg,var(--a),#67b5ff);color:#fff}
+  .hero .wrap{max-width:1100px;margin:auto;padding:3rem 1rem;display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;align-items:center}
+  .panel{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.05);padding:1rem}
+  .ticker{background:#fff;border-top:1px solid #e6eefc;border-bottom:1px solid #e6eefc;overflow:hidden;white-space:nowrap}
+  .ticker > div{display:inline-block;animation:t 16s linear infinite;padding:.5rem 1rem}
+  @keyframes t{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+  .grid{max-width:1100px;margin:1rem auto;display:grid;grid-template-columns:2fr 1fr;gap:1rem;padding:0 1rem}
+  .carousel img{width:100%;height:300px;object-fit:cover;border-radius:10px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+  .card{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:1rem}
+  .list a{display:block;padding:.55rem;border:1px solid #eee;border-radius:8px;margin:.4rem 0}
+  footer{background:#0d1a2b;color:#cfe3ff;margin-top:1rem}
+  .f{max-width:1100px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;padding:1rem}
+  .copy{text-align:center;color:#a6c1ff;border-top:1px solid #223a63;padding:.8rem}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.menu{display:none}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="row">
+    <div style="font-weight:800;color:var(--b)">Crestwood High</div>
+    <nav class="menu">
+      <a href="#">Home</a><a href="#">About</a><a href="#">Academics</a><a href="#">Admissions</a>
+      <a href="#calendar">Calendar</a><a href="#downloads">Downloads</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="auth"><a href="#">Login</a><a class="primary" href="#">Register</a></div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1 style="margin:0 0 .4rem">Excellence in Every Step</h1>
+      <p>From classrooms to sports fields, our students rise to the challenge.</p>
+    </div>
+    <div class="panel">
+      <h3>Quick Links</h3>
+      <div class="list">
+        <a href="#">📄 Admission Form</a>
+        <a href="#">📄 Academic Calendar</a>
+        <a href="#">📄 Exam Timetable</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker"><div>Notice: Parent Orientation Sept 18 • Sports trials this Friday • Library week next month</div></div>
+
+<section class="grid">
+  <div class="panel">
+    <div class="carousel" id="car5">
+      <img src="schoolpics/0.png" alt="">
+      <img src="schoolpics/1.png" style="display:none" alt="">
+      <img src="schoolpics/2.png" style="display:none" alt="">
+    </div>
+    <h3>News & Achievements</h3>
+    <div class="cards">
+      <div class="card"><strong>Math Olympiad</strong><p>5 students qualified for nationals.</p></div>
+      <div class="card"><strong>Debate Club</strong><p>Winners at inter-school debate.</p></div>
+      <div class="card"><strong>Art Fest</strong><p>Gallery showing next week.</p></div>
+    </div>
+    <h3 id="calendar" style="margin-top:1rem">School Calendar</h3>
+    <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem">
+      <button id="p5">◀</button><strong id="ml5"></strong><button id="n5">▶</button>
+    </div>
+    <table id="c5" style="width:100%;border-collapse:collapse"></table>
+  </div>
+  <aside class="panel">
+    <h3 id="downloads">Downloads (PDF)</h3>
+    <div class="list">
+      <a href="#">📄 Fee Structure</a>
+      <a href="#">📄 Prospectus</a>
+      <a href="#">📄 Transport Routes</a>
+    </div>
+    <hr>
+    <h3>Follow Us</h3>
+    <p><a href="#">Facebook</a> · <a href="#">Instagram</a> · <a href="#">YouTube</a></p>
+  </aside>
+</section>
+
+<footer id="contact">
+  <div class="f">
+    <div><h4>About</h4><p>Crestwood High cultivates leadership and integrity through a balanced education.</p></div>
+    <div><h4>Links</h4><p><a href="#">T&C</a> · <a href="#">Privacy</a> · <a href="#">Careers</a></p></div>
+    <div><h4>Contact</h4><p>+91 94444 22211 • info@crestwood.edu</p></div>
+  </div>
+  <div class="copy">© <span id="y5"></span> Crestwood High</div>
+</footer>
+
+<button id="chat5" style="position:fixed;right:14px;bottom:14px;background:var(--a);color:#fff;border:0;border-radius:999px;padding:.8rem 1rem">Chat</button>
+<div id="box5" style="display:none;position:fixed;right:14px;bottom:70px;width:280px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden">
+  <div style="background:var(--b);color:#fff;padding:.6rem 1rem">Crestwood Help</div>
+  <div id="b5" style="height:200px;overflow:auto;padding:.8rem">Hello! 👋</div>
+  <form style="display:flex;border-top:1px solid #eee" onsubmit="event.preventDefault();b5.innerHTML+='<div><strong>You:</strong> '+i5.value+'</div>';i5.value='';b5.scrollTop=b5.scrollHeight;">
+    <input id="i5" placeholder="Type..." style="flex:1;border:0;padding:.6rem">
+    <button style="border:0;background:var(--a);color:#fff;padding:.6rem 1rem">Send</button>
+  </form>
+</div>
+
+<script>
+  // carousel
+  (function(){const w=document.getElementById('car5');const imgs=[...w.querySelectorAll('img')];let i=0;setInterval(()=>{imgs[i].style.display='none';i=(i+1)%imgs.length;imgs[i].style.display='block';},4000)})();
+  // calendar
+  let d=new Date(); d.setDate(1);
+  function draw(tbl,lbl){const t=document.getElementById(tbl), L=document.getElementById(lbl);
+    const y=d.getFullYear(), m=d.getMonth(), f=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+    L.textContent=d.toLocaleString('default',{month:'long',year:'numeric'});
+    let h='<thead><tr>'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<th style="border:1px solid #eee;padding:.4rem;background:#eef5ff">${x}</th>`).join('')+'</tr></thead><tbody><tr>';
+    for(let i=0;i<f;i++) h+='<td style="border:1px solid #eee;padding:.5rem"></td>';
+    for(let x=1;x<=days;x++){const dow=(f+x-1)%7;h+=`<td style="border:1px solid #eee;padding:.5rem">${x}</td>`;if(dow===6&&x!==days)h+='</tr><tr>';}
+    const last=(f+days-1)%7; for(let i=last;i<6;i++) h+='<td style="border:1px solid #eee;padding:.5rem"></td>'; h+='</tr></tbody>'; t.innerHTML=h;
+  }
+  draw('c5','ml5'); document.getElementById('p5').onclick=()=>{d.setMonth(d.getMonth()-1);draw('c5','ml5')};
+  document.getElementById('n5').onclick=()=>{d.setMonth(d.getMonth()+1);draw('c5','ml5')};
+  // year & chat
+  y5.textContent=new Date().getFullYear(); chat5.onclick=()=> box5.style.display=box5.style.display==='block'?'none':'block';
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School – Tech Forward</title>
+<style>
+  :root{--b:#0f3460;--g:#e6f0ff;--a:#00a8e8}
+  *{box-sizing:border-box} body{margin:0;font-family:Roboto,Arial;background:#f7f9fb;color:#222}
+  header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #eee}
+  .row{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem}
+  .brand{font-weight:800;color:var(--b)}
+  .menu a{margin:0 .5rem}
+  .auth a{margin-left:.5rem;padding:.4rem .7rem;border-radius:8px;border:1px solid var(--b);color:var(--b)}
+  .auth a.primary{background:var(--b);color:#fff}
+  .hero{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem;max-width:1100px;margin:1rem auto;padding:0 1rem}
+  .panel{background:#fff;padding:1rem;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+  .ticker{background:#fff;border:1px solid #eee;border-left:4px solid var(--a);margin:1rem auto;max-width:1100px;padding:.5rem 1rem;overflow:hidden;white-space:nowrap}
+  .ticker span{display:inline-block;animation:m 16s linear infinite}
+  @keyframes m{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+  .carousel img{width:100%;height:300px;object-fit:cover;border-radius:10px}
+  .grid{max-width:1100px;margin:1rem auto;display:grid;grid-template-columns:2fr 1fr;gap:1rem;padding:0 1rem}
+  .list a{display:block;padding:.55rem;border:1px solid #eee;border-radius:8px;margin:.4rem 0}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+  .stat{background:var(--g);border-radius:12px;text-align:center;padding:1rem}
+  footer{background:#0f1a2b;color:#cfe3ff;margin-top:1rem}
+  .f{max-width:1100px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;padding:1rem}
+  .copy{text-align:center;color:#a6c1ff;border-top:1px solid #223a63;padding:.8rem}
+  .ctrls{display:flex;gap:.5rem;align-items:center}
+  .ctrls button{padding:.3rem .6rem}
+  @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+  @media (max-width:640px){.menu{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <div class="brand">Apex International</div>
+    <nav class="menu">
+      <a href="#">Home</a><a href="#">About</a><a href="#">Academics</a><a href="#">Admissions</a>
+      <a href="#calendar">Calendar</a><a href="#downloads">Downloads</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="ctrls">
+      <small>A11y:</small>
+      <button onclick="document.body.style.fontSize='90%'">A-</button>
+      <button onclick="document.body.style.fontSize='100%'">A</button>
+      <button onclick="document.body.style.fontSize='110%'">A+</button>
+    </div>
+    <div class="auth"><a href="#">Login</a><a class="primary" href="#">Register</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="panel">
+    <h1>Future-Ready Learning</h1>
+    <p>Smart classrooms, global curriculum, and project-based learning.</p>
+    <div class="carousel" id="car3">
+      <img src="schoolpics/4.png" alt="">
+      <img src="schoolpics/0.png" style="display:none" alt="">
+      <img src="schoolpics/1.png" style="display:none" alt="">
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Virtual Tour</h3>
+    <div style="aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden">
+      <iframe title="tour" width="100%" height="100%" src="https://www.youtube.com/embed/tgbNymZ7vqY" style="border:0"></iframe>
+    </div>
+    <h3 style="margin-top:1rem">Key Stats</h3>
+    <div class="stats">
+      <div class="stat"><div style="font-weight:800;font-size:1.6rem">2200</div>Students</div>
+      <div class="stat"><div style="font-weight:800;font-size:1.6rem">180</div>Teachers</div>
+      <div class="stat"><div style="font-weight:800;font-size:1.6rem">97%</div>Board Results</div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker"><span>Notice: Orientation for new parents on Sept 18 • Olympiad registrations open • Bus pass renewals this week</span></div>
+
+<section class="grid">
+  <div class="panel">
+    <h3 id="calendar">School Calendar</h3>
+    <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem">
+      <button id="p3">◀</button><strong id="ml3"></strong><button id="n3">▶</button>
+    </div>
+    <table id="c3" style="width:100%;border-collapse:collapse"></table>
+  </div>
+  <aside class="panel">
+    <h3 id="downloads">Important PDFs</h3>
+    <div class="list">
+      <a href="#">📄 Prospectus 2025</a>
+      <a href="#">📄 Syllabus (Primary)</a>
+      <a href="#">📄 Syllabus (Senior)</a>
+      <a href="#">📄 Examination Policy</a>
+    </div>
+  </aside>
+</section>
+
+<footer id="contact">
+  <div class="f">
+    <div><h4>About</h4><p>Apex International blends technology with strong pedagogy for world-class outcomes.</p></div>
+    <div><h4>Links</h4><p><a href="#">T&C</a> · <a href="#">Privacy</a> · <a href="#">Careers</a></p></div>
+    <div><h4>Connect</h4><p><a href="#">Facebook</a> · <a href="#">LinkedIn</a></p></div>
+  </div>
+  <div class="copy">© <span id="y3"></span> Apex International</div>
+</footer>
+
+<button id="chat3" style="position:fixed;right:14px;bottom:14px;background:var(--a);color:#fff;border:0;border-radius:999px;padding:.8rem 1rem">Chat</button>
+<div id="box3" style="display:none;position:fixed;right:14px;bottom:70px;width:280px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden">
+  <div style="background:var(--b);color:#fff;padding:.6rem 1rem">Apex Help</div>
+  <div id="b3" style="height:200px;overflow:auto;padding:.8rem">Hi! Ask us anything.</div>
+  <form style="display:flex;border-top:1px solid #eee" onsubmit="event.preventDefault();b3.innerHTML+='<div><strong>You:</strong> '+i3.value+'</div>';i3.value='';b3.scrollTop=b3.scrollHeight;">
+    <input id="i3" placeholder="Type..." style="flex:1;border:0;padding:.6rem">
+    <button style="border:0;background:var(--a);color:#fff;padding:.6rem 1rem">Send</button>
+  </form>
+</div>
+
+<script>
+  // carousel
+  (function(){const w=document.getElementById('car3');const imgs=[...w.querySelectorAll('img')];let i=0;setInterval(()=>{imgs[i].style.display='none';i=(i+1)%imgs.length;imgs[i].style.display='block';},4000)})();
+  // calendar
+  let d=new Date(); d.setDate(1);
+  function draw(tbl,lbl){const t=document.getElementById(tbl), L=document.getElementById(lbl);
+    const y=d.getFullYear(), m=d.getMonth(), f=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+    L.textContent=d.toLocaleString('default',{month:'long',year:'numeric'});
+    let h='<thead><tr>'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<th style="border:1px solid #eee;padding:.4rem;background:#f2f6ff">${x}</th>`).join('')+'</tr></thead><tbody><tr>';
+    for(let i=0;i<f;i++) h+='<td style="border:1px solid #eee;padding:.5rem"></td>';
+    for(let x=1;x<=days;x++){const dow=(f+x-1)%7;h+=`<td style="border:1px solid #eee;padding:.5rem">${x}</td>`;if(dow===6&&x!==days)h+='</tr><tr>';}
+    const last=(f+days-1)%7; for(let i=last;i<6;i++) h+='<td style="border:1px solid #eee;padding:.5rem"></td>'; h+='</tr></tbody>'; t.innerHTML=h;
+  }
+  draw('c3','ml3'); document.getElementById('p3').onclick=()=>{d.setMonth(d.getMonth()-1);draw('c3','ml3')};
+  document.getElementById('n3').onclick=()=>{d.setMonth(d.getMonth()+1);draw('c3','ml3')};
+  // year & chat
+  y3.textContent=new Date().getFullYear(); chat3.onclick=()=> box3.style.display=box3.style.display==='block'?'none':'block';
+</script>
+</body>
+</html>
