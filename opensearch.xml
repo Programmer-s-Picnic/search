@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Learn With Champak</ShortName>
+  <Description>Search posts, lessons, and tutorials on Learn With Champak</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image height="16" width="16" type="image/png">https://varanasi-software-junction.github.io/blogger/blogger-assets/me.png</Image>
+  <Url type="text/html" method="get" template="https://learnwithchampak.live/search?q={searchTerms}"/>
+  <Attribution>© 2025 Champak Roy — Learn With Champak</Attribution>
+</OpenSearchDescription>
