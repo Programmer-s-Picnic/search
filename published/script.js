@@ -1,9 +1,10 @@
-//let currentQuestionIndex = 0;
+let currentQuestionIndex = 0;
 let score = 0;
 let selectedAnswers = [];
 let questions = [];
 let jsonfilename = "https://varanasi-software-junction.github.io/search/published/printf.json";
 // Shuffle an array using Fisher-Yates algorithm
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
