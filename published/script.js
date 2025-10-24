@@ -28,6 +28,7 @@ function shuffleQuestionsAndOptions() {
 
 // Load questions from questions.json and initialize the quiz
 function loadQuestions() {
+    alert(jsonfilename);
     fetch(jsonfilename)
         .then(response => response.json())
         .then(data => {
