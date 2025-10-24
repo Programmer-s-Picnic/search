@@ -1,8 +1,8 @@
-let currentQuestionIndex = 0;
+//let currentQuestionIndex = 0;
 let score = 0;
 let selectedAnswers = [];
 let questions = [];
-let jsonfilename="";
+let jsonfilename = "https://varanasi-software-junction.github.io/search/published/printf.json";
 // Shuffle an array using Fisher-Yates algorithm
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -86,11 +86,11 @@ function nextQuestion() {
             options: currentQuestion.options,
             explanation: currentQuestion.explanation
         });
-//alert(`Correct ${selectedValue===currentQuestion.answer} ${selectedValue},${currentQuestion.answer}`);
+        //alert(`Correct ${selectedValue===currentQuestion.answer} ${selectedValue},${currentQuestion.answer}`);
         if (Number(selectedValue) === Number(currentQuestion.answer)) {
             score++;
-          //  alert(score);
-            
+            //  alert(score);
+
         }
     }
 
@@ -173,8 +173,8 @@ function restartQuiz() {
 
 // Initialize the quiz
 function initQuiz() {
-    jsonfilename=document.getElementById("quizjson").value;
+    jsonfilename = "https://varanasi-software-junction.github.io/search/published/printf.json"//document.getElementById("quizjson").value;
     loadQuestions(); // Load questions from the JSON file and start the quiz
 }
 
-window.onload =initQuiz;
+window.onload = initQuiz;
