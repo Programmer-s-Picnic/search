@@ -1,270 +1,220 @@
-// branding.js
+/* =========================================================
+   Programmer’s Picnic — Branding v2.2
+   Random Daily Content (Per User)
+   Tip • Python Puzzle (Pyodide) • LearnWithChampak
+========================================================= */
 
-// ===== Add Google Font (Lora) =====
+(function () {
+  "use strict";
 
-function doCopy(event) {
-  const textToCopy = document.querySelector('.messages_XYZ_modal-box pre').textContent;
-  navigator.clipboard.writeText(textToCopy); 
-  event.target.textContent = 'Copied!';
-  setTimeout(() => {  
-    event.target.textContent = 'Copy';
-  }, 2000);
-  console.log('Text copied to clipboard:', textToCopy);
-}
+  /* ---------- CONFIG ---------- */
+  const STORAGE_KEY = "pp_daily_random_state";
+  const TODAY = new Date().toDateString(); // human-safe daily key
 
-const fontLink = document.createElement('link');
-fontLink.href = 'https://fonts.googleapis.com/css2?family=Lora:wght@400;500;700&display=swap';
-fontLink.rel = 'stylesheet';
-document.head.appendChild(fontLink);
+  const SOURCES = {
+    tip: "https://varanasi-software-junction.github.io/search/daily-tip.json",
+    puzzle: "https://varanasi-software-junction.github.io/search/daily-puzzle.json",
+    link: "https://varanasi-software-junction.github.io/search/daily-link.json"
+  };
 
-// ===== Add 3D Flipping Image =====
-const flipContainer = document.createElement('div');
-flipContainer.className = 'flip-container';
-flipContainer.innerHTML = `
-  <div class='flipper'>
-    <img alt='Me' class='flip-image' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEglwaii2_xBr47JtUxESk3iekPLl1TSI5B6RuwqNOs_8zk9iGlLqw3d_WprAhKKp3m9F1eO4XBh_JfU_jj6Ad759bHWsqU0evz1SdsG_XBJPc7nXmkbGHO2glvshLTd0fOaKlIGfEVHlEeltJcg2Azc70rVoswRtvH-QiohpHrAuuPEE1uwA9CToBM9foE/s16000/me.jpg'/>
-  </div>
-`;
-document.body.appendChild(flipContainer);
-
-// ===== Add WhatsApp Contact Button =====
-const whatsappButton = document.createElement('a');
-whatsappButton.href = 'https://wa.me/919335874326?text=Hi, I would like to get in touch!';
-whatsappButton.target = '_blank';
-whatsappButton.className = 'whatsapp-button';
-whatsappButton.innerHTML = `
-  <img src='https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg' alt='WhatsApp' class='whatsapp-icon'>
-  Contact Me on WhatsApp
-`;
-document.body.appendChild(whatsappButton);
-
-// ===== Add CSS Styles =====
-const style = document.createElement('style');
-style.innerHTML = `
-  /* Lora Font for targeted sections */
-  .flip-container, .whatsapp-button, .messages_XYZ_modal-box, .messages_XYZ_show-message-btn {
-    font-family: 'Lora', serif;
+  /* ---------- UTIL ---------- */
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  /* 3D Flipping Image */       
-  .flip-container {
-    width: 80px;
-    height: 80px;
-    position: absolute;
-    top: 50px;
-    left: 50px;
-    perspective: 1000px;
-    animation: move-around 20s infinite linear;
-  }
-  .flip-container .flipper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-  }
-  .flip-container:hover .flipper {
-    border-style: ridge;
-  }
-  .flip-image {
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 50%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  @keyframes move-around {
-    0% { top: 20px; left: 20px; }
-    25% { top: 50px; left: 80%; }
-    50% { top: 80%; left: 50%; }
-    75% { top: 50%; left: 20px; }
-    100% { top: 20px; left: 20px; }
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY));
+    } catch {
+      return null;
+    }
   }
 
-  /* WhatsApp Button */
-  .whatsapp-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 250px;
-    padding: 12px;
-    margin: 20px auto;
-    background-color: #25D366;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 50px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    cursor: pointer;
-  }
-  .whatsapp-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-  }
-  .whatsapp-button:hover {
-    background-color: #128C7E;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  /* Modal Styles */
-  .messages_XYZ_modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-  }
-  .messages_XYZ_modal-box {
-    background: #fff;
-    padding: 30px;
-    max-width: 400px;
-    border-radius: 16px;
-    text-align: center;
-    font-family: 'Lora', serif;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    animation: messages_XYZ_fadeIn 0.4s ease-in-out;
-  }
-  .messages_XYZ_modal-box h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  .messages_XYZ_modal-box pre {
-    text-align: left;
-    white-space: pre-wrap;
-    font-family: inherit;
-    background: #f9f9f9;
-    padding: 10px;
-    border-radius: 8px;
-  }
-  .tip-link {
-    color: blue;
-    text-decoration: underline;
-    font-weight: bold;
-  }
-  .tip-link:hover {
-    color: darkblue;
-  }
-  .messages_XYZ_modal-close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    color: #888;
-    cursor: pointer;
-  }
-  .messages_XYZ_modal-close:hover {
-    color: #000;
-  }
-  @keyframes messages_XYZ_fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* ---------- INIT DAILY STATE ---------- */
+  let state = loadState();
+
+  if (!state || state.date !== TODAY) {
+    state = {
+      date: TODAY,
+      tipId: null,
+      puzzleId: null,
+      linkId: null
+    };
+    saveState(state);
   }
 
-  /* Manual Show Button */
-  .messages_XYZ_show-message-btn {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 18px;
-    background-color: #333;
-    color: #fff;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  /* ---------- Fonts ---------- */
+  const font = document.createElement("link");
+  font.rel = "stylesheet";
+  font.href = "https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap";
+  document.head.appendChild(font);
+
+  /* ---------- Pyodide ---------- */
+  const pyodideScript = document.createElement("script");
+  pyodideScript.src = "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js";
+  document.head.appendChild(pyodideScript);
+
+  let pyodide, pyodideReady = false;
+  async function initPyodide() {
+    if (pyodideReady) return;
+    pyodide = await loadPyodide();
+    pyodideReady = true;
   }
-  .messages_XYZ_show-message-btn:hover {
-    background-color: #555;
-  }
-`;
-document.head.appendChild(style);
 
-// ===== Message Fetch and Show Logic =====
-const messageJsonUrl = 'https://varanasi-software-junction.github.io/search/messages.json';
-const today = new Date().toISOString().split('T')[0];
-
-// Auto-show message once per day
-if (localStorage.getItem('messageSeenDate') !== today) {
-  fetch(messageJsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      if (data[today]) {
-        showModalMessage(data[today]);
-        localStorage.setItem('messageSeenDate', today);
-      }
-    })
-    .catch(err => console.warn('Failed to load messages.json:', err));
-}
-
-// Manual show button
-const showMessageBtn = document.createElement('button');
-showMessageBtn.textContent = "📬 Show Today’s Programming Tip";
-showMessageBtn.className = "messages_XYZ_show-message-btn";
-showMessageBtn.onclick = () => {
-  fetch(messageJsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      if (data[today]) showModalMessage(data[today]);
-      else alert("No tip available for today.");
-    })
-    .catch(err => alert("Could not load the message."));
-};
-document.body.appendChild(showMessageBtn);
-
-// ===== Modal Rendering Function =====
-function showModalMessage(message) {
-  const flipImage = document.querySelector('.flip-container');
-  const flipRect = flipImage.getBoundingClientRect();
-
-  const modalOverlay = document.createElement('div');
-  modalOverlay.className = 'messages_XYZ_modal-overlay';
-
-  const modalBox = document.createElement('div');
-  modalBox.className = 'messages_XYZ_modal-box';
-
-  modalBox.innerHTML = `
-    <span class="messages_XYZ_modal-close" title="Close">&times;</span>
-    <h2>📩 Today’s Programming Tip</h2>
-    <div>
-    <button onclick="doCopy(event)">Copy</button>
-    <pre  style="background-color:white;color:black;">${message.content}</pre>
-    </div>
-    <p><a href="${message.link}" target="_blank" class="tip-link">🔗 Learn More</a></p>
-    <h1>💡 Tip of the Day</h1>
+  /* ---------- Styles ---------- */
+  const style = document.createElement("style");
+  style.textContent = `
+    .pp-panel{
+      position:fixed;bottom:20px;right:20px;width:360px;
+      background:#fffaf2;border-radius:18px;
+      box-shadow:0 12px 30px rgba(0,0,0,.15);
+      font-family:'Lora',serif;z-index:999999;overflow:hidden
+    }
+    .pp-header{
+      background:linear-gradient(135deg,#f59e0b,#d97706);
+      color:#fff;padding:14px 16px;
+      font-size:18px;font-weight:700;
+      display:flex;justify-content:space-between
+    }
+    .pp-close{cursor:pointer;font-size:22px}
+    .pp-section{border-top:1px solid #fde68a}
+    .pp-section h3{
+      margin:0;padding:12px 16px;cursor:pointer;
+      background:#fff3d6;font-size:16px;
+      display:flex;justify-content:space-between
+    }
+    .pp-content{padding:14px 16px}
+    textarea, pre{
+      width:100%;border-radius:10px;
+      border:1px solid #fde68a;padding:10px;
+      font-family:monospace;white-space:pre-wrap
+    }
+    .pp-btn{
+      background:#d97706;color:#fff;
+      border:none;border-radius:8px;
+      padding:8px 12px;margin-top:8px;margin-right:6px;
+      cursor:pointer
+    }
+    .pp-btn.secondary{background:#92400e}
+    .pp-output{
+      background:#111;color:#0f0;
+      padding:8px;border-radius:8px;
+      margin-top:8px
+    }
+    .pp-link{color:#d97706;font-weight:600;text-decoration:none}
   `;
+  document.head.appendChild(style);
 
-  // Start from image position
-  modalBox.style.position = 'fixed';
-  modalBox.style.top = `${flipRect.top}px`;
-  modalBox.style.left = `${flipRect.left}px`;
-  modalBox.style.width = `${flipRect.width}px`;
-  modalBox.style.height = `${flipRect.height}px`;
-  modalBox.style.transform = 'scale(0)';
-  modalBox.style.transition = 'all 0.5s ease-in-out';
+  /* ---------- Panel ---------- */
+  const panel = document.createElement("div");
+  panel.className = "pp-panel";
+  panel.innerHTML = `
+    <div class="pp-header">
+      🌼 Today @ Programmer’s Picnic
+      <span class="pp-close">&times;</span>
+    </div>
 
-  modalOverlay.appendChild(modalBox);
-  document.body.appendChild(modalOverlay);
+    <div class="pp-section" data-key="tip">
+      <h3>🧠 Daily Tip <span>−</span></h3>
+      <div class="pp-content"></div>
+    </div>
 
-  // Animate to center
-  requestAnimationFrame(() => {
-    modalBox.style.top = '50%';
-    modalBox.style.left = '50%';
-    modalBox.style.transform = 'translate(-50%, -50%) scale(1)';
-    modalBox.style.width = '90%';
-    modalBox.style.maxWidth = '400px';
-    modalBox.style.height = 'auto';
+    <div class="pp-section" data-key="puzzle">
+      <h3>🧩 Python Puzzle <span>−</span></h3>
+      <div class="pp-content"></div>
+    </div>
+
+    <div class="pp-section" data-key="link">
+      <h3>🌐 LearnWithChampak <span>−</span></h3>
+      <div class="pp-content"></div>
+    </div>
+  `;
+  document.body.appendChild(panel);
+
+  /* ---------- Load & Render ---------- */
+  Object.entries(SOURCES).forEach(([key, url]) => {
+    fetch(url).then(r => r.json()).then(list => {
+      let chosen;
+
+      if (!state[key + "Id"]) {
+        chosen = pickRandom(list);
+        state[key + "Id"] = chosen.id;
+        saveState(state);
+      } else {
+        chosen = list.find(x => x.id === state[key + "Id"]) || pickRandom(list);
+      }
+
+      const box = panel.querySelector(`[data-key="${key}"] .pp-content`);
+
+      if (key === "puzzle") {
+        box.innerHTML = `
+          <strong>${chosen.title}</strong><br><br>
+          <textarea rows="6">${chosen.content}</textarea>
+          <div>
+            <button class="pp-btn run">▶ Run</button>
+            <button class="pp-btn secondary share">🔗 Share</button>
+          </div>
+          <div class="pp-output"></div>
+        `;
+
+        const run = box.querySelector(".run");
+        const out = box.querySelector(".pp-output");
+        const editor = box.querySelector("textarea");
+
+        run.onclick = async () => {
+          out.textContent = "Running...";
+          await initPyodide();
+          try {
+            const r = await pyodide.runPythonAsync(editor.value);
+            out.textContent = r ?? "✔ Executed";
+          } catch (e) {
+            out.textContent = e;
+          }
+        };
+
+        box.querySelector(".share").onclick = () => share(chosen);
+
+      } else {
+        box.innerHTML = `
+          <strong>${chosen.title}</strong><br><br>
+          <pre>${chosen.content}</pre>
+          <p>
+            <a href="${chosen.link}" target="_blank" class="pp-link">🔗 Open</a>
+            <button class="pp-btn secondary share">Share</button>
+          </p>
+        `;
+        box.querySelector(".share").onclick = () => share(chosen);
+      }
+    });
   });
 
-  // Close Handlers
-  modalBox.querySelector('.messages_XYZ_modal-close').onclick = () => modalOverlay.remove();
-  modalOverlay.onclick = (e) => {
-    if (e.target === modalOverlay) modalOverlay.remove();
-  };
-}
+  /* ---------- Share ---------- */
+  function share(item) {
+    const text = `${item.title}\n\n${item.content}\n\n${item.link}`;
+    if (navigator.share) {
+      navigator.share({ title: item.title, text, url: item.link });
+    } else {
+      navigator.clipboard.writeText(text);
+      alert("Copied to clipboard");
+    }
+  }
+
+  /* ---------- Collapse ---------- */
+  panel.querySelectorAll(".pp-section h3").forEach(h => {
+    h.onclick = () => {
+      const c = h.nextElementSibling;
+      const i = h.querySelector("span");
+      const open = c.style.display !== "none";
+      c.style.display = open ? "none" : "block";
+      i.textContent = open ? "+" : "−";
+    };
+  });
+
+  /* ---------- Close ---------- */
+  panel.querySelector(".pp-close").onclick = () => panel.remove();
+
+})();
