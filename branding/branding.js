@@ -1,166 +1,156 @@
 /* ==========================================================
-   branding.js — Programmer’s Picnic Daily Widget v2.3
-   FIX: content visibility bug (mobile + fixed + transform)
+   branding.js — Programmer’s Picnic Daily Widget v2
    Author: Champak Roy
+   Theme: Light Saffron
    ========================================================== */
 
 (function () {
   "use strict";
 
+  /* ---------------- CONFIG ---------------- */
   const WIDGET_ID = "pp-daily-widget";
-  const STORAGE = {
-    collapsed: "ppWidgetCollapsed",
-    pos: "ppWidgetPosV3"
-  };
+  const STORAGE_COLLAPSE = "ppWidgetCollapsed";
+  const STORAGE_POS = "ppWidgetPos";
 
-  function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-  function safeParse(v, f){ try{ return JSON.parse(v);}catch{ return f;} }
-
-  /* ================= CSS ================= */
+  /* ---------------- CSS ---------------- */
   const style = document.createElement("style");
   style.textContent = `
-#${WIDGET_ID}{
-  position:fixed;
-  top:16px;
-  left:16px;
-  transform: translate3d(0px, 64px, 0);
-  width:340px;
-  max-height:90vh;
-  background:linear-gradient(145deg,#fffdf6,#fff2d6);
-  border-radius:18px;
-  box-shadow:0 12px 30px rgba(0,0,0,.12);
-  z-index:999999;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  overflow:hidden;
-}
-
-/* collapsed */
-#${WIDGET_ID}.collapsed{
-  height:52px;
-}
-
-/* header */
-.pp-header{
-  height:52px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 14px;
-  background:linear-gradient(135deg,#ffe8b0,#ffd36a);
-  font-weight:700;
-  color:#7c3a00;
-}
-
-.pp-actions{
-  display:flex;
-  gap:8px;
-}
-
-.pp-btn{
-  border:none;
-  background:#fff3c4;
-  border-radius:12px;
-  padding:6px 10px;
-  font-size:16px;
-  cursor:pointer;
-  box-shadow:0 4px 10px rgba(0,0,0,.12);
-}
-
-/* IMPORTANT FIX */
-.pp-content{
-  height:calc(90vh - 52px);
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  padding:14px;
-  color:#1f2937;
-  line-height:1.6;
-  display:block;
-}
-
-#${WIDGET_ID}.collapsed .pp-content{
-  display:none;
-}
-
-/* mobile */
-.pp-mobile-controls{
-  display:none;
-  justify-content:center;
-  gap:14px;
-  margin:12px 0;
-}
-
-.pp-mobile-controls button{
-  border:none;
-  background:linear-gradient(135deg,#ffe9b3,#ffd36a);
-  color:#7c3a00;
-  font-size:18px;
-  padding:10px 14px;
-  border-radius:14px;
-  box-shadow:0 6px 16px rgba(0,0,0,.15);
-  cursor:pointer;
-}
-
-@media(max-width:768px){
   #${WIDGET_ID}{
-    width:92vw;
-    max-height:85vh;
+    position:fixed;
+    top:80px;
+    right:16px;
+    width:340px;
+    background:linear-gradient(145deg,#fffdf6,#fff2d6);
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
+    z-index:999999;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    transition:height .3s ease, box-shadow .3s ease;
   }
-  .pp-content{
-    height:calc(85vh - 52px);
+
+  #${WIDGET_ID}.collapsed{
+    height:52px;
+    overflow:hidden;
   }
-  .pp-mobile-controls{
+
+  #${WIDGET_ID}.glow{
+    box-shadow:
+      0 0 0 0 rgba(249,115,22,.7),
+      0 12px 30px rgba(0,0,0,.15);
+    animation:ppGlow 1.6s ease-out;
+  }
+
+  @keyframes ppGlow{
+    0%{box-shadow:0 0 0 0 rgba(249,115,22,.7)}
+    100%{box-shadow:0 0 0 18px rgba(249,115,22,0)}
+  }
+
+  .pp-header{
     display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    background:linear-gradient(135deg,#ffe8b0,#ffd36a);
+    border-radius:18px 18px 0 0;
+    font-weight:600;
+    color:#7c3a00;
   }
-}
-`;
+
+  .pp-actions{
+    display:flex;
+    gap:8px;
+  }
+
+  .pp-btn{
+    border:none;
+    background:#fff3c4;
+    border-radius:12px;
+    padding:6px 10px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+  }
+
+  .pp-content{
+    padding:14px;
+    color:#1f2937;
+    line-height:1.6;
+  }
+
+  .pp-mobile-controls{
+    display:none;
+    justify-content:center;
+    gap:14px;
+    margin:12px 0;
+  }
+
+  .pp-mobile-controls button{
+    border:none;
+    background:linear-gradient(135deg,#ffe9b3,#ffd36a);
+    color:#7c3a00;
+    font-size:18px;
+    padding:10px 14px;
+    border-radius:14px;
+    box-shadow:0 6px 16px rgba(0,0,0,.15);
+    cursor:pointer;
+  }
+
+  @media(max-width:768px){
+    #${WIDGET_ID}{
+      width:92vw;
+      right:4vw;
+    }
+    .pp-mobile-controls{
+      display:flex;
+    }
+  }
+  `;
   document.head.appendChild(style);
 
-  /* ================= HTML ================= */
+  /* ---------------- HTML ---------------- */
   const widget = document.createElement("div");
   widget.id = WIDGET_ID;
   widget.innerHTML = `
-  <div class="pp-header">
-    <span>🌼 Today at Programmer’s Picnic</span>
-    <div class="pp-actions">
-      <button class="pp-btn" id="ppCollapseTop">⬇</button>
-      <button class="pp-btn" id="ppMoveTop">☰</button>
-    </div>
-  </div>
-
-  <div class="pp-content">
-    <p><strong>Daily Tip</strong><br>
-    10 minutes daily beats 2 hours once a week.</p>
-
-    <div class="pp-mobile-controls">
-      <button id="ppCollapseMid">⬇ Collapse</button>
-      <button id="ppMoveMid">☰ Move</button>
+    <div class="pp-header">
+      <span>🌼 Today at Programmer’s Picnic</span>
+      <div class="pp-actions">
+        <button class="pp-btn" id="ppCollapseTop">⬇</button>
+        <button class="pp-btn" id="ppMoveTop">☰</button>
+      </div>
     </div>
 
-    <p><strong>Daily Puzzle</strong></p>
-    <pre style="background:#fff7df;padding:10px;border-radius:12px;white-space:pre-wrap">
-x = [1, 2, 3]
+    <div class="pp-content">
+      <p><strong>Daily Tip</strong><br>
+      Practice small problems daily — consistency beats intensity.</p>
+
+      <div class="pp-mobile-controls">
+        <button id="ppCollapseMid">⬇ Collapse</button>
+        <button id="ppMoveMid">☰ Move</button>
+      </div>
+
+      <p><strong>Daily Puzzle</strong></p>
+      <pre style="background:#fff7df;padding:10px;border-radius:12px">
+x = [1,2,3]
 print(x[::-1])
-    </pre>
+      </pre>
 
-    <p><strong>Learn More</strong><br>
-      <a href="https://learnwithchampak.live" target="_blank">
-        learnwithchampak.live
-      </a>
-    </p>
-
-    <p style="margin-top:400px">(scroll test)</p>
-  </div>
+      <p><strong>Learn More</strong><br>
+        <a href="https://learnwithchampak.live" target="_blank">
+          learnwithchampak.live
+        </a>
+      </p>
+    </div>
   `;
   document.body.appendChild(widget);
 
-  /* ================= COLLAPSE ================= */
+  /* ---------------- COLLAPSE LOGIC ---------------- */
   const collapseTop = widget.querySelector("#ppCollapseTop");
   const collapseMid = widget.querySelector("#ppCollapseMid");
 
   function toggleCollapse(){
     widget.classList.toggle("collapsed");
     localStorage.setItem(
-      STORAGE.collapsed,
+      STORAGE_COLLAPSE,
       widget.classList.contains("collapsed")
     );
   }
@@ -168,80 +158,72 @@ print(x[::-1])
   collapseTop.onclick = toggleCollapse;
   collapseMid.onclick = toggleCollapse;
 
-  if(localStorage.getItem(STORAGE.collapsed) === "true"){
+  if(localStorage.getItem(STORAGE_COLLAPSE) === "true"){
     widget.classList.add("collapsed");
   }
 
-  /* ================= POSITION ================= */
-  let pos = { x: 0, y: 64 };
-  const saved = safeParse(localStorage.getItem(STORAGE.pos), null);
-  if(saved){ pos = saved; }
-
-  function applyPos(){
-    widget.style.transform =
-      `translate3d(${pos.x}px, ${pos.y}px, 0)`;
-  }
-
-  applyPos();
-
-  function savePos(){
-    localStorage.setItem(STORAGE.pos, JSON.stringify(pos));
-  }
-
-  /* ================= DRAG ================= */
+  /* ---------------- DRAG LOGIC ---------------- */
   const moveTop = widget.querySelector("#ppMoveTop");
   const moveMid = widget.querySelector("#ppMoveMid");
 
-  let dragging = false, sx = 0, sy = 0, bx = 0, by = 0;
+  let dragging = false, startX = 0, startY = 0;
 
   function startDrag(x,y){
     dragging = true;
-    sx = x; sy = y;
-    bx = pos.x; by = pos.y;
-    document.documentElement.style.userSelect = "none";
+    startX = x - widget.offsetLeft;
+    startY = y - widget.offsetTop;
+    widget.classList.add("glow");
   }
 
-  function dragTo(x,y){
+  function moveDrag(x,y){
     if(!dragging) return;
-    pos.x = bx + (x - sx);
-    pos.y = by + (y - sy);
-
-    const maxX = window.innerWidth - widget.offsetWidth - 20;
-    const maxY = window.innerHeight - widget.offsetHeight - 20;
-
-    pos.x = clamp(pos.x, -10, maxX);
-    pos.y = clamp(pos.y, -10, maxY);
-
-    applyPos();
+    widget.style.left = (x - startX) + "px";
+    widget.style.top  = (y - startY) + "px";
+    widget.style.right = "auto";
   }
 
   function endDrag(){
-    if(!dragging) return;
+    if(dragging){
+      localStorage.setItem(
+        STORAGE_POS,
+        JSON.stringify({
+          left: widget.style.left,
+          top: widget.style.top
+        })
+      );
+    }
     dragging = false;
-    document.documentElement.style.userSelect = "";
-    savePos();
   }
 
-  moveTop.onmousedown = e => { e.preventDefault(); startDrag(e.clientX,e.clientY); };
-  moveMid.onmousedown = e => { e.preventDefault(); startDrag(e.clientX,e.clientY); };
-
-  document.addEventListener("mousemove", e => dragTo(e.clientX,e.clientY));
+  /* mouse */
+  moveTop.onmousedown = e => startDrag(e.clientX,e.clientY);
+  moveMid.onmousedown = e => startDrag(e.clientX,e.clientY);
+  document.addEventListener("mousemove", e => moveDrag(e.clientX,e.clientY));
   document.addEventListener("mouseup", endDrag);
 
-  [moveTop,moveMid].forEach(btn=>{
-    btn.addEventListener("touchstart",e=>{
-      const t=e.touches[0];
-      startDrag(t.clientX,t.clientY);
-    },{passive:true});
-
-    btn.addEventListener("touchmove",e=>{
-      if(!dragging) return;
-      e.preventDefault();
-      const t=e.touches[0];
-      dragTo(t.clientX,t.clientY);
-    },{passive:false});
-
-    btn.addEventListener("touchend",endDrag);
+  /* touch */
+  [moveTop, moveMid].forEach(btn => {
+    btn.addEventListener("touchstart", e => {
+      const t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, {passive:true});
   });
+
+  document.addEventListener("touchmove", e => {
+    if(!dragging) return;
+    const t = e.touches[0];
+    moveDrag(t.clientX, t.clientY);
+  }, {passive:true});
+
+  document.addEventListener("touchend", endDrag);
+
+  /* restore position */
+  const savedPos = localStorage.getItem(STORAGE_POS);
+  if(savedPos){
+    const p = JSON.parse(savedPos);
+    widget.style.left = p.left;
+    widget.style.top  = p.top;
+    widget.style.right = "auto";
+  }
 
 })();
