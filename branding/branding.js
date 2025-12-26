@@ -1,14 +1,17 @@
 /* =========================================================
-   Programmer’s Picnic — Branding v2.7
-   Moving Icon → Pause on Hover → Open Panel at Click Point
-   Accordion • Pyodide SAFE • Mobile + Desktop Stable
+   Programmer’s Picnic — Branding v2.9
+   Moving Profile Photo • Smart Panel Direction
+   Accordion • Pyodide SAFE • Correct Line Breaks
 ========================================================= */
 
 (function () {
   "use strict";
 
   /* ---------------- CONFIG ---------------- */
-  const PANEL_STATE_KEY = "pp_panel_state_v27";
+
+  // 🔁 CHANGE THIS IMAGE URL ANYTIME
+  const PROFILE_PHOTO =
+    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEglwaii2_xBr47JtUxESk3iekPLl1TSI5B6RuwqNOs_8zk9iGlLqw3d_WprAhKKp3m9F1eO4XBh_JfU_jj6Ad759bHWsqU0evz1SdsG_XBJPc7nXmkbGHO2glvshLTd0fOaKlIGfEVHlEeltJcg2Azc70rVoswRtvH-QiohpHrAuuPEE1uwA9CToBM9foE/s400/me.jpg";
 
   const SOURCES = {
     tip: "https://varanasi-software-junction.github.io/search/daily-tip.json",
@@ -19,14 +22,7 @@
 
   /* ---------------- UTILS ---------------- */
   const rand = (a) => a[Math.floor(Math.random() * a.length)];
-  const load = (k) => {
-    try {
-      return JSON.parse(localStorage.getItem(k));
-    } catch {
-      return null;
-    }
-  };
-  const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
   /* ---------------- FONT ---------------- */
   const font = document.createElement("link");
@@ -51,30 +47,42 @@
   /* ---------------- STYLES ---------------- */
   const style = document.createElement("style");
   style.textContent = `
-  /* FLOATING MOVING ICON */
-  .pp-float{
-    position:fixed;
-    top:20px;
-    left:20px;
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    font-size:28px;
-    cursor:pointer;
-    z-index:999999;
-    user-select:none;
-    animation:pp-move 18s linear infinite;
-  }
+  /* FLOATING PROFILE PHOTO */
+  
+/* FLOATING PROFILE PHOTO */
+.pp-float{
+  position:fixed;
+  top:20px; left:20px;
+  width:64px; height:64px;
+  border-radius:50%;
 
-  .pp-float.paused{
-    animation-play-state: paused;
-  }
+  /* Profile image */
+  background-image:url('${PROFILE_PHOTO}');
+  background-size:cover;
+  background-position:center;
+
+  /* 🟠 Saffron border + inner ring */
+  border:3px solid #d97706;                 /* saffron border */
+  outline:2px solid rgba(255,255,255,0.9);  /* clean inner ring */
+  outline-offset:-4px;
+
+  /* Glow */
+  box-shadow:
+    0 0 0 2px rgba(217,119,6,0.35),
+    0 10px 25px rgba(0,0,0,.25);
+
+  cursor:pointer;
+  z-index:999999;
+  animation:pp-move 30s linear infinite;
+}
+
+/* Pause animation */
+.pp-float.paused{
+  animation-play-state: paused;
+}
+
+
+
 
   @keyframes pp-move{
     0%   { top:20px; left:20px; }
@@ -120,10 +128,10 @@
     cursor:pointer;
   }
 
-  .pp-body{overflow:auto;flex:1;}
+  .pp-body{ overflow:auto; flex:1; }
 
   /* ACCORDION */
-  .pp-accordion{border-top:1px solid #fde68a;}
+  .pp-accordion{ border-top:1px solid #fde68a; }
   .pp-acc-header{
     padding:14px 16px;
     background:#fff3d6;
@@ -133,9 +141,9 @@
     justify-content:space-between;
     align-items:center;
   }
-  .pp-acc-header span{font-size:18px;font-weight:800;}
-  .pp-acc-content{display:none;padding:14px 16px;}
-  .pp-accordion.active .pp-acc-content{display:block;}
+  .pp-acc-header span{ font-size:18px; font-weight:800; }
+  .pp-acc-content{ display:none; padding:14px 16px; }
+  .pp-accordion.active .pp-acc-content{ display:block; }
 
   textarea, pre{
     width:100%;
@@ -156,13 +164,22 @@
     cursor:pointer;
   }
 
+  /* 🔥 OUTPUT FIX */
   .pp-output{
-    background:#111;color:#0f0;
-    padding:10px;border-radius:10px;
-    margin-top:10px;font-family:monospace;
+    background:#111;
+    color:#0f0;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+    font-family:monospace;
+    white-space:pre-wrap; /* <-- THIS FIXES LINE BREAKS */
   }
 
-  .pp-link{color:#d97706;font-weight:700;text-decoration:none;}
+  .pp-link{
+    color:#d97706;
+    font-weight:700;
+    text-decoration:none;
+  }
 
   @media(max-width:600px){
     .pp-panel{
@@ -170,19 +187,18 @@
       max-height:calc(100vh - 80px);
     }
     .pp-float{
-      width:56px;height:56px;font-size:24px;
+      width:56px; height:56px;
     }
   }
   `;
   document.head.appendChild(style);
 
-  /* ---------------- FLOATING ICON ---------------- */
+  /* ---------------- FLOATING PHOTO ---------------- */
   const floater = document.createElement("div");
+  floater.title = "Welcome to Programmer's Picnic. Click to get tips.";
   floater.className = "pp-float";
-  floater.textContent = "🍊";
   document.body.appendChild(floater);
 
-  /* Pause movement on hover / touch */
   floater.addEventListener("mouseenter", () => floater.classList.add("paused"));
   floater.addEventListener("mouseleave", () =>
     floater.classList.remove("paused")
@@ -222,27 +238,39 @@
   `;
   document.body.appendChild(panel);
 
-  /* ---------------- OPEN PANEL AT CLICK POINT ---------------- */
-  function openPanelAt(x, y) {
-    panel.style.left =
-      Math.min(x, window.innerWidth - panel.offsetWidth - 10) + "px";
-    panel.style.top =
-      Math.min(y, window.innerHeight - panel.offsetHeight - 10) + "px";
+  /* ---------------- SMART OPEN ---------------- */
+  function openPanelSmart(x, y) {
     panel.style.display = "flex";
+    const pw = panel.offsetWidth;
+    const ph = panel.offsetHeight;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const m = 20;
+
+    let left = x - pw / 2;
+    let top = y - ph / 2;
+
+    if (x < pw + m) left = x + m;
+    else if (x > vw - pw - m) left = x - pw - m;
+
+    if (y < ph + m) top = y + m;
+    else if (y > vh - ph - m) top = y - ph - m;
+
+    panel.style.left = clamp(left, m, vw - pw - m) + "px";
+    panel.style.top = clamp(top, m, vh - ph - m) + "px";
+
     floater.style.display = "none";
-    save(PANEL_STATE_KEY, "open");
   }
 
   function closePanel() {
     panel.style.display = "none";
-    floater.style.display = "flex";
+    floater.style.display = "block";
     floater.classList.remove("paused");
-    save(PANEL_STATE_KEY, "closed");
   }
 
   floater.addEventListener("click", (e) => {
     floater.classList.add("paused");
-    openPanelAt(e.clientX, e.clientY);
+    openPanelSmart(e.clientX, e.clientY);
   });
 
   panel.querySelector(".pp-collapse").onclick = closePanel;
@@ -263,6 +291,7 @@
       setActiveAccordion(acc.dataset.key);
     };
   });
+
   setActiveAccordion("puzzle");
 
   /* ---------------- LOAD CONTENT ---------------- */
@@ -304,7 +333,7 @@ finally:
     sys.stdout=_stdout
 output
 `);
-            out.textContent = (result || "").trim() || "✔ (No output)";
+            out.textContent = (result || "").trim();
           };
         } else {
           box.innerHTML = `
