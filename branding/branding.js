@@ -1,6 +1,6 @@
 /* ==========================================================
-   branding.js — Programmer’s Picnic Daily Widget v2.2
-   FIXED: reliable expand + scroll + mobile drag
+   branding.js — Programmer’s Picnic Daily Widget v2.3
+   FIX: content visibility bug (mobile + fixed + transform)
    Author: Champak Roy
    ========================================================== */
 
@@ -10,28 +10,22 @@
   const WIDGET_ID = "pp-daily-widget";
   const STORAGE = {
     collapsed: "ppWidgetCollapsed",
-    pos: "ppWidgetPosV2" // new key to avoid old-broken positions
+    pos: "ppWidgetPosV3"
   };
 
-  // ---------- Helpers ----------
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+  function safeParse(v, f){ try{ return JSON.parse(v);}catch{ return f;} }
 
-  function safeParse(json, fallback) {
-    try { return JSON.parse(json); } catch { return fallback; }
-  }
-
-  // ---------- CSS ----------
+  /* ================= CSS ================= */
   const style = document.createElement("style");
   style.textContent = `
 #${WIDGET_ID}{
   position:fixed;
   top:16px;
-  left:16px; /* we will move it via transform */
+  left:16px;
   transform: translate3d(0px, 64px, 0);
   width:340px;
   max-height:90vh;
-  display:flex;
-  flex-direction:column;
   background:linear-gradient(145deg,#fffdf6,#fff2d6);
   border-radius:18px;
   box-shadow:0 12px 30px rgba(0,0,0,.12);
@@ -40,17 +34,18 @@
   overflow:hidden;
 }
 
+/* collapsed */
 #${WIDGET_ID}.collapsed{
-  max-height:none;
   height:52px;
 }
 
+/* header */
 .pp-header{
-  flex:0 0 auto;
+  height:52px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:12px 14px;
+  justify-content:space-between;
+  padding:0 14px;
   background:linear-gradient(135deg,#ffe8b0,#ffd36a);
   font-weight:700;
   color:#7c3a00;
@@ -71,15 +66,22 @@
   box-shadow:0 4px 10px rgba(0,0,0,.12);
 }
 
+/* IMPORTANT FIX */
 .pp-content{
-  flex:1 1 auto;
-  overflow:auto;
+  height:calc(90vh - 52px);
+  overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   padding:14px;
   color:#1f2937;
   line-height:1.6;
+  display:block;
 }
 
+#${WIDGET_ID}.collapsed .pp-content{
+  display:none;
+}
+
+/* mobile */
 .pp-mobile-controls{
   display:none;
   justify-content:center;
@@ -98,190 +100,148 @@
   cursor:pointer;
 }
 
-.pp-link{
-  color:#92400e;
-  font-weight:700;
-  text-decoration:none;
-}
-.pp-link:hover{ text-decoration:underline; }
-
 @media(max-width:768px){
   #${WIDGET_ID}{
     width:92vw;
     max-height:85vh;
   }
+  .pp-content{
+    height:calc(85vh - 52px);
+  }
   .pp-mobile-controls{
     display:flex;
   }
 }
-  `;
+`;
   document.head.appendChild(style);
 
-  // ---------- HTML ----------
+  /* ================= HTML ================= */
   const widget = document.createElement("div");
   widget.id = WIDGET_ID;
   widget.innerHTML = `
   <div class="pp-header">
     <span>🌼 Today at Programmer’s Picnic</span>
     <div class="pp-actions">
-      <button class="pp-btn" id="ppCollapseTop" title="Collapse/Expand">⬇</button>
-      <button class="pp-btn" id="ppMoveTop" title="Move">☰</button>
+      <button class="pp-btn" id="ppCollapseTop">⬇</button>
+      <button class="pp-btn" id="ppMoveTop">☰</button>
     </div>
   </div>
 
-  <div class="pp-content" id="ppContent">
+  <div class="pp-content">
     <p><strong>Daily Tip</strong><br>
-    Practice 10 minutes daily. Consistency wins.</p>
+    10 minutes daily beats 2 hours once a week.</p>
 
     <div class="pp-mobile-controls">
-      <button id="ppCollapseMid" title="Collapse/Expand">⬇ Collapse</button>
-      <button id="ppMoveMid" title="Move">☰ Move</button>
+      <button id="ppCollapseMid">⬇ Collapse</button>
+      <button id="ppMoveMid">☰ Move</button>
     </div>
 
     <p><strong>Daily Puzzle</strong></p>
-    <pre style="background:#fff7df;padding:10px;border-radius:12px;white-space:pre-wrap;margin:0 0 12px 0;">
-x = [1,2,3]
+    <pre style="background:#fff7df;padding:10px;border-radius:12px;white-space:pre-wrap">
+x = [1, 2, 3]
 print(x[::-1])
     </pre>
 
     <p><strong>Learn More</strong><br>
-      <a class="pp-link" href="https://learnwithchampak.live" target="_blank" rel="noopener">
+      <a href="https://learnwithchampak.live" target="_blank">
         learnwithchampak.live
       </a>
     </p>
+
+    <p style="margin-top:400px">(scroll test)</p>
   </div>
   `;
   document.body.appendChild(widget);
 
+  /* ================= COLLAPSE ================= */
   const collapseTop = widget.querySelector("#ppCollapseTop");
   const collapseMid = widget.querySelector("#ppCollapseMid");
+
+  function toggleCollapse(){
+    widget.classList.toggle("collapsed");
+    localStorage.setItem(
+      STORAGE.collapsed,
+      widget.classList.contains("collapsed")
+    );
+  }
+
+  collapseTop.onclick = toggleCollapse;
+  collapseMid.onclick = toggleCollapse;
+
+  if(localStorage.getItem(STORAGE.collapsed) === "true"){
+    widget.classList.add("collapsed");
+  }
+
+  /* ================= POSITION ================= */
+  let pos = { x: 0, y: 64 };
+  const saved = safeParse(localStorage.getItem(STORAGE.pos), null);
+  if(saved){ pos = saved; }
+
+  function applyPos(){
+    widget.style.transform =
+      `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+  }
+
+  applyPos();
+
+  function savePos(){
+    localStorage.setItem(STORAGE.pos, JSON.stringify(pos));
+  }
+
+  /* ================= DRAG ================= */
   const moveTop = widget.querySelector("#ppMoveTop");
   const moveMid = widget.querySelector("#ppMoveMid");
 
-  // ---------- Collapse ----------
-  function applyCollapsedState(isCollapsed) {
-    widget.classList.toggle("collapsed", !!isCollapsed);
-  }
+  let dragging = false, sx = 0, sy = 0, bx = 0, by = 0;
 
-  function toggleCollapse() {
-    const next = !widget.classList.contains("collapsed");
-    applyCollapsedState(next);
-    localStorage.setItem(STORAGE.collapsed, String(next));
-  }
-
-  collapseTop.addEventListener("click", toggleCollapse);
-  collapseMid.addEventListener("click", toggleCollapse);
-
-  applyCollapsedState(localStorage.getItem(STORAGE.collapsed) === "true");
-
-  // ---------- Position via transform ----------
-  // We store x,y translation values (px)
-  let pos = { x: 0, y: 64 };
-
-  const saved = safeParse(localStorage.getItem(STORAGE.pos), null);
-  if (saved && typeof saved.x === "number" && typeof saved.y === "number") {
-    pos.x = saved.x;
-    pos.y = saved.y;
-  }
-
-  function setTransform(x, y) {
-    pos.x = x;
-    pos.y = y;
-    widget.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  }
-
-  // Keep widget on-screen
-  function clampToViewport(x, y) {
-    const rect = widget.getBoundingClientRect();
-    // rect is current; but we want limits based on size
-    const w = rect.width;
-    const h = rect.height;
-    const margin = 8;
-
-    const maxX = window.innerWidth - w - margin - 16; // considering left:16px base
-    const maxY = window.innerHeight - h - margin - 16;
-
-    return {
-      x: clamp(x, -8, maxX),
-      y: clamp(y, -8, maxY)
-    };
-  }
-
-  function persistPos() {
-    localStorage.setItem(STORAGE.pos, JSON.stringify({ x: pos.x, y: pos.y }));
-  }
-
-  // Initial transform apply
-  setTransform(pos.x, pos.y);
-
-  // Re-clamp on resize/orientation
-  window.addEventListener("resize", () => {
-    const c = clampToViewport(pos.x, pos.y);
-    setTransform(c.x, c.y);
-    persistPos();
-  });
-
-  // ---------- Drag only from move buttons ----------
-  let dragging = false;
-  let startClientX = 0, startClientY = 0;
-  let startX = 0, startY = 0;
-
-  function startDrag(clientX, clientY) {
+  function startDrag(x,y){
     dragging = true;
-    startClientX = clientX;
-    startClientY = clientY;
-    startX = pos.x;
-    startY = pos.y;
-    // avoid text selection while dragging
+    sx = x; sy = y;
+    bx = pos.x; by = pos.y;
     document.documentElement.style.userSelect = "none";
   }
 
-  function dragTo(clientX, clientY) {
-    if (!dragging) return;
-    const dx = clientX - startClientX;
-    const dy = clientY - startClientY;
-    const next = clampToViewport(startX + dx, startY + dy);
-    setTransform(next.x, next.y);
+  function dragTo(x,y){
+    if(!dragging) return;
+    pos.x = bx + (x - sx);
+    pos.y = by + (y - sy);
+
+    const maxX = window.innerWidth - widget.offsetWidth - 20;
+    const maxY = window.innerHeight - widget.offsetHeight - 20;
+
+    pos.x = clamp(pos.x, -10, maxX);
+    pos.y = clamp(pos.y, -10, maxY);
+
+    applyPos();
   }
 
-  function endDrag() {
-    if (!dragging) return;
+  function endDrag(){
+    if(!dragging) return;
     dragging = false;
     document.documentElement.style.userSelect = "";
-    persistPos();
+    savePos();
   }
 
-  // Desktop mouse drag
-  function wireMouse(btn) {
-    btn.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      startDrag(e.clientX, e.clientY);
-    });
-  }
-  wireMouse(moveTop);
-  wireMouse(moveMid);
+  moveTop.onmousedown = e => { e.preventDefault(); startDrag(e.clientX,e.clientY); };
+  moveMid.onmousedown = e => { e.preventDefault(); startDrag(e.clientX,e.clientY); };
 
-  document.addEventListener("mousemove", (e) => dragTo(e.clientX, e.clientY));
+  document.addEventListener("mousemove", e => dragTo(e.clientX,e.clientY));
   document.addEventListener("mouseup", endDrag);
 
-  // Mobile touch drag (IMPORTANT: passive:false so preventDefault works)
-  function wireTouch(btn) {
-    btn.addEventListener("touchstart", (e) => {
-      const t = e.touches[0];
-      startDrag(t.clientX, t.clientY);
-    }, { passive: true });
+  [moveTop,moveMid].forEach(btn=>{
+    btn.addEventListener("touchstart",e=>{
+      const t=e.touches[0];
+      startDrag(t.clientX,t.clientY);
+    },{passive:true});
 
-    btn.addEventListener("touchmove", (e) => {
-      if (!dragging) return;
-      e.preventDefault(); // stop page scroll while dragging
-      const t = e.touches[0];
-      dragTo(t.clientX, t.clientY);
-    }, { passive: false });
+    btn.addEventListener("touchmove",e=>{
+      if(!dragging) return;
+      e.preventDefault();
+      const t=e.touches[0];
+      dragTo(t.clientX,t.clientY);
+    },{passive:false});
 
-    btn.addEventListener("touchend", endDrag, { passive: true });
-    btn.addEventListener("touchcancel", endDrag, { passive: true });
-  }
-  wireTouch(moveTop);
-  wireTouch(moveMid);
+    btn.addEventListener("touchend",endDrag);
+  });
 
 })();
