@@ -1,8 +1,6 @@
 /* =========================================================
-   Programmer’s Picnic — Branding v2.4.1
-   Random Daily Content • Pyodide Output FIXED
-   Memory + Glow + Move + Collapse
-   Mobile-first, Blogger-safe
+   Programmer’s Picnic — Branding v2.4.2
+   Mobile-FIXED Controls (Move / Collapse Visible)
 ========================================================= */
 
 (function () {
@@ -23,19 +21,12 @@
 
   /* ---------------- UTILS ---------------- */
   const rand = a => a[Math.floor(Math.random() * a.length)];
+  const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+  const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
-  function load(key) {
-    try { return JSON.parse(localStorage.getItem(key)); }
-    catch { return null; }
-  }
-  function save(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-  }
-
-  /* ---------------- DAILY STATE ---------------- */
   let daily = load(STORAGE_KEY);
   if (!daily || daily.date !== TODAY) {
-    daily = { date: TODAY, tipId: null, puzzleId: null, linkId: null };
+    daily = { date: TODAY, tipId:null, puzzleId:null, linkId:null };
     save(STORAGE_KEY, daily);
   }
 
@@ -51,8 +42,8 @@
   document.head.appendChild(pyScript);
 
   let pyodide, pyReady = false;
-  async function initPyodide() {
-    if (pyReady) return;
+  async function initPyodide(){
+    if(pyReady) return;
     pyodide = await loadPyodide();
     pyReady = true;
   }
@@ -66,59 +57,113 @@
     box-shadow:0 12px 30px rgba(0,0,0,.15);
     font-family:'Lora',serif;z-index:999999;overflow:hidden
   }
+
+  /* Header layout FIX */
   .pp-header{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
     background:linear-gradient(135deg,#f59e0b,#d97706);
-    color:#fff;padding:14px 16px;
-    display:flex;justify-content:space-between;
-    align-items:center;font-weight:700
+    color:#fff;
+    padding:12px 12px 12px 16px;
+    font-weight:700;
+    min-height:56px;
   }
-  .pp-controls span{
-    cursor:pointer;margin-left:10px;font-size:18px;
-    user-select:none
+
+  .pp-title{
+    font-size:16px;
+    line-height:1.2;
   }
+
+  .pp-controls{
+    display:flex;
+    gap:10px;
+  }
+
+  /* Buttons now REAL buttons */
+  .pp-control-btn{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.2);
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .pp-control-btn:active{
+    background:rgba(255,255,255,.35);
+  }
+
   .pp-section{border-top:1px solid #fde68a}
   .pp-section h3{
     margin:0;padding:12px 16px;
-    background:#fff3d6;cursor:pointer;
-    display:flex;justify-content:space-between
+    background:#fff3d6;
+    display:flex;
+    justify-content:space-between;
+    cursor:pointer
   }
   .pp-content{padding:14px 16px}
-  textarea, pre{
-    width:100%;border-radius:10px;
+
+  textarea,pre{
+    width:100%;
+    border-radius:10px;
     border:1px solid #fde68a;
-    padding:10px;font-family:monospace;
+    padding:10px;
+    font-family:monospace;
     white-space:pre-wrap
   }
+
   .pp-btn{
-    background:#d97706;color:#fff;
-    border:none;border-radius:8px;
-    padding:8px 12px;margin-top:8px;margin-right:6px;
+    background:#d97706;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:10px 14px;
+    margin-top:8px;
+    margin-right:6px;
+    font-size:15px;
     cursor:pointer
   }
   .pp-btn.secondary{background:#92400e}
+
   .pp-output{
-    background:#111;color:#0f0;
-    padding:8px;border-radius:8px;
-    margin-top:8px;font-family:monospace
+    background:#111;
+    color:#0f0;
+    padding:10px;
+    border-radius:8px;
+    margin-top:8px;
+    font-family:monospace
   }
+
   .pp-link{color:#d97706;font-weight:600;text-decoration:none}
 
   /* Bubble */
   .pp-bubble{
-    position:fixed;width:64px;height:64px;
+    position:fixed;
+    width:56px;height:56px;
     border-radius:50%;
     background:linear-gradient(135deg,#f59e0b,#d97706);
     box-shadow:0 10px 25px rgba(0,0,0,.25);
-    display:flex;align-items:center;justify-content:center;
-    color:white;font-size:30px;cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:26px;
+    cursor:pointer;
     z-index:999999;
     animation:pp-float 18s linear infinite
   }
+
   @keyframes pp-float{
     0%{top:20px;left:20px}
-    25%{top:20px;left:80%}
-    50%{top:80%;left:80%}
-    75%{top:80%;left:20px}
+    25%{top:20px;left:75%}
+    50%{top:75%;left:75%}
+    75%{top:75%;left:20px}
     100%{top:20px;left:20px}
   }
 
@@ -133,8 +178,11 @@
   }
 
   @media(max-width:600px){
-    .pp-panel{width:92vw;right:4vw}
-    .pp-bubble{width:56px;height:56px;font-size:26px}
+    .pp-panel{
+      width:92vw;
+      right:4vw;
+      bottom:14px;
+    }
   }
   `;
   document.head.appendChild(style);
@@ -144,10 +192,10 @@
   panel.className = "pp-panel";
   panel.innerHTML = `
     <div class="pp-header">
-      <span>🌼 Today @ Programmer’s Picnic</span>
+      <div class="pp-title">🌼 Today @ Programmer’s Picnic</div>
       <div class="pp-controls">
-        <span class="pp-move" title="Move">⠿</span>
-        <span class="pp-collapse" title="Collapse">▾</span>
+        <div class="pp-control-btn pp-move" title="Move">⠿</div>
+        <div class="pp-control-btn pp-collapse" title="Collapse">▾</div>
       </div>
     </div>
 
@@ -191,129 +239,120 @@
     localStorage.setItem(LAST_SEEN_KEY, TODAY);
   };
 
-  /* ---------------- MOVE (DRAG) ---------------- */
-  let dragging = false, ox = 0, oy = 0;
-  const moveHandle = panel.querySelector(".pp-move");
+  /* ---------------- MOVE (TOUCH + MOUSE) ---------------- */
+  let dragging=false, ox=0, oy=0;
+  const moveBtn = panel.querySelector(".pp-move");
 
-  moveHandle.onmousedown = e => {
-    dragging = true;
-    ox = e.clientX - panel.offsetLeft;
-    oy = e.clientY - panel.offsetTop;
-  };
-  document.onmousemove = e => {
-    if (!dragging) return;
-    panel.style.left = e.clientX - ox + "px";
-    panel.style.top = e.clientY - oy + "px";
-    panel.style.right = "auto";
-    panel.style.bottom = "auto";
-  };
-  document.onmouseup = () => {
-    if (!dragging) return;
-    dragging = false;
-    save(PANEL_POS_KEY, { left: panel.style.left, top: panel.style.top });
-  };
-
-  const savedPos = load(PANEL_POS_KEY);
-  if (savedPos) {
-    panel.style.left = savedPos.left;
-    panel.style.top = savedPos.top;
-    panel.style.right = "auto";
-    panel.style.bottom = "auto";
+  function startDrag(x,y){
+    dragging=true;
+    ox=x-panel.offsetLeft;
+    oy=y-panel.offsetTop;
   }
 
-  /* ---------------- GLOW LOGIC ---------------- */
-  const lastSeen = localStorage.getItem(LAST_SEEN_KEY);
-  if (lastSeen !== TODAY) {
+  moveBtn.onmousedown = e => startDrag(e.clientX,e.clientY);
+  moveBtn.ontouchstart = e => startDrag(e.touches[0].clientX,e.touches[0].clientY);
+
+  document.onmousemove = e => {
+    if(!dragging) return;
+    panel.style.left=e.clientX-ox+"px";
+    panel.style.top=e.clientY-oy+"px";
+    panel.style.right="auto";
+    panel.style.bottom="auto";
+  };
+
+  document.ontouchmove = e => {
+    if(!dragging) return;
+    panel.style.left=e.touches[0].clientX-ox+"px";
+    panel.style.top=e.touches[0].clientY-oy+"px";
+    panel.style.right="auto";
+    panel.style.bottom="auto";
+  };
+
+  document.onmouseup = document.ontouchend = () => {
+    if(!dragging) return;
+    dragging=false;
+    save(PANEL_POS_KEY,{left:panel.style.left,top:panel.style.top});
+  };
+
+  const pos=load(PANEL_POS_KEY);
+  if(pos){
+    panel.style.left=pos.left;
+    panel.style.top=pos.top;
+    panel.style.right="auto";
+    panel.style.bottom="auto";
+  }
+
+  /* ---------------- GLOW ---------------- */
+  if(localStorage.getItem(LAST_SEEN_KEY)!==TODAY){
     panel.classList.add("pp-glow");
     bubble.classList.add("pp-glow");
   }
 
-  if (localStorage.getItem(PANEL_STATE_KEY) === "collapsed") {
-    panel.style.display = "none";
-    bubble.style.display = "flex";
+  if(localStorage.getItem(PANEL_STATE_KEY)==="collapsed"){
+    panel.style.display="none";
+    bubble.style.display="flex";
   }
 
-  /* ---------------- LOAD CONTENT ---------------- */
-  Object.entries(SOURCES).forEach(([key, url]) => {
-    fetch(url).then(r => r.json()).then(list => {
-      let chosen = daily[key + "Id"]
-        ? list.find(x => x.id === daily[key + "Id"])
-        : rand(list);
+  /* ---------------- CONTENT ---------------- */
+  Object.entries(SOURCES).forEach(([key,url])=>{
+    fetch(url).then(r=>r.json()).then(list=>{
+      let chosen=daily[key+"Id"]?list.find(x=>x.id===daily[key+"Id"]):rand(list);
+      daily[key+"Id"]=chosen.id;
+      save(STORAGE_KEY,daily);
 
-      daily[key + "Id"] = chosen.id;
-      save(STORAGE_KEY, daily);
+      const box=panel.querySelector(\`[data-key="\${key}"] .pp-content\`);
 
-      const box = panel.querySelector(`[data-key="${key}"] .pp-content`);
+      if(key==="puzzle"){
+        box.innerHTML=\`
+<strong>\${chosen.title}</strong><br><br>
+<textarea rows="6">\${chosen.content}</textarea>
+<button class="pp-btn run">▶ Run</button>
+<button class="pp-btn secondary share">Share</button>
+<div class="pp-output"></div>\`;
 
-      if (key === "puzzle") {
-        box.innerHTML = `
-          <strong>${chosen.title}</strong><br><br>
-          <textarea rows="6">${chosen.content}</textarea>
-          <div>
-            <button class="pp-btn run">▶ Run</button>
-            <button class="pp-btn secondary share">Share</button>
-          </div>
-          <div class="pp-output"></div>
-        `;
-
-        const run = box.querySelector(".run");
-        const out = box.querySelector(".pp-output");
-        const editor = box.querySelector("textarea");
-
-        run.onclick = async () => {
-          out.textContent = "Running...";
+        const out=box.querySelector(".pp-output");
+        box.querySelector(".run").onclick=async()=>{
+          out.textContent="Running...";
           await initPyodide();
 
-          const code = editor.value
-            .replace(/\\/g, "\\\\")
-            .replace(/"""/g, '\\"\\"\\"');
+          const code=box.querySelector("textarea").value
+            .replace(/\\\\/g,"\\\\\\\\")
+            .replace(/"""/g,'\\\\\"\\\\\"\\\\\"');
 
-          const wrapped = `
+          const wrapped=\`
 import sys
 from io import StringIO
-_stdout = sys.stdout
-sys.stdout = StringIO()
+_stdout=sys.stdout
+sys.stdout=StringIO()
 try:
-    exec("""${code}""")
-    result = sys.stdout.getvalue()
+    exec("""\${code}""")
+    result=sys.stdout.getvalue()
 except Exception as e:
-    result = str(e)
+    result=str(e)
 finally:
-    sys.stdout = _stdout
+    sys.stdout=_stdout
 result
-`;
+\`;
 
-          try {
-            const res = await pyodide.runPythonAsync(wrapped);
-            out.textContent = res.trim() || "✔ (No output)";
-          } catch (e) {
-            out.textContent = e.toString();
-          }
+          try{
+            out.textContent=(await pyodide.runPythonAsync(wrapped)).trim()||"✔ (No output)";
+          }catch(e){out.textContent=e.toString();}
         };
-
-        box.querySelector(".share").onclick = () => share(chosen);
-
-      } else {
-        box.innerHTML = `
-          <strong>${chosen.title}</strong><br><br>
-          <pre>${chosen.content}</pre>
-          <a href="${chosen.link}" target="_blank" class="pp-link">🔗 Open</a>
-          <button class="pp-btn secondary share">Share</button>
-        `;
-        box.querySelector(".share").onclick = () => share(chosen);
+        box.querySelector(".share").onclick=()=>share(chosen);
+      }else{
+        box.innerHTML=\`
+<strong>\${chosen.title}</strong><br><br>
+<pre>\${chosen.content}</pre>
+<a href="\${chosen.link}" target="_blank" class="pp-link">🔗 Open</a>
+<button class="pp-btn secondary share">Share</button>\`;
+        box.querySelector(".share").onclick=()=>share(chosen);
       }
     });
   });
 
-  /* ---------------- SHARE ---------------- */
-  function share(item) {
-    const text = `${item.title}\n\n${item.content}\n\n${item.link}`;
-    if (navigator.share) {
-      navigator.share({ title: item.title, text, url: item.link });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert("Copied to clipboard");
-    }
+  function share(item){
+    const text=\`\${item.title}\\n\\n\${item.content}\\n\\n\${item.link}\`;
+    navigator.share?navigator.share({text,url:item.link}):navigator.clipboard.writeText(text);
   }
 
 })();
