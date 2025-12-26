@@ -1,15 +1,15 @@
 /* =========================================================
-   Programmer’s Picnic — Branding v2.6.1
-   MOVING ICON (old style) • Panel open/close
-   Accordion (one open) • Pyodide SAFE output
-   Localhost + Mobile stable
+   Programmer’s Picnic — Branding v2.7
+   Moving Icon → Pause on Hover → Open Panel at Click Point
+   Accordion • Pyodide SAFE • Mobile + Desktop Stable
 ========================================================= */
 
 (function () {
   "use strict";
 
   /* ---------------- CONFIG ---------------- */
-  const PANEL_STATE_KEY = "pp_panel_state_v2";
+  const PANEL_STATE_KEY = "pp_panel_state_v27";
+
   const SOURCES = {
     tip: "https://varanasi-software-junction.github.io/search/daily-tip.json",
     puzzle:
@@ -51,91 +51,11 @@
   /* ---------------- STYLES ---------------- */
   const style = document.createElement("style");
   style.textContent = `
-  /* PANEL */
-  .pp-panel{
-    position:fixed;
-    right:12px;
-    bottom:12px;
-    width:360px;
-    max-height:calc(100vh - 24px);
-    display:flex;
-    flex-direction:column;
-    background:#fffaf2;
-    border-radius:18px;
-    box-shadow:0 12px 30px rgba(0,0,0,.15);
-    font-family:'Lora',serif;
-    z-index:999999;
-    overflow:hidden;
-  }
-
-  /* STICKY HEADER so buttons NEVER disappear */
-  .pp-header{
-    position:sticky;
-    top:0;
-    z-index:2;
-    display:grid;
-    grid-template-columns:1fr auto;
-    align-items:center;
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    color:#fff;
-    padding:12px 14px;
-    min-height:56px;
-    font-weight:700;
-  }
-  .pp-controls{display:flex;gap:8px;}
-  .pp-control-btn{
-    width:44px;height:44px;border-radius:12px;
-    background:rgba(255,255,255,.25);
-    color:#fff;border:none;font-size:18px;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-  }
-
-  .pp-body{overflow:auto;flex:1;}
-
-  /* ACCORDION */
-  .pp-accordion{border-top:1px solid #fde68a;}
-  .pp-acc-header{
-    padding:14px 16px;background:#fff3d6;
-    cursor:pointer;font-weight:600;
-    display:flex;justify-content:space-between;align-items:center;
-    user-select:none;
-  }
-  .pp-acc-header span{font-size:18px;font-weight:800;line-height:1;}
-  .pp-acc-content{display:none;padding:14px 16px;}
-  .pp-accordion.active .pp-acc-content{display:block;}
-
-  textarea, pre{
-    width:100%;
-    border-radius:10px;
-    border:1px solid #fde68a;
-    padding:10px;
-    font-family:monospace;
-    white-space:pre-wrap;
-  }
-
-  .pp-btn{
-    background:#d97706;color:#fff;
-    border:none;border-radius:10px;
-    padding:10px 14px;margin-top:10px;
-    cursor:pointer;
-    font-weight:700;
-  }
-
-  .pp-output{
-    background:#111;color:#0f0;
-    padding:10px;border-radius:10px;
-    margin-top:10px;font-family:monospace;
-    min-height:22px;
-  }
-
-  .pp-link{color:#d97706;font-weight:700;text-decoration:none;}
-
-  /* MOVING ICON (old style) */
+  /* FLOATING MOVING ICON */
   .pp-float{
     position:fixed;
-    top:18px;
-    left:18px;
+    top:20px;
+    left:20px;
     width:64px;
     height:64px;
     border-radius:50%;
@@ -149,27 +69,105 @@
     cursor:pointer;
     z-index:999999;
     user-select:none;
-    -webkit-tap-highlight-color: transparent;
-    animation: pp-move-around 18s linear infinite;
+    animation:pp-move 18s linear infinite;
   }
 
-  /* pause animation when user is dragging */
-  .pp-float.pp-dragging{ animation:none !important; }
+  .pp-float.paused{
+    animation-play-state: paused;
+  }
 
-  @keyframes pp-move-around{
-    0%   { top:16px; left:16px; }
-    25%  { top:16px; left:calc(100vw - 90px); }
+  @keyframes pp-move{
+    0%   { top:20px; left:20px; }
+    25%  { top:20px; left:calc(100vw - 90px); }
     50%  { top:calc(100vh - 110px); left:calc(100vw - 90px); }
-    75%  { top:calc(100vh - 110px); left:16px; }
-    100% { top:16px; left:16px; }
+    75%  { top:calc(100vh - 110px); left:20px; }
+    100% { top:20px; left:20px; }
   }
+
+  /* PANEL */
+  .pp-panel{
+    position:fixed;
+    width:360px;
+    max-height:calc(100vh - 40px);
+    display:flex;
+    flex-direction:column;
+    background:#fffaf2;
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    font-family:'Lora',serif;
+    z-index:999999;
+    overflow:hidden;
+  }
+
+  .pp-header{
+    position:sticky;
+    top:0;
+    z-index:2;
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff;
+    padding:12px 14px;
+    min-height:56px;
+    font-weight:700;
+  }
+
+  .pp-control-btn{
+    width:44px;height:44px;border-radius:12px;
+    background:rgba(255,255,255,.25);
+    color:#fff;border:none;font-size:20px;
+    cursor:pointer;
+  }
+
+  .pp-body{overflow:auto;flex:1;}
+
+  /* ACCORDION */
+  .pp-accordion{border-top:1px solid #fde68a;}
+  .pp-acc-header{
+    padding:14px 16px;
+    background:#fff3d6;
+    cursor:pointer;
+    font-weight:600;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .pp-acc-header span{font-size:18px;font-weight:800;}
+  .pp-acc-content{display:none;padding:14px 16px;}
+  .pp-accordion.active .pp-acc-content{display:block;}
+
+  textarea, pre{
+    width:100%;
+    border-radius:10px;
+    border:1px solid #fde68a;
+    padding:10px;
+    font-family:monospace;
+    white-space:pre-wrap;
+  }
+
+  .pp-btn{
+    background:#d97706;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    margin-top:10px;
+    cursor:pointer;
+  }
+
+  .pp-output{
+    background:#111;color:#0f0;
+    padding:10px;border-radius:10px;
+    margin-top:10px;font-family:monospace;
+  }
+
+  .pp-link{color:#d97706;font-weight:700;text-decoration:none;}
 
   @media(max-width:600px){
     .pp-panel{
       width:92vw;
-      right:4vw;
-      bottom:10px;
-      max-height:calc(100vh - 20px);
+      max-height:calc(100vh - 80px);
     }
     .pp-float{
       width:56px;height:56px;font-size:24px;
@@ -178,23 +176,31 @@
   `;
   document.head.appendChild(style);
 
-  /* ---------------- MOVING ICON ---------------- */
+  /* ---------------- FLOATING ICON ---------------- */
   const floater = document.createElement("div");
   floater.className = "pp-float";
-  floater.title = "Open Programmer’s Picnic";
   floater.textContent = "🍊";
   document.body.appendChild(floater);
+
+  /* Pause movement on hover / touch */
+  floater.addEventListener("mouseenter", () => floater.classList.add("paused"));
+  floater.addEventListener("mouseleave", () =>
+    floater.classList.remove("paused")
+  );
+  floater.addEventListener(
+    "touchstart",
+    () => floater.classList.add("paused"),
+    { passive: true }
+  );
 
   /* ---------------- PANEL ---------------- */
   const panel = document.createElement("div");
   panel.className = "pp-panel";
-  panel.style.display = "none"; // start hidden (icon only)
+  panel.style.display = "none";
   panel.innerHTML = `
     <div class="pp-header">
       <div>🌼 Today @ Programmer’s Picnic</div>
-      <div class="pp-controls">
-        <button class="pp-control-btn pp-collapse" title="Collapse">▾</button>
-      </div>
+      <button class="pp-control-btn pp-collapse">▾</button>
     </div>
 
     <div class="pp-body">
@@ -216,8 +222,12 @@
   `;
   document.body.appendChild(panel);
 
-  /* ---------------- OPEN / CLOSE ---------------- */
-  function openPanel() {
+  /* ---------------- OPEN PANEL AT CLICK POINT ---------------- */
+  function openPanelAt(x, y) {
+    panel.style.left =
+      Math.min(x, window.innerWidth - panel.offsetWidth - 10) + "px";
+    panel.style.top =
+      Math.min(y, window.innerHeight - panel.offsetHeight - 10) + "px";
     panel.style.display = "flex";
     floater.style.display = "none";
     save(PANEL_STATE_KEY, "open");
@@ -226,109 +236,34 @@
   function closePanel() {
     panel.style.display = "none";
     floater.style.display = "flex";
+    floater.classList.remove("paused");
     save(PANEL_STATE_KEY, "closed");
   }
 
-  panel.querySelector(".pp-collapse").addEventListener("click", (e) => {
-    e.preventDefault();
-    closePanel();
+  floater.addEventListener("click", (e) => {
+    floater.classList.add("paused");
+    openPanelAt(e.clientX, e.clientY);
   });
 
-  // tap icon opens panel (but not when dragging)
-  let justDragged = false;
-  floater.addEventListener("click", () => {
-    if (justDragged) {
-      justDragged = false;
-      return;
-    }
-    openPanel();
-  });
+  panel.querySelector(".pp-collapse").onclick = closePanel;
 
-  // restore last state
-  if (load(PANEL_STATE_KEY) === "open") openPanel();
-
-  /* ---------------- ACCORDION (ONE OPEN AT A TIME) ---------------- */
-  function setActiveAccordion(activeKey) {
+  /* ---------------- ACCORDION ---------------- */
+  function setActiveAccordion(key) {
     panel.querySelectorAll(".pp-accordion").forEach((acc) => {
-      const isActive = acc.getAttribute("data-key") === activeKey;
-      acc.classList.toggle("active", isActive);
-      const icon = acc.querySelector(".pp-acc-header span");
-      if (icon) icon.textContent = isActive ? "−" : "+";
+      const active = acc.dataset.key === key;
+      acc.classList.toggle("active", active);
+      acc.querySelector("span").textContent = active ? "−" : "+";
     });
   }
 
-  panel.querySelectorAll(".pp-accordion .pp-acc-header").forEach((header) => {
-    header.addEventListener(
-      "click",
-      () => {
-        const acc = header.closest(".pp-accordion");
-        const key = acc.getAttribute("data-key");
-        if (acc.classList.contains("active")) return; // keep one always open
-        setActiveAccordion(key);
-      },
-      { passive: true }
-    );
+  panel.querySelectorAll(".pp-acc-header").forEach((h) => {
+    h.onclick = () => {
+      const acc = h.closest(".pp-accordion");
+      if (acc.classList.contains("active")) return;
+      setActiveAccordion(acc.dataset.key);
+    };
   });
-
   setActiveAccordion("puzzle");
-
-  /* ---------------- DRAG THE MOVING ICON (optional + stable) ---------------- */
-  // If user drags it, we stop animation and set exact position.
-  // After drag ends, it stays where dropped (no animation restart).
-  if (window.PointerEvent) {
-    let dragging = false,
-      ox = 0,
-      oy = 0;
-
-    floater.addEventListener("pointerdown", (e) => {
-      dragging = true;
-      justDragged = false;
-
-      const r = floater.getBoundingClientRect();
-      floater.classList.add("pp-dragging");
-      floater.style.top = r.top + "px";
-      floater.style.left = r.left + "px";
-
-      ox = e.clientX - r.left;
-      oy = e.clientY - r.top;
-
-      floater.setPointerCapture(e.pointerId);
-      e.preventDefault();
-    });
-
-    floater.addEventListener("pointermove", (e) => {
-      if (!dragging) return;
-      e.preventDefault();
-
-      const w = floater.offsetWidth;
-      const h = floater.offsetHeight;
-
-      const maxX = window.innerWidth - w - 6;
-      const maxY = window.innerHeight - h - 6;
-
-      const x = Math.max(6, Math.min(maxX, e.clientX - ox));
-      const y = Math.max(6, Math.min(maxY, e.clientY - oy));
-
-      floater.style.left = x + "px";
-      floater.style.top = y + "px";
-      justDragged = true;
-    });
-
-    floater.addEventListener("pointerup", (e) => {
-      if (!dragging) return;
-      dragging = false;
-      try {
-        floater.releasePointerCapture(e.pointerId);
-      } catch {}
-      setTimeout(() => {
-        /* keep dropped position */
-      }, 0);
-    });
-
-    floater.addEventListener("pointercancel", () => {
-      dragging = false;
-    });
-  }
 
   /* ---------------- LOAD CONTENT ---------------- */
   Object.entries(SOURCES).forEach(([key, url]) => {
@@ -353,8 +288,6 @@
           box.querySelector(".run").onclick = async () => {
             out.textContent = "Running...";
             await initPyodide();
-
-            // SAFE: do NOT interpolate code into JS template literals
             pyodide.globals.set("USER_CODE", editor.value);
 
             const result = await pyodide.runPythonAsync(`
@@ -380,7 +313,6 @@ output
 <a href="${chosen.link}" target="_blank" class="pp-link">🔗 Open</a>
 `;
         }
-      })
-      .catch((err) => console.warn("PP fetch failed:", key, err));
+      });
   });
 })();
