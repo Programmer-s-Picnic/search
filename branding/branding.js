@@ -1,358 +1,229 @@
-/* =========================================================
-   Programmer’s Picnic — Branding v2.4.2
-   Mobile-FIXED Controls (Move / Collapse Visible)
-========================================================= */
+/* ==========================================================
+   branding.js — Programmer’s Picnic Daily Widget v2
+   Author: Champak Roy
+   Theme: Light Saffron
+   ========================================================== */
 
 (function () {
   "use strict";
 
   /* ---------------- CONFIG ---------------- */
-  const STORAGE_KEY = "pp_daily_random_state";
-  const PANEL_STATE_KEY = "pp_panel_state";
-  const PANEL_POS_KEY = "pp_panel_position";
-  const LAST_SEEN_KEY = "pp_last_seen_day";
-  const TODAY = new Date().toDateString();
+  const WIDGET_ID = "pp-daily-widget";
+  const STORAGE_COLLAPSE = "ppWidgetCollapsed";
+  const STORAGE_POS = "ppWidgetPos";
 
-  const SOURCES = {
-    tip: "https://varanasi-software-junction.github.io/search/daily-tip.json",
-    puzzle: "https://varanasi-software-junction.github.io/search/daily-puzzle.json",
-    link: "https://varanasi-software-junction.github.io/search/daily-link.json"
-  };
-
-  /* ---------------- UTILS ---------------- */
-  const rand = a => a[Math.floor(Math.random() * a.length)];
-  const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
-  const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
-
-  let daily = load(STORAGE_KEY);
-  if (!daily || daily.date !== TODAY) {
-    daily = { date: TODAY, tipId:null, puzzleId:null, linkId:null };
-    save(STORAGE_KEY, daily);
-  }
-
-  /* ---------------- FONT ---------------- */
-  const font = document.createElement("link");
-  font.rel = "stylesheet";
-  font.href = "https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap";
-  document.head.appendChild(font);
-
-  /* ---------------- PYODIDE ---------------- */
-  const pyScript = document.createElement("script");
-  pyScript.src = "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js";
-  document.head.appendChild(pyScript);
-
-  let pyodide, pyReady = false;
-  async function initPyodide(){
-    if(pyReady) return;
-    pyodide = await loadPyodide();
-    pyReady = true;
-  }
-
-  /* ---------------- STYLES ---------------- */
+  /* ---------------- CSS ---------------- */
   const style = document.createElement("style");
   style.textContent = `
-  .pp-panel{
-    position:fixed;bottom:20px;right:20px;width:360px;
-    background:#fffaf2;border-radius:18px;
-    box-shadow:0 12px 30px rgba(0,0,0,.15);
-    font-family:'Lora',serif;z-index:999999;overflow:hidden
+  #${WIDGET_ID}{
+    position:fixed;
+    top:80px;
+    right:16px;
+    width:340px;
+    background:linear-gradient(145deg,#fffdf6,#fff2d6);
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
+    z-index:999999;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    transition:height .3s ease, box-shadow .3s ease;
   }
 
-  /* Header layout FIX */
+  #${WIDGET_ID}.collapsed{
+    height:52px;
+    overflow:hidden;
+  }
+
+  #${WIDGET_ID}.glow{
+    box-shadow:
+      0 0 0 0 rgba(249,115,22,.7),
+      0 12px 30px rgba(0,0,0,.15);
+    animation:ppGlow 1.6s ease-out;
+  }
+
+  @keyframes ppGlow{
+    0%{box-shadow:0 0 0 0 rgba(249,115,22,.7)}
+    100%{box-shadow:0 0 0 18px rgba(249,115,22,0)}
+  }
+
   .pp-header{
-    display:grid;
-    grid-template-columns:1fr auto;
-    align-items:center;
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    color:#fff;
-    padding:12px 12px 12px 16px;
-    font-weight:700;
-    min-height:56px;
-  }
-
-  .pp-title{
-    font-size:16px;
-    line-height:1.2;
-  }
-
-  .pp-controls{
-    display:flex;
-    gap:10px;
-  }
-
-  /* Buttons now REAL buttons */
-  .pp-control-btn{
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,.2);
-    color:white;
-    font-size:20px;
-    cursor:pointer;
-    user-select:none;
-  }
-
-  .pp-control-btn:active{
-    background:rgba(255,255,255,.35);
-  }
-
-  .pp-section{border-top:1px solid #fde68a}
-  .pp-section h3{
-    margin:0;padding:12px 16px;
-    background:#fff3d6;
     display:flex;
     justify-content:space-between;
-    cursor:pointer
+    align-items:center;
+    padding:12px 14px;
+    background:linear-gradient(135deg,#ffe8b0,#ffd36a);
+    border-radius:18px 18px 0 0;
+    font-weight:600;
+    color:#7c3a00;
   }
-  .pp-content{padding:14px 16px}
 
-  textarea,pre{
-    width:100%;
-    border-radius:10px;
-    border:1px solid #fde68a;
-    padding:10px;
-    font-family:monospace;
-    white-space:pre-wrap
+  .pp-actions{
+    display:flex;
+    gap:8px;
   }
 
   .pp-btn{
-    background:#d97706;
-    color:white;
     border:none;
-    border-radius:8px;
-    padding:10px 14px;
-    margin-top:8px;
-    margin-right:6px;
-    font-size:15px;
-    cursor:pointer
-  }
-  .pp-btn.secondary{background:#92400e}
-
-  .pp-output{
-    background:#111;
-    color:#0f0;
-    padding:10px;
-    border-radius:8px;
-    margin-top:8px;
-    font-family:monospace
-  }
-
-  .pp-link{color:#d97706;font-weight:600;text-decoration:none}
-
-  /* Bubble */
-  .pp-bubble{
-    position:fixed;
-    width:56px;height:56px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-size:26px;
+    background:#fff3c4;
+    border-radius:12px;
+    padding:6px 10px;
+    font-size:16px;
     cursor:pointer;
-    z-index:999999;
-    animation:pp-float 18s linear infinite
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
   }
 
-  @keyframes pp-float{
-    0%{top:20px;left:20px}
-    25%{top:20px;left:75%}
-    50%{top:75%;left:75%}
-    75%{top:75%;left:20px}
-    100%{top:20px;left:20px}
+  .pp-content{
+    padding:14px;
+    color:#1f2937;
+    line-height:1.6;
   }
 
-  /* Glow */
-  .pp-glow{
-    animation:ppGlow 2.5s ease-in-out infinite
-  }
-  @keyframes ppGlow{
-    0%{box-shadow:0 0 0 rgba(0,0,0,0)}
-    50%{box-shadow:0 0 22px rgba(217,119,6,.55)}
-    100%{box-shadow:0 0 0 rgba(0,0,0,0)}
+  .pp-mobile-controls{
+    display:none;
+    justify-content:center;
+    gap:14px;
+    margin:12px 0;
   }
 
-  @media(max-width:600px){
-    .pp-panel{
+  .pp-mobile-controls button{
+    border:none;
+    background:linear-gradient(135deg,#ffe9b3,#ffd36a);
+    color:#7c3a00;
+    font-size:18px;
+    padding:10px 14px;
+    border-radius:14px;
+    box-shadow:0 6px 16px rgba(0,0,0,.15);
+    cursor:pointer;
+  }
+
+  @media(max-width:768px){
+    #${WIDGET_ID}{
       width:92vw;
       right:4vw;
-      bottom:14px;
+    }
+    .pp-mobile-controls{
+      display:flex;
     }
   }
   `;
   document.head.appendChild(style);
 
-  /* ---------------- PANEL ---------------- */
-  const panel = document.createElement("div");
-  panel.className = "pp-panel";
-  panel.innerHTML = `
+  /* ---------------- HTML ---------------- */
+  const widget = document.createElement("div");
+  widget.id = WIDGET_ID;
+  widget.innerHTML = `
     <div class="pp-header">
-      <div class="pp-title">🌼 Today @ Programmer’s Picnic</div>
-      <div class="pp-controls">
-        <div class="pp-control-btn pp-move" title="Move">⠿</div>
-        <div class="pp-control-btn pp-collapse" title="Collapse">▾</div>
+      <span>🌼 Today at Programmer’s Picnic</span>
+      <div class="pp-actions">
+        <button class="pp-btn" id="ppCollapseTop">⬇</button>
+        <button class="pp-btn" id="ppMoveTop">☰</button>
       </div>
     </div>
 
-    <div class="pp-section" data-key="tip">
-      <h3>🧠 Daily Tip <span>−</span></h3>
-      <div class="pp-content"></div>
-    </div>
+    <div class="pp-content">
+      <p><strong>Daily Tip</strong><br>
+      Practice small problems daily — consistency beats intensity.</p>
 
-    <div class="pp-section" data-key="puzzle">
-      <h3>🧩 Python Puzzle <span>−</span></h3>
-      <div class="pp-content"></div>
-    </div>
+      <div class="pp-mobile-controls">
+        <button id="ppCollapseMid">⬇ Collapse</button>
+        <button id="ppMoveMid">☰ Move</button>
+      </div>
 
-    <div class="pp-section" data-key="link">
-      <h3>🌐 LearnWithChampak <span>−</span></h3>
-      <div class="pp-content"></div>
+      <p><strong>Daily Puzzle</strong></p>
+      <pre style="background:#fff7df;padding:10px;border-radius:12px">
+x = [1,2,3]
+print(x[::-1])
+      </pre>
+
+      <p><strong>Learn More</strong><br>
+        <a href="https://learnwithchampak.live" target="_blank">
+          learnwithchampak.live
+        </a>
+      </p>
     </div>
   `;
-  document.body.appendChild(panel);
+  document.body.appendChild(widget);
 
-  /* ---------------- BUBBLE ---------------- */
-  const bubble = document.createElement("div");
-  bubble.className = "pp-bubble";
-  bubble.textContent = "🍊";
-  bubble.style.display = "none";
-  document.body.appendChild(bubble);
+  /* ---------------- COLLAPSE LOGIC ---------------- */
+  const collapseTop = widget.querySelector("#ppCollapseTop");
+  const collapseMid = widget.querySelector("#ppCollapseMid");
 
-  /* ---------------- COLLAPSE / REVIVE ---------------- */
-  panel.querySelector(".pp-collapse").onclick = () => {
-    panel.style.display = "none";
-    bubble.style.display = "flex";
-    localStorage.setItem(PANEL_STATE_KEY, "collapsed");
-  };
+  function toggleCollapse(){
+    widget.classList.toggle("collapsed");
+    localStorage.setItem(
+      STORAGE_COLLAPSE,
+      widget.classList.contains("collapsed")
+    );
+  }
 
-  bubble.onclick = () => {
-    bubble.style.display = "none";
-    panel.style.display = "block";
-    panel.classList.remove("pp-glow");
-    bubble.classList.remove("pp-glow");
-    localStorage.setItem(PANEL_STATE_KEY, "expanded");
-    localStorage.setItem(LAST_SEEN_KEY, TODAY);
-  };
+  collapseTop.onclick = toggleCollapse;
+  collapseMid.onclick = toggleCollapse;
 
-  /* ---------------- MOVE (TOUCH + MOUSE) ---------------- */
-  let dragging=false, ox=0, oy=0;
-  const moveBtn = panel.querySelector(".pp-move");
+  if(localStorage.getItem(STORAGE_COLLAPSE) === "true"){
+    widget.classList.add("collapsed");
+  }
+
+  /* ---------------- DRAG LOGIC ---------------- */
+  const moveTop = widget.querySelector("#ppMoveTop");
+  const moveMid = widget.querySelector("#ppMoveMid");
+
+  let dragging = false, startX = 0, startY = 0;
 
   function startDrag(x,y){
-    dragging=true;
-    ox=x-panel.offsetLeft;
-    oy=y-panel.offsetTop;
+    dragging = true;
+    startX = x - widget.offsetLeft;
+    startY = y - widget.offsetTop;
+    widget.classList.add("glow");
   }
 
-  moveBtn.onmousedown = e => startDrag(e.clientX,e.clientY);
-  moveBtn.ontouchstart = e => startDrag(e.touches[0].clientX,e.touches[0].clientY);
-
-  document.onmousemove = e => {
+  function moveDrag(x,y){
     if(!dragging) return;
-    panel.style.left=e.clientX-ox+"px";
-    panel.style.top=e.clientY-oy+"px";
-    panel.style.right="auto";
-    panel.style.bottom="auto";
-  };
-
-  document.ontouchmove = e => {
-    if(!dragging) return;
-    panel.style.left=e.touches[0].clientX-ox+"px";
-    panel.style.top=e.touches[0].clientY-oy+"px";
-    panel.style.right="auto";
-    panel.style.bottom="auto";
-  };
-
-  document.onmouseup = document.ontouchend = () => {
-    if(!dragging) return;
-    dragging=false;
-    save(PANEL_POS_KEY,{left:panel.style.left,top:panel.style.top});
-  };
-
-  const pos=load(PANEL_POS_KEY);
-  if(pos){
-    panel.style.left=pos.left;
-    panel.style.top=pos.top;
-    panel.style.right="auto";
-    panel.style.bottom="auto";
+    widget.style.left = (x - startX) + "px";
+    widget.style.top  = (y - startY) + "px";
+    widget.style.right = "auto";
   }
 
-  /* ---------------- GLOW ---------------- */
-  if(localStorage.getItem(LAST_SEEN_KEY)!==TODAY){
-    panel.classList.add("pp-glow");
-    bubble.classList.add("pp-glow");
+  function endDrag(){
+    if(dragging){
+      localStorage.setItem(
+        STORAGE_POS,
+        JSON.stringify({
+          left: widget.style.left,
+          top: widget.style.top
+        })
+      );
+    }
+    dragging = false;
   }
 
-  if(localStorage.getItem(PANEL_STATE_KEY)==="collapsed"){
-    panel.style.display="none";
-    bubble.style.display="flex";
-  }
+  /* mouse */
+  moveTop.onmousedown = e => startDrag(e.clientX,e.clientY);
+  moveMid.onmousedown = e => startDrag(e.clientX,e.clientY);
+  document.addEventListener("mousemove", e => moveDrag(e.clientX,e.clientY));
+  document.addEventListener("mouseup", endDrag);
 
-  /* ---------------- CONTENT ---------------- */
-  Object.entries(SOURCES).forEach(([key,url])=>{
-    fetch(url).then(r=>r.json()).then(list=>{
-      let chosen=daily[key+"Id"]?list.find(x=>x.id===daily[key+"Id"]):rand(list);
-      daily[key+"Id"]=chosen.id;
-      save(STORAGE_KEY,daily);
-
-      const box=panel.querySelector(\`[data-key="\${key}"] .pp-content\`);
-
-      if(key==="puzzle"){
-        box.innerHTML=\`
-<strong>\${chosen.title}</strong><br><br>
-<textarea rows="6">\${chosen.content}</textarea>
-<button class="pp-btn run">▶ Run</button>
-<button class="pp-btn secondary share">Share</button>
-<div class="pp-output"></div>\`;
-
-        const out=box.querySelector(".pp-output");
-        box.querySelector(".run").onclick=async()=>{
-          out.textContent="Running...";
-          await initPyodide();
-
-          const code=box.querySelector("textarea").value
-            .replace(/\\\\/g,"\\\\\\\\")
-            .replace(/"""/g,'\\\\\"\\\\\"\\\\\"');
-
-          const wrapped=\`
-import sys
-from io import StringIO
-_stdout=sys.stdout
-sys.stdout=StringIO()
-try:
-    exec("""\${code}""")
-    result=sys.stdout.getvalue()
-except Exception as e:
-    result=str(e)
-finally:
-    sys.stdout=_stdout
-result
-\`;
-
-          try{
-            out.textContent=(await pyodide.runPythonAsync(wrapped)).trim()||"✔ (No output)";
-          }catch(e){out.textContent=e.toString();}
-        };
-        box.querySelector(".share").onclick=()=>share(chosen);
-      }else{
-        box.innerHTML=\`
-<strong>\${chosen.title}</strong><br><br>
-<pre>\${chosen.content}</pre>
-<a href="\${chosen.link}" target="_blank" class="pp-link">🔗 Open</a>
-<button class="pp-btn secondary share">Share</button>\`;
-        box.querySelector(".share").onclick=()=>share(chosen);
-      }
-    });
+  /* touch */
+  [moveTop, moveMid].forEach(btn => {
+    btn.addEventListener("touchstart", e => {
+      const t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, {passive:true});
   });
 
-  function share(item){
-    const text=\`\${item.title}\\n\\n\${item.content}\\n\\n\${item.link}\`;
-    navigator.share?navigator.share({text,url:item.link}):navigator.clipboard.writeText(text);
+  document.addEventListener("touchmove", e => {
+    if(!dragging) return;
+    const t = e.touches[0];
+    moveDrag(t.clientX, t.clientY);
+  }, {passive:true});
+
+  document.addEventListener("touchend", endDrag);
+
+  /* restore position */
+  const savedPos = localStorage.getItem(STORAGE_POS);
+  if(savedPos){
+    const p = JSON.parse(savedPos);
+    widget.style.left = p.left;
+    widget.style.top  = p.top;
+    widget.style.right = "auto";
   }
 
 })();
