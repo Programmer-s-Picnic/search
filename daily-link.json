@@ -3,19 +3,19 @@
     "id": "lnk_day1",
     "title": "Python Starter – Day 1",
     "content": "Install Python and print your first Hello World program.",
-    "link": "https://learnwithchampak.live/python-starter/day-1"
+    "link": "https://www.learnwithchampak.live/2025/12/ai-ml-ds-1.html"
   },
   {
     "id": "lnk_vars",
     "title": "Python Variables",
     "content": "Understand variables and naming conventions.",
-    "link": "https://learnwithchampak.live/python-starter/variables"
+    "link": "https://www.learnwithchampak.live/2020/12/how-are-variables-created-in-python.html"
   },
   {
     "id": "lnk_ops",
     "title": "Operators in Python",
     "content": "Arithmetic, comparison, and logical operators.",
-    "link": "https://learnwithchampak.live/python-starter/operators"
+    "link": "https://www.learnwithchampak.live/2020/12/python-operators.html"
   },
   {
     "id": "lnk_if",
