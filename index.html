@@ -1,111 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Champak Roy: Algorithms, Coding, Testing and more</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/me.jpg">
-    <link rel="stylesheet" href="branding/greentheme.css">
-    <!-- <link rel="stylesheet" href="branding/bluetheme.css"> -->
-    <link rel="stylesheet" href="assets/linksjson/links.css">
-    <meta property="og:title" content="Champak Roy: Algorithms, Coding, Testing and more">
-    <meta property="og:description"
-        content="My very own programming encyclopaedia. A collection of algorithms, coding practices, testing techniques, and more.">
-    <meta property="og:image" content="https://varanasi-software-junction.github.io/search/assets/images/me.jpg">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello World</title>
 </head>
 
 <body>
-<script async src="https://cse.google.com/cse.js?cx=fdb7fcb4c37bc3640">
-</script>
-<div class="gcse-search"></div>
-    <header>
-        <h1 id="header">Programming Encyclopaedia</h1>
-    </header>
-
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">Quizzes</a>
-        <a href="#">Contact</a>
-        <a href="#">About</a>
-    </nav>
-    <iframe id="searchdiv" style=" z-index: 1000; width: 100%;height: 300px;border-style: ridge;display: none;" src="https://varanasisoftwarejunction.blogspot.com/search?q=sql"></iframe>
-    <div id="search-bar">
-        <input type="text" placeholder="Search programs..." id="quizSearch" onkeyup="filterQuizzes()">
-        <br><label id="lblCount"></label>
-    </div>
-
-    <script>
-
-
-    </script>
-
-
-    <div id="quiz-list">
-
-    </div>
-
-    <!-- ******************Branding ********************************** -->
-
-
-
-
-
-
-    <!-- ******************Branding ********************************** -->
-    <!-- <script src="https://varanasi-software-junction.github.io/picnic/js/hello.js"></script>-->
-    <script>
-        const melbl = document.getElementById("memsg");
-
-        // Placeholder search functionality
-        const lblCount = document.getElementById("lblCount");
-
-        function filterQuizzes() {
-            let count = 0;
-            let input = document.getElementById('quizSearch').value.toLowerCase();
-            let quizLinks = document.getElementById('quiz-list').getElementsByTagName('div');
-
-            for (let i = 0; i < quizLinks.length; i++) {
-                let quizText = quizLinks[i].getElementsByTagName("a")[0].innerHTML.toLowerCase().trim();
-                console.warn("QuizFilter", quizText);
-                // alert();
-                if (quizText.includes(input)) {
-                    count++;
-                    // console.log("Show");
-                    //quizLinks[i].style.display="block";
-                    quizLinks[i].classList.remove("hidethelink");
-                    quizLinks[i].classList.add("showthelink");
-                } else {
-                    // quizLinks[i].style.display="none";
-                    quizLinks[i].classList.remove("showthelink");
-                    quizLinks[i].classList.add("hidethelink");
-                    // console.log("Hide");
-                }
-                console.log(quizLinks[i].classList);
-            }
-            if (count <= 0) {
-                lblCount.innerHTML = `Found:${count}`;
-                memsg.innerHTML = lblCount.innerHTML;
-                document.getElementById("searchdiv").src = `https://varanasisoftwarejunction.blogspot.com/search?q=${input}`;
-                document.getElementById("searchdiv").style.display="block";
-                return;
-            }
-            lblCount.innerHTML = `Found:${count}`;
-            memsg.innerHTML = lblCount.innerHTML;
-            // memsg.style.display="block";
-        }
-        //filterQuizzes();
-    </script>
-
-
-
-    <script src="assets/js/loadmenu.js">
-    </script>
-
-    <div style="display: none;;" id="memsg"></div>
-
-    <script src="https://varanasi-software-junction.github.io/search/branding/branding.js"></script>
-    <script src="https://varanasi-software-junction.github.io/search/branding/showmodal.js"></script>
+    <h1>Hello World</h1>
 </body>
 
 </html>
