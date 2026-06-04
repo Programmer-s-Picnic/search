@@ -1,76 +1,178 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello World Search Engine</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello World Search Engine</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff8ed;
+      color: #1f2937;
+    }
+
+    h1 {
+      color: #9a3412;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .result {
+      background: white;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-left: 5px solid #f97316;
+      border-radius: 8px;
+    }
+
+    .result h3 {
+      margin: 0 0 6px;
+    }
+
+    .result p {
+      margin: 0;
+    }
+  </style>
 </head>
-
 <body>
-    <h1>Hello World Search Engine</h1>
 
-    <form id="searchForm">
-        <input id="searchBox" type="search" placeholder="Search..." required>
-        <button type="submit">Search</button>
-    </form>
+  <h1>Hello World Search Engine</h1>
 
-    <h2>Results</h2>
-    <div id="results"></div>
+  <form id="searchForm">
+    <input id="searchBox" type="search" placeholder="Search..." autofocus>
+    <button type="submit">Search</button>
+  </form>
 
-    <script>
-        const pages = [
-            {
-                title: "Hello World",
-                url: "hello.html",
-                text: "This is a hello world page for beginners."
-            },
-            {
-                title: "About",
-                url: "about.html",
-                text: "This page explains the hello world search engine."
-            },
-            {
-                title: "Contact",
-                url: "contact.html",
-                text: "Contact page for the website."
-            }
-        ];
+  <div id="results"></div>
 
-        const form = document.getElementById("searchForm");
-        const searchBox = document.getElementById("searchBox");
-        const results = document.getElementById("results");
+  <script>
+    let pages = [];
 
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
+    const form = document.getElementById("searchForm");
+    const searchBox = document.getElementById("searchBox");
+    const results = document.getElementById("results");
 
-            const query = searchBox.value.toLowerCase().trim();
-            results.innerHTML = "";
+    async function loadPages() {
+      const response = await fetch("pages.json");
+      pages = await response.json();
+    }
 
-            const matches = pages.filter(function (page) {
-                return (
-                    page.title.toLowerCase().includes(query) ||
-                    page.text.toLowerCase().includes(query)
-                );
-            });
+    function searchPages(query) {
+      query = query.toLowerCase().trim();
 
-            if (matches.length === 0) {
-                results.innerHTML = "<p>No results found.</p>";
-                return;
-            }
+      if (query === "") {
+        return [];
+      }
 
-            matches.forEach(function (page) {
-                const item = document.createElement("div");
+      return pages.filter(function (page) {
+        return (
+          page.title.toLowerCase().includes(query) ||
+          page.text.toLowerCase().includes(query)
+        );
+      });
+    }
 
-                item.innerHTML = `
-          <h3><a href="${page.url}">${page.title}</a></h3>
-          <p>${page.text}</p>
+    function showResults(matches, query) {
+      results.innerHTML = "";
+
+      if (query === "") {
+        results.innerHTML = "<p>Type something to search.</p>";
+        return;
+      }
+
+      if (matches.length === 0) {
+        results.innerHTML = "<p>No results found for <b>" + escapeHtml(query) + "</b>.</p>";
+        return;
+      }
+
+      results.innerHTML = "<p>Results for <b>" + escapeHtml(query) + "</b>:</p>";
+
+      matches.forEach(function (page) {
+        const item = document.createElement("div");
+        item.className = "result";
+
+        item.innerHTML = `
+          <h3><a href="${page.url}">${escapeHtml(page.title)}</a></h3>
+          <p>${escapeHtml(page.text)}</p>
         `;
 
-                results.appendChild(item);
-            });
-        });
-    </script>
-</body>
+        results.appendChild(item);
+      });
+    }
 
+    function updateUrl(query) {
+      const newUrl = window.location.pathname + "?q=" + encodeURIComponent(query);
+      window.history.pushState({}, "", newUrl);
+    }
+
+    function getQueryFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("q") || "";
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function runSearch(query, shouldUpdateUrl) {
+      searchBox.value = query;
+
+      const matches = searchPages(query);
+      showResults(matches, query);
+
+      if (shouldUpdateUrl) {
+        updateUrl(query);
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const query = searchBox.value.trim();
+      runSearch(query, true);
+    });
+
+    async function start() {
+      await loadPages();
+
+      const queryFromUrl = getQueryFromUrl();
+
+      if (queryFromUrl) {
+        runSearch(queryFromUrl, false);
+      } else {
+        results.innerHTML = "<p>Type something to search.</p>";
+      }
+
+      searchBox.focus();
+    }
+
+    start();
+  </script>
+
+</body>
 </html>
