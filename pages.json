@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Hello World",
+    "url": "hello.html",
+    "text": "This is a hello world page for beginners."
+  },
+  {
+    "title": "About",
+    "url": "about.html",
+    "text": "This page explains the hello world search engine."
+  },
+  {
+    "title": "Contact",
+    "url": "contact.html",
+    "text": "Contact page for the website."
+  }
+]
