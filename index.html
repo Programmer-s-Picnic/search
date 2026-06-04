@@ -4,11 +4,73 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello World</title>
+    <title>Hello World Search Engine</title>
 </head>
 
 <body>
-    <h1>Hello World</h1>
+    <h1>Hello World Search Engine</h1>
+
+    <form id="searchForm">
+        <input id="searchBox" type="search" placeholder="Search..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Results</h2>
+    <div id="results"></div>
+
+    <script>
+        const pages = [
+            {
+                title: "Hello World",
+                url: "hello.html",
+                text: "This is a hello world page for beginners."
+            },
+            {
+                title: "About",
+                url: "about.html",
+                text: "This page explains the hello world search engine."
+            },
+            {
+                title: "Contact",
+                url: "contact.html",
+                text: "Contact page for the website."
+            }
+        ];
+
+        const form = document.getElementById("searchForm");
+        const searchBox = document.getElementById("searchBox");
+        const results = document.getElementById("results");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const query = searchBox.value.toLowerCase().trim();
+            results.innerHTML = "";
+
+            const matches = pages.filter(function (page) {
+                return (
+                    page.title.toLowerCase().includes(query) ||
+                    page.text.toLowerCase().includes(query)
+                );
+            });
+
+            if (matches.length === 0) {
+                results.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+
+            matches.forEach(function (page) {
+                const item = document.createElement("div");
+
+                item.innerHTML = `
+          <h3><a href="${page.url}">${page.title}</a></h3>
+          <p>${page.text}</p>
+        `;
+
+                results.appendChild(item);
+            });
+        });
+    </script>
 </body>
 
 </html>
