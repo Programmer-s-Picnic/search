@@ -156,6 +156,7 @@
       color: var(--muted);
       margin: 0 0 14px;
       font-size: 15px;
+      line-height: 1.6;
     }
 
     .result {
@@ -165,6 +166,18 @@
       padding: 18px;
       margin-bottom: 14px;
       box-shadow: 0 10px 25px rgba(124, 45, 18, 0.08);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .result:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(124, 45, 18, 0.12);
+    }
+
+    .result:focus {
+      outline: 4px solid rgba(234, 88, 12, 0.25);
+      outline-offset: 3px;
     }
 
     .result h2 {
@@ -367,22 +380,33 @@
         .replaceAll("'", "&#039;");
     }
 
+    function escapeAttr(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
     function escapeRegex(text) {
       return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
+    function normalize(text) {
+      return String(text || "").toLowerCase().trim();
+    }
+
+    function getQueryWords(query) {
+      return normalize(query)
+        .split(/\s+/)
+        .filter(function (word) {
+          return word.length >= 2;
+        });
+    }
+
     function highlight(text, query) {
       const safeText = escapeHtml(text);
-
-      if (!query) {
-        return safeText;
-      }
-
-      const words = query
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(escapeRegex);
+      const words = getQueryWords(query).map(escapeRegex);
 
       if (words.length === 0) {
         return safeText;
@@ -392,39 +416,54 @@
       return safeText.replace(pattern, "<mark>$1</mark>");
     }
 
-    function normalize(text) {
-      return String(text || "").toLowerCase();
+    function pageSearchText(page) {
+      return [
+        page.title,
+        page.description,
+        page.topic,
+        page.type,
+        page.tags.join(" ")
+      ].join(" ").toLowerCase();
+    }
+
+    function isTightMatch(page, query) {
+      const words = getQueryWords(query);
+      const text = pageSearchText(page);
+
+      if (words.length === 0) {
+        return false;
+      }
+
+      return words.every(function (word) {
+        return text.includes(word);
+      });
     }
 
     function scorePage(page, query) {
-      const words = query
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(Boolean);
+      const words = getQueryWords(query);
+      const fullQuery = normalize(query);
 
       const title = normalize(page.title);
       const description = normalize(page.description);
-      const type = normalize(page.type);
       const topic = normalize(page.topic);
+      const type = normalize(page.type);
       const tags = normalize(page.tags.join(" "));
-      const url = normalize(page.url);
 
       let score = 0;
 
+      if (title.includes(fullQuery)) score += 100;
+      if (tags.includes(fullQuery)) score += 70;
+      if (topic.includes(fullQuery)) score += 50;
+      if (description.includes(fullQuery)) score += 35;
+      if (type.includes(fullQuery)) score += 25;
+
       words.forEach(function (word) {
-        if (title.includes(word)) score += 20;
-        if (tags.includes(word)) score += 14;
-        if (topic.includes(word)) score += 10;
-        if (type.includes(word)) score += 8;
-        if (description.includes(word)) score += 6;
-        if (url.includes(word)) score += 3;
+        if (title.includes(word)) score += 30;
+        if (tags.includes(word)) score += 20;
+        if (topic.includes(word)) score += 15;
+        if (description.includes(word)) score += 8;
+        if (type.includes(word)) score += 6;
       });
-
-      const fullQuery = query.toLowerCase().trim();
-
-      if (title.includes(fullQuery)) score += 30;
-      if (tags.includes(fullQuery)) score += 20;
-      if (description.includes(fullQuery)) score += 10;
 
       score += page.priority;
 
@@ -439,6 +478,9 @@
       }
 
       return pages
+        .filter(function (page) {
+          return isTightMatch(page, cleanQuery);
+        })
         .map(function (page) {
           return {
             ...page,
@@ -446,11 +488,12 @@
           };
         })
         .filter(function (page) {
-          return page.score > 0;
+          return page.score >= 20;
         })
         .sort(function (a, b) {
           return b.score - a.score;
-        });
+        })
+        .slice(0, 25);
     }
 
     function showResults(query) {
@@ -471,7 +514,8 @@
       if (matches.length === 0) {
         results.innerHTML = `
           <p class="status">
-            No results found for <strong>${escapeHtml(cleanQuery)}</strong>.
+            No strong results found for <strong>${escapeHtml(cleanQuery)}</strong>.
+            Try fewer or clearer words.
           </p>
         `;
         return;
@@ -479,13 +523,16 @@
 
       results.innerHTML = `
         <p class="status">
-          ${matches.length} result(s) found for <strong>${escapeHtml(cleanQuery)}</strong>.
+          Showing ${matches.length} tight result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
         </p>
       `;
 
       matches.forEach(function (page) {
         const item = document.createElement("article");
         item.className = "result";
+        item.tabIndex = 0;
+        item.setAttribute("role", "link");
+        item.setAttribute("data-url", page.url);
 
         const tagHtml = page.tags
           .slice(0, 5)
@@ -496,7 +543,7 @@
 
         item.innerHTML = `
           <h2>
-            <a href="${escapeHtml(page.url)}" target="_blank" rel="noopener">
+            <a href="${escapeAttr(page.url)}" target="_blank" rel="noopener">
               ${highlight(page.title, cleanQuery)}
             </a>
           </h2>
@@ -511,6 +558,22 @@
 
           <div class="url">${escapeHtml(page.url)}</div>
         `;
+
+        item.addEventListener("click", function (event) {
+          const clickedLink = event.target.closest("a");
+
+          if (clickedLink) {
+            return;
+          }
+
+          window.open(page.url, "_blank", "noopener");
+        });
+
+        item.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            window.open(page.url, "_blank", "noopener");
+          }
+        });
 
         results.appendChild(item);
       });
