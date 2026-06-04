@@ -1,19 +1,17 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Champak Search</title>
-  <meta name="description" content="Search Learn With Champak, Programmer's Picnic, editors, lessons and learning resources.">
+  <meta name="description"
+    content="Search Learn With Champak, Programmer's Picnic, editors, lessons and learning resources.">
 
-  <link
-    rel="search"
-    type="application/opensearchdescription+xml"
-    title="Champak Search"
-    href="https://search.learnwithchampak.live/opensearch.xml"
-  >
-
+  <link rel="search" type="application/opensearchdescription+xml" title="Champak Search"
+    href="https://search.learnwithchampak.live/opensearch.xml">
+  <link rel="icon" type="image/x-icon" href="https://programmer-s-picnic.github.io/json-images/mee.jpg">
   <style>
     :root {
       --bg: #fff7ed;
@@ -278,20 +276,14 @@
 
     <section class="search-card">
       <form id="searchForm" action="/" method="get">
-        <input
-          id="searchBox"
-          name="q"
-          type="search"
-          placeholder="Search Python, SQL, DSA, JavaScript, editor..."
-          autocomplete="off"
-          autofocus
-        >
+        <input id="searchBox" name="q" type="search" placeholder="Search Python, SQL, DSA, JavaScript, editor..."
+          autocomplete="off" autofocus>
         <button type="submit">Search</button>
       </form>
 
       <div class="helper">
         <span>Chrome URL format: <code>https://search.learnwithchampak.live/?q=%s</code></span>
-        <span>Data: live links.json</span>
+        <span>Live Search</span>
       </div>
     </section>
 
@@ -523,7 +515,7 @@
 
       results.innerHTML = `
         <p class="status">
-          Showing ${matches.length} tight result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
+          Showing ${matches.length}  result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
         </p>
       `;
 
@@ -600,4 +592,5 @@
     start();
   </script>
 </body>
+
 </html>
