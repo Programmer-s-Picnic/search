@@ -2,68 +2,308 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hello World Search Engine</title>
+  <title>Champak Search</title>
+  <meta name="description" content="A simple personal search engine by Champak Roy.">
+
+  <!-- OpenSearch support for browser search engine discovery -->
+  <link
+    rel="search"
+    type="application/opensearchdescription+xml"
+    title="Champak Search"
+    href="https://search.learnwithchampak.live/opensearch.xml"
+  >
 
   <style>
+    :root {
+      --bg: #fff7ed;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand: #ea580c;
+      --brand-dark: #9a3412;
+      --border: #fed7aa;
+      --soft: #ffedd5;
+      --shadow: 0 18px 45px rgba(124, 45, 18, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff8ed;
-      color: #1f2937;
+      background:
+        radial-gradient(circle at top left, #fed7aa 0, transparent 32%),
+        linear-gradient(135deg, #fff7ed, #fffbeb);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(950px, 92%);
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 36px 20px 28px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 24px;
+      background: var(--brand);
+      color: white;
+      font-size: 34px;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
     }
 
     h1 {
-      color: #9a3412;
+      margin: 0;
+      font-size: clamp(34px, 6vw, 62px);
+      color: var(--brand-dark);
+      letter-spacing: -2px;
+    }
+
+    .tagline {
+      max-width: 620px;
+      margin: 12px auto 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .search-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 18px;
     }
 
     form {
       display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
+      gap: 12px;
     }
 
     input {
       flex: 1;
-      padding: 12px;
-      font-size: 16px;
+      border: 2px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 18px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.16);
     }
 
     button {
-      padding: 12px 18px;
-      font-size: 16px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      padding: 0 26px;
+      font-size: 17px;
       cursor: pointer;
     }
 
-    .result {
-      background: white;
-      padding: 14px;
-      margin-bottom: 12px;
-      border-left: 5px solid #f97316;
+    button:hover,
+    button:focus {
+      background: var(--brand-dark);
+      outline: none;
+    }
+
+    .helper {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .helper code {
+      background: var(--soft);
+      color: var(--brand-dark);
+      padding: 3px 7px;
       border-radius: 8px;
     }
 
-    .result h3 {
-      margin: 0 0 6px;
+    .results-area {
+      margin-top: 28px;
+    }
+
+    .status {
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 15px;
+    }
+
+    .result {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px rgba(124, 45, 18, 0.08);
+    }
+
+    .result h2 {
+      margin: 0 0 8px;
+      font-size: 21px;
+    }
+
+    .result a {
+      color: var(--brand-dark);
+      text-decoration: none;
+    }
+
+    .result a:hover {
+      text-decoration: underline;
     }
 
     .result p {
-      margin: 0;
+      margin: 0 0 10px;
+      color: #374151;
+      line-height: 1.55;
+    }
+
+    .url {
+      font-size: 13px;
+      color: #15803d;
+      word-break: break-all;
+    }
+
+    mark {
+      background: #fde68a;
+      color: #78350f;
+      border-radius: 4px;
+      padding: 0 2px;
+    }
+
+    .install-box {
+      margin-top: 30px;
+      background: #fff;
+      border: 1px dashed #fb923c;
+      border-radius: 20px;
+      padding: 18px;
+      color: #374151;
+    }
+
+    .install-box h2 {
+      margin-top: 0;
+      color: var(--brand-dark);
+      font-size: 20px;
+    }
+
+    .install-box code {
+      background: var(--soft);
+      color: var(--brand-dark);
+      padding: 3px 7px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 28px 0;
+      }
+
+      form {
+        flex-direction: column;
+      }
+
+      button {
+        padding: 15px;
+      }
+
+      .hero {
+        padding-top: 20px;
+      }
     }
   </style>
 </head>
+
 <body>
+  <main class="page">
+    <section class="hero">
+      <div class="logo">C</div>
+      <h1>Champak Search</h1>
+      <p class="tagline">
+        A simple personal search engine that can be used from the Chrome address bar.
+      </p>
+    </section>
 
-  <h1>Hello World Search Engine</h1>
+    <section class="search-card">
+      <form id="searchForm" action="/" method="get">
+        <input
+          id="searchBox"
+          name="q"
+          type="search"
+          placeholder="Search hello, Python, DSA, contact..."
+          autocomplete="off"
+          autofocus
+        >
+        <button type="submit">Search</button>
+      </form>
 
-  <form id="searchForm">
-    <input id="searchBox" type="search" placeholder="Search..." autofocus>
-    <button type="submit">Search</button>
-  </form>
+      <div class="helper">
+        <span>Chrome URL format: <code>https://search.learnwithchampak.live/?q=%s</code></span>
+        <span>Press Enter to search</span>
+      </div>
+    </section>
 
-  <div id="results"></div>
+    <section class="results-area">
+      <div id="results"></div>
+    </section>
+
+    <section class="install-box">
+      <h2>Install in Chrome as a search engine</h2>
+      <p>
+        In Chrome, open <code>chrome://settings/searchEngines</code>.
+        Under <strong>Site search</strong>, click <strong>Add</strong>.
+      </p>
+
+      <p>Use these values:</p>
+
+      <p>
+        <strong>Search engine:</strong>
+        <code>Champak Search</code>
+      </p>
+
+      <p>
+        <strong>Shortcut:</strong>
+        <code>cs</code>
+      </p>
+
+      <p>
+        <strong>URL with %s in place of query:</strong>
+        <code>https://search.learnwithchampak.live/?q=%s</code>
+      </p>
+
+      <p>
+        Then type <code>cs python</code> in the Chrome address bar.
+      </p>
+    </section>
+  </main>
 
   <script>
     let pages = [];
@@ -73,56 +313,21 @@
     const results = document.getElementById("results");
 
     async function loadPages() {
-      const response = await fetch("pages.json");
-      pages = await response.json();
-    }
+      try {
+        const response = await fetch("pages.json");
 
-    function searchPages(query) {
-      query = query.toLowerCase().trim();
+        if (!response.ok) {
+          throw new Error("pages.json could not be loaded");
+        }
 
-      if (query === "") {
-        return [];
-      }
-
-      return pages.filter(function (page) {
-        return (
-          page.title.toLowerCase().includes(query) ||
-          page.text.toLowerCase().includes(query)
-        );
-      });
-    }
-
-    function showResults(matches, query) {
-      results.innerHTML = "";
-
-      if (query === "") {
-        results.innerHTML = "<p>Type something to search.</p>";
-        return;
-      }
-
-      if (matches.length === 0) {
-        results.innerHTML = "<p>No results found for <b>" + escapeHtml(query) + "</b>.</p>";
-        return;
-      }
-
-      results.innerHTML = "<p>Results for <b>" + escapeHtml(query) + "</b>:</p>";
-
-      matches.forEach(function (page) {
-        const item = document.createElement("div");
-        item.className = "result";
-
-        item.innerHTML = `
-          <h3><a href="${page.url}">${escapeHtml(page.title)}</a></h3>
-          <p>${escapeHtml(page.text)}</p>
+        pages = await response.json();
+      } catch (error) {
+        results.innerHTML = `
+          <p class="status">
+            Could not load <code>pages.json</code>. Make sure it is in the same folder as this file.
+          </p>
         `;
-
-        results.appendChild(item);
-      });
-    }
-
-    function updateUrl(query) {
-      const newUrl = window.location.pathname + "?q=" + encodeURIComponent(query);
-      window.history.pushState({}, "", newUrl);
+      }
     }
 
     function getQueryFromUrl() {
@@ -139,40 +344,122 @@
         .replaceAll("'", "&#039;");
     }
 
-    function runSearch(query, shouldUpdateUrl) {
-      searchBox.value = query;
+    function highlight(text, query) {
+      const safeText = escapeHtml(text);
 
-      const matches = searchPages(query);
-      showResults(matches, query);
-
-      if (shouldUpdateUrl) {
-        updateUrl(query);
+      if (!query) {
+        return safeText;
       }
+
+      const safeQuery = escapeHtml(query);
+      const escapedQueryForRegex = safeQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const pattern = new RegExp("(" + escapedQueryForRegex + ")", "gi");
+
+      return safeText.replace(pattern, "<mark>$1</mark>");
     }
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+    function searchPages(query) {
+      query = query.toLowerCase().trim();
 
-      const query = searchBox.value.trim();
-      runSearch(query, true);
+      if (!query) {
+        return [];
+      }
+
+      return pages
+        .map(function (page) {
+          let score = 0;
+
+          const title = String(page.title || "").toLowerCase();
+          const text = String(page.text || "").toLowerCase();
+          const url = String(page.url || "").toLowerCase();
+
+          if (title.includes(query)) score += 5;
+          if (text.includes(query)) score += 3;
+          if (url.includes(query)) score += 1;
+
+          return {
+            title: page.title || "Untitled",
+            url: page.url || "#",
+            text: page.text || "",
+            score: score
+          };
+        })
+        .filter(function (page) {
+          return page.score > 0;
+        })
+        .sort(function (a, b) {
+          return b.score - a.score;
+        });
+    }
+
+    function showResults(query) {
+      const cleanQuery = query.trim();
+
+      if (!cleanQuery) {
+        results.innerHTML = `
+          <p class="status">
+            Type something above, or search directly using
+            <code>https://search.learnwithchampak.live/?q=hello</code>
+          </p>
+        `;
+        return;
+      }
+
+      const matches = searchPages(cleanQuery);
+
+      if (matches.length === 0) {
+        results.innerHTML = `
+          <p class="status">
+            No results found for <strong>${escapeHtml(cleanQuery)}</strong>.
+          </p>
+        `;
+        return;
+      }
+
+      results.innerHTML = `
+        <p class="status">
+          ${matches.length} result(s) found for <strong>${escapeHtml(cleanQuery)}</strong>.
+        </p>
+      `;
+
+      matches.forEach(function (page) {
+        const item = document.createElement("article");
+        item.className = "result";
+
+        item.innerHTML = `
+          <h2>
+            <a href="${escapeHtml(page.url)}">${highlight(page.title, cleanQuery)}</a>
+          </h2>
+          <p>${highlight(page.text, cleanQuery)}</p>
+          <div class="url">${escapeHtml(page.url)}</div>
+        `;
+
+        results.appendChild(item);
+      });
+    }
+
+    form.addEventListener("submit", function () {
+      /*
+        This form uses normal GET submission.
+
+        Example:
+        Search: python
+        URL becomes:
+        https://search.learnwithchampak.live/?q=python
+      */
     });
 
     async function start() {
       await loadPages();
 
-      const queryFromUrl = getQueryFromUrl();
-
-      if (queryFromUrl) {
-        runSearch(queryFromUrl, false);
-      } else {
-        results.innerHTML = "<p>Type something to search.</p>";
-      }
+      const query = getQueryFromUrl();
+      searchBox.value = query;
+      showResults(query);
 
       searchBox.focus();
     }
 
     start();
   </script>
-
 </body>
 </html>
