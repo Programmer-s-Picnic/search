@@ -11,7 +11,7 @@
 
   <link rel="search" type="application/opensearchdescription+xml" title="Champak Search"
     href="https://search.learnwithchampak.live/opensearch.xml">
-  <link rel="icon" type="image/x-icon" href="https://programmer-s-picnic.github.io/json-images/mee.jpg">
+
   <style>
     :root {
       --bg: #fff7ed;
@@ -283,7 +283,7 @@
 
       <div class="helper">
         <span>Chrome URL format: <code>https://search.learnwithchampak.live/?q=%s</code></span>
-        <span>Live Search</span>
+        <span>Data: live links.json</span>
       </div>
     </section>
 
@@ -309,6 +309,7 @@
 
   <script>
     const DATA_URL = "https://programmer-s-picnic.github.io/json-images/links/links.json";
+    const MIN_SEARCH_CHARS = 3;
 
     let pages = [];
 
@@ -465,7 +466,7 @@
     function searchPages(query) {
       const cleanQuery = query.trim();
 
-      if (!cleanQuery) {
+      if (cleanQuery.length < MIN_SEARCH_CHARS) {
         return [];
       }
 
@@ -488,14 +489,34 @@
         .slice(0, 25);
     }
 
+    function updateUrlQuietly(query) {
+      const cleanQuery = query.trim();
+
+      if (cleanQuery.length < MIN_SEARCH_CHARS) {
+        window.history.replaceState({}, "", window.location.pathname);
+        return;
+      }
+
+      const newUrl = window.location.pathname + "?q=" + encodeURIComponent(cleanQuery);
+      window.history.replaceState({}, "", newUrl);
+    }
+
     function showResults(query) {
       const cleanQuery = query.trim();
 
       if (!cleanQuery) {
         results.innerHTML = `
           <p class="status">
-            Type something above, or search directly using
-            <code>https://search.learnwithchampak.live/?q=python</code>
+            Type at least ${MIN_SEARCH_CHARS} characters to search.
+          </p>
+        `;
+        return;
+      }
+
+      if (cleanQuery.length < MIN_SEARCH_CHARS) {
+        results.innerHTML = `
+          <p class="status">
+            Keep typing. Search starts after ${MIN_SEARCH_CHARS} characters.
           </p>
         `;
         return;
@@ -515,7 +536,7 @@
 
       results.innerHTML = `
         <p class="status">
-          Showing ${matches.length}  result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
+          Showing ${matches.length} tight result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
         </p>
       `;
 
@@ -571,12 +592,21 @@
       });
     }
 
-    form.addEventListener("submit", function () {
-      /*
-        Normal GET submission.
-        Example:
-        https://search.learnwithchampak.live/?q=python
-      */
+    function runLiveSearch() {
+      const query = searchBox.value;
+      updateUrlQuietly(query);
+      showResults(query);
+    }
+
+    searchBox.addEventListener("input", runLiveSearch);
+
+    form.addEventListener("submit", function (event) {
+      const query = searchBox.value.trim();
+
+      if (query.length < MIN_SEARCH_CHARS) {
+        event.preventDefault();
+        showResults(query);
+      }
     });
 
     async function start() {
