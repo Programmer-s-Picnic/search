@@ -3,22 +3,33 @@
 
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DQLQEJQTE5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DQLQEJQTE5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-DQLQEJQTE5');
-</script>
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag("js", new Date());
+    gtag("config", "G-DQLQEJQTE5");
+  </script>
+
   <meta charset="utf-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Champak Search</title>
+
   <meta name="description"
     content="Search Learn With Champak, Programmer's Picnic, editors, lessons and learning resources.">
 
-  <link rel="search" type="application/opensearchdescription+xml" title="Champak Search"
+  <meta name="theme-color" content="#ea580c">
+
+  <link rel="canonical" href="https://search.learnwithchampak.live/">
+
+  <link rel="search"
+    type="application/opensearchdescription+xml"
+    title="Champak Search"
     href="https://search.learnwithchampak.live/opensearch.xml">
 
   <style>
@@ -31,6 +42,10 @@
       --brand-dark: #9a3412;
       --border: #fed7aa;
       --soft: #ffedd5;
+      --soft-dark: #fed7aa;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
       --shadow: 0 18px 45px rgba(124, 45, 18, 0.14);
     }
 
@@ -38,14 +53,34 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Arial, sans-serif;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       background:
         radial-gradient(circle at top left, #fed7aa 0, transparent 32%),
         linear-gradient(135deg, #fff7ed, #fffbeb);
       color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .page {
@@ -90,7 +125,8 @@
     }
 
     .search-card {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border: 1px solid var(--border);
       border-radius: 26px;
@@ -99,13 +135,27 @@
       margin-top: 18px;
     }
 
-    form {
-      display: flex;
+    .search-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
       gap: 12px;
     }
 
-    input {
-      flex: 1;
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      min-width: 0;
       border: 2px solid var(--border);
       background: white;
       color: var(--text);
@@ -115,26 +165,57 @@
       outline: none;
     }
 
-    input:focus {
+    .search-input:focus {
       border-color: var(--brand);
       box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.16);
     }
 
-    button {
-      border: 0;
-      border-radius: 18px;
-      background: var(--brand);
-      color: white;
+    .primary-button,
+    .secondary-button,
+    .small-button,
+    .danger-button {
+      border-radius: 16px;
       font-weight: 700;
-      padding: 0 26px;
-      font-size: 17px;
-      cursor: pointer;
+      transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
     }
 
-    button:hover,
-    button:focus {
+    .primary-button {
+      border: 0;
+      background: var(--brand);
+      color: white;
+      padding: 0 26px;
+      font-size: 17px;
+    }
+
+    .primary-button:hover {
       background: var(--brand-dark);
-      outline: none;
+    }
+
+    .secondary-button {
+      border: 2px solid var(--border);
+      background: white;
+      color: var(--brand-dark);
+      padding: 0 20px;
+      font-size: 16px;
+    }
+
+    .secondary-button:hover {
+      border-color: var(--brand);
+      background: var(--soft);
+    }
+
+    .primary-button:focus-visible,
+    .secondary-button:focus-visible,
+    .small-button:focus-visible,
+    .danger-button:focus-visible,
+    .search-chip:focus-visible,
+    .result a:focus-visible,
+    .remove-search:focus-visible {
+      outline: 4px solid rgba(234, 88, 12, 0.25);
+      outline-offset: 3px;
     }
 
     .helper {
@@ -153,6 +234,129 @@
       color: var(--brand-dark);
       padding: 3px 7px;
       border-radius: 8px;
+      word-break: break-word;
+    }
+
+    .search-library {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .history-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(124, 45, 18, 0.07);
+    }
+
+    .section-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-heading-row h2 {
+      margin: 0;
+      color: var(--brand-dark);
+      font-size: 20px;
+    }
+
+    .small-button {
+      border: 1px solid var(--border);
+      background: var(--soft);
+      color: var(--brand-dark);
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .small-button:hover {
+      border-color: var(--brand);
+      background: var(--soft-dark);
+    }
+
+    .danger-button {
+      border: 1px solid #fecaca;
+      background: var(--danger-soft);
+      color: var(--danger);
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .danger-button:hover {
+      border-color: var(--danger);
+      background: #fecaca;
+    }
+
+    .search-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      min-height: 34px;
+    }
+
+    .search-chip-wrapper {
+      display: inline-flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--soft);
+    }
+
+    .search-chip {
+      border: 0;
+      background: transparent;
+      color: var(--brand-dark);
+      padding: 8px 10px 8px 13px;
+      font-size: 14px;
+      font-weight: 700;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .search-chip:hover {
+      background: var(--soft-dark);
+    }
+
+    .remove-search {
+      border: 0;
+      border-left: 1px solid var(--border);
+      background: transparent;
+      color: var(--danger);
+      width: 34px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .remove-search:hover {
+      background: var(--danger-soft);
+    }
+
+    .empty-message {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .data-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .data-actions button {
+      min-height: 42px;
     }
 
     .results-area {
@@ -167,24 +371,21 @@
     }
 
     .result {
+      position: relative;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 18px;
       margin-bottom: 14px;
       box-shadow: 0 10px 25px rgba(124, 45, 18, 0.08);
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
     }
 
     .result:hover {
       transform: translateY(-1px);
       box-shadow: 0 14px 30px rgba(124, 45, 18, 0.12);
-    }
-
-    .result:focus {
-      outline: 4px solid rgba(234, 88, 12, 0.25);
-      outline-offset: 3px;
     }
 
     .result h2 {
@@ -227,7 +428,7 @@
 
     .url {
       font-size: 13px;
-      color: #15803d;
+      color: var(--success);
       word-break: break-all;
     }
 
@@ -236,6 +437,38 @@
       color: #78350f;
       border-radius: 4px;
       padding: 0 2px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 1000;
+      transform: translate(-50%, 30px);
+      max-width: min(460px, 90%);
+      background: #1f2937;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+
+    .toast.error {
+      background: var(--danger);
     }
 
     .install-box {
@@ -247,10 +480,35 @@
       color: #374151;
     }
 
-    .install-box h2 {
-      margin-top: 0;
+    .install-box summary {
+      cursor: pointer;
       color: var(--brand-dark);
       font-size: 20px;
+      font-weight: 800;
+    }
+
+    .install-content {
+      padding-top: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .search-form {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .search-input {
+        grid-column: 1 / -1;
+      }
+
+      .primary-button,
+      .secondary-button {
+        min-height: 50px;
+        padding: 12px 15px;
+      }
+
+      .search-library {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -258,16 +516,32 @@
         padding: 28px 0;
       }
 
-      form {
-        flex-direction: column;
-      }
-
-      button {
-        padding: 15px;
-      }
-
       .hero {
         padding-top: 20px;
+      }
+
+      .search-form {
+        grid-template-columns: 1fr;
+      }
+
+      .search-input {
+        grid-column: auto;
+      }
+
+      .search-chip {
+        max-width: 180px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
       }
     }
   </style>
@@ -276,102 +550,219 @@
 <body>
   <main class="page">
     <section class="hero">
-      <div class="logo">C</div>
+      <div class="logo" aria-hidden="true">C</div>
+
       <h1>Champak Search</h1>
+
       <p class="tagline">
-        Search Learn With Champak, Programmer's Picnic, editors, lessons and coding resources.
+        Search Learn With Champak, Programmer's Picnic, editors,
+        lessons and coding resources.
       </p>
     </section>
 
     <section class="search-card">
-      <form id="searchForm" action="/" method="get">
-        <input id="searchBox" name="q" type="search" placeholder="Search Python, SQL, DSA, JavaScript, editor..."
-          autocomplete="off" autofocus>
-        <button type="submit">Search</button>
+      <form id="searchForm" class="search-form" action="/" method="get">
+        <label for="searchBox" class="visually-hidden">
+          Search Champak learning resources
+        </label>
+
+        <input
+          id="searchBox"
+          class="search-input"
+          name="q"
+          type="search"
+          placeholder="Search Python, SQL, DSA, JavaScript, editor..."
+          autocomplete="off"
+          aria-describedby="searchHelp">
+
+        <button class="primary-button" type="submit">
+          Search
+        </button>
+
+        <button
+          id="saveSearchButton"
+          class="secondary-button"
+          type="button">
+          Save Search
+        </button>
       </form>
 
-      <div class="helper">
-        <span>Chrome URL format: <code>https://search.learnwithchampak.live/?q=%s</code></span>
+      <div id="searchHelp" class="helper">
+        <span>
+          Chrome URL format:
+          <code>https://search.learnwithchampak.live/?q=%s</code>
+        </span>
+
         <span>Data: live links.json</span>
       </div>
     </section>
 
-    <section class="results-area">
+    <section class="search-library" aria-label="Search history and saved searches">
+      <article class="history-card">
+        <div class="section-heading-row">
+          <h2>Recent Searches</h2>
+
+          <button
+            id="clearRecentButton"
+            class="danger-button"
+            type="button">
+            Clear Recent
+          </button>
+        </div>
+
+        <div id="recentSearches" class="search-list"></div>
+      </article>
+
+      <article class="history-card">
+        <div class="section-heading-row">
+          <h2>Saved Searches</h2>
+
+          <button
+            id="clearSavedButton"
+            class="danger-button"
+            type="button">
+            Clear Saved
+          </button>
+        </div>
+
+        <div id="savedSearches" class="search-list"></div>
+
+        <div class="data-actions">
+          <button
+            id="exportJsonButton"
+            class="small-button"
+            type="button">
+            Save as JSON
+          </button>
+
+          <button
+            id="importJsonButton"
+            class="small-button"
+            type="button">
+            Reload from JSON
+          </button>
+
+          <button
+            id="clearEverythingButton"
+            class="danger-button"
+            type="button">
+            Clear Everything
+          </button>
+
+          <input
+            id="jsonFileInput"
+            type="file"
+            accept=".json,application/json"
+            hidden>
+        </div>
+      </article>
+    </section>
+
+    <section class="results-area" aria-labelledby="searchStatus">
+      <p
+        id="searchStatus"
+        class="status"
+        role="status"
+        aria-live="polite">
+      </p>
+
       <div id="results"></div>
     </section>
 
-    <section class="install-box">
-      <h2>Install in Chrome as a search engine</h2>
+    <details class="install-box">
+      <summary>Install Champak Search in Chrome</summary>
 
-      <p>Open:</p>
-      <p><code>chrome://settings/searchEngines</code></p>
+      <div class="install-content">
+        <p>Open:</p>
+        <p><code>chrome://settings/searchEngines</code></p>
 
-      <p>Under <strong>Site search</strong>, click <strong>Add</strong>.</p>
+        <p>
+          Under <strong>Site search</strong>, click <strong>Add</strong>.
+        </p>
 
-      <p><strong>Search engine:</strong> <code>Champak Search</code></p>
-      <p><strong>Shortcut:</strong> <code>cs</code></p>
-      <p><strong>URL with %s in place of query:</strong> <code>https://search.learnwithchampak.live/?q=%s</code></p>
+        <p>
+          <strong>Search engine:</strong>
+          <code>Champak Search</code>
+        </p>
 
-      <p>Then type <code>cs python</code> in the Chrome address bar.</p>
-    </section>
+        <p>
+          <strong>Shortcut:</strong>
+          <code>cs</code>
+        </p>
+
+        <p>
+          <strong>URL with %s in place of query:</strong>
+          <code>https://search.learnwithchampak.live/?q=%s</code>
+        </p>
+
+        <p>
+          Then type <code>cs python</code> in the Chrome address bar.
+        </p>
+      </div>
+    </details>
   </main>
 
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
   <script>
-    const DATA_URL = "https://programmer-s-picnic.github.io/json-images/links/links.json";
+    "use strict";
+
+    const DATA_URL =
+      "https://programmer-s-picnic.github.io/json-images/links/links.json";
+
     const MIN_SEARCH_CHARS = 3;
+    const MAX_RESULTS = 25;
+    const MAX_RECENT_SEARCHES = 10;
+
+    const STORAGE_KEYS = {
+      recent: "champakSearchRecentSearches",
+      saved: "champakSearchSavedSearches"
+    };
 
     let pages = [];
+    let recentSearches = [];
+    let savedSearches = [];
+    let searchTimer = null;
+    let toastTimer = null;
 
     const form = document.getElementById("searchForm");
     const searchBox = document.getElementById("searchBox");
     const results = document.getElementById("results");
+    const searchStatus = document.getElementById("searchStatus");
 
-    async function loadPages() {
-      try {
-        results.innerHTML = `<p class="status">Loading search data...</p>`;
+    const saveSearchButton =
+      document.getElementById("saveSearchButton");
 
-        const response = await fetch(DATA_URL, {
-          cache: "no-store"
-        });
+    const recentSearchesContainer =
+      document.getElementById("recentSearches");
 
-        if (!response.ok) {
-          throw new Error("Could not load links.json");
-        }
+    const savedSearchesContainer =
+      document.getElementById("savedSearches");
 
-        const data = await response.json();
+    const clearRecentButton =
+      document.getElementById("clearRecentButton");
 
-        if (!data.items || !Array.isArray(data.items)) {
-          throw new Error("Invalid links.json format. Expected an items array.");
-        }
+    const clearSavedButton =
+      document.getElementById("clearSavedButton");
 
-        pages = data.items.map(function (item) {
-          return {
-            title: item.title || "Untitled",
-            url: item.url || "#",
-            description: item.description || "",
-            type: item.type || "",
-            topic: item.topic || "",
-            tags: Array.isArray(item.tags) ? item.tags : [],
-            priority: Number(item.priority || 0)
-          };
-        });
+    const clearEverythingButton =
+      document.getElementById("clearEverythingButton");
 
-      } catch (error) {
-        results.innerHTML = `
-          <p class="status">
-            Search data could not be loaded.
-            Please check whether this file is reachable:
-            <br><br>
-            <code>${escapeHtml(DATA_URL)}</code>
-          </p>
-        `;
-      }
-    }
+    const exportJsonButton =
+      document.getElementById("exportJsonButton");
 
-    function getQueryFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("q") || "";
-    }
+    const importJsonButton =
+      document.getElementById("importJsonButton");
+
+    const jsonFileInput =
+      document.getElementById("jsonFileInput");
+
+    const toast = document.getElementById("toast");
 
     function escapeHtml(text) {
       return String(text)
@@ -382,220 +773,671 @@
         .replaceAll("'", "&#039;");
     }
 
-    function escapeAttr(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
-    }
-
     function escapeRegex(text) {
       return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
     function normalize(text) {
-      return String(text || "").toLowerCase().trim();
+      return String(text || "")
+        .normalize("NFKD")
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}+#.]+/gu, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getSafeUrl(value) {
+      try {
+        const url = new URL(value, window.location.origin);
+
+        if (!["https:", "http:"].includes(url.protocol)) {
+          return null;
+        }
+
+        return url.href;
+      } catch (error) {
+        return null;
+      }
     }
 
     function getQueryWords(query) {
       return normalize(query)
         .split(/\s+/)
-        .filter(function (word) {
-          return word.length >= 2;
-        });
+        .filter(Boolean);
     }
 
     function highlight(text, query) {
       const safeText = escapeHtml(text);
-      const words = getQueryWords(query).map(escapeRegex);
+
+      const words = [...new Set(getQueryWords(query))]
+        .filter(function (word) {
+          return word.length >= 2;
+        })
+        .sort(function (a, b) {
+          return b.length - a.length;
+        })
+        .map(escapeRegex);
 
       if (words.length === 0) {
         return safeText;
       }
 
       const pattern = new RegExp("(" + words.join("|") + ")", "gi");
+
       return safeText.replace(pattern, "<mark>$1</mark>");
     }
 
-    function pageSearchText(page) {
-      return [
-        page.title,
-        page.description,
-        page.topic,
-        page.type,
-        page.tags.join(" ")
-      ].join(" ").toLowerCase();
+    function showToast(message, isError = false) {
+      clearTimeout(toastTimer);
+
+      toast.textContent = message;
+      toast.classList.toggle("error", isError);
+      toast.classList.add("show");
+
+      toastTimer = setTimeout(function () {
+        toast.classList.remove("show");
+      }, 2600);
     }
 
-    function isTightMatch(page, query) {
-      const words = getQueryWords(query);
-      const text = pageSearchText(page);
-
-      if (words.length === 0) {
-        return false;
-      }
-
-      return words.every(function (word) {
-        return text.includes(word);
-      });
-    }
-
-    function scorePage(page, query) {
-      const words = getQueryWords(query);
-      const fullQuery = normalize(query);
-
-      const title = normalize(page.title);
-      const description = normalize(page.description);
-      const topic = normalize(page.topic);
-      const type = normalize(page.type);
-      const tags = normalize(page.tags.join(" "));
-
-      let score = 0;
-
-      if (title.includes(fullQuery)) score += 100;
-      if (tags.includes(fullQuery)) score += 70;
-      if (topic.includes(fullQuery)) score += 50;
-      if (description.includes(fullQuery)) score += 35;
-      if (type.includes(fullQuery)) score += 25;
-
-      words.forEach(function (word) {
-        if (title.includes(word)) score += 30;
-        if (tags.includes(word)) score += 20;
-        if (topic.includes(word)) score += 15;
-        if (description.includes(word)) score += 8;
-        if (type.includes(word)) score += 6;
-      });
-
-      score += page.priority;
-
-      return score;
-    }
-
-    function searchPages(query) {
-      const cleanQuery = query.trim();
-
-      if (cleanQuery.length < MIN_SEARCH_CHARS) {
-        return [];
-      }
-
-      return pages
-        .filter(function (page) {
-          return isTightMatch(page, cleanQuery);
-        })
-        .map(function (page) {
-          return {
-            ...page,
-            score: scorePage(page, cleanQuery)
-          };
-        })
-        .filter(function (page) {
-          return page.score >= 20;
-        })
-        .sort(function (a, b) {
-          return b.score - a.score;
-        })
-        .slice(0, 25);
+    function getQueryFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("q") || "";
     }
 
     function updateUrlQuietly(query) {
       const cleanQuery = query.trim();
 
       if (cleanQuery.length < MIN_SEARCH_CHARS) {
-        window.history.replaceState({}, "", window.location.pathname);
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname
+        );
+
         return;
       }
 
-      const newUrl = window.location.pathname + "?q=" + encodeURIComponent(cleanQuery);
+      const newUrl =
+        window.location.pathname +
+        "?q=" +
+        encodeURIComponent(cleanQuery);
+
       window.history.replaceState({}, "", newUrl);
+    }
+
+    function loadStoredArray(storageKey) {
+      try {
+        const storedValue = localStorage.getItem(storageKey);
+
+        if (!storedValue) {
+          return [];
+        }
+
+        const parsedValue = JSON.parse(storedValue);
+
+        if (!Array.isArray(parsedValue)) {
+          return [];
+        }
+
+        return sanitizeSearchArray(parsedValue);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function sanitizeSearchArray(value) {
+      if (!Array.isArray(value)) {
+        return [];
+      }
+
+      const uniqueSearches = new Map();
+
+      value.forEach(function (item) {
+        if (typeof item !== "string") {
+          return;
+        }
+
+        const cleanValue = item.trim();
+
+        if (cleanValue.length < MIN_SEARCH_CHARS) {
+          return;
+        }
+
+        const normalizedValue = normalize(cleanValue);
+
+        if (!uniqueSearches.has(normalizedValue)) {
+          uniqueSearches.set(normalizedValue, cleanValue);
+        }
+      });
+
+      return [...uniqueSearches.values()];
+    }
+
+    function saveSearchCollections() {
+      localStorage.setItem(
+        STORAGE_KEYS.recent,
+        JSON.stringify(recentSearches)
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.saved,
+        JSON.stringify(savedSearches)
+      );
+    }
+
+    function addRecentSearch(query) {
+      const cleanQuery = query.trim();
+
+      if (cleanQuery.length < MIN_SEARCH_CHARS) {
+        return;
+      }
+
+      const normalizedQuery = normalize(cleanQuery);
+
+      recentSearches = recentSearches.filter(function (item) {
+        return normalize(item) !== normalizedQuery;
+      });
+
+      recentSearches.unshift(cleanQuery);
+      recentSearches = recentSearches.slice(0, MAX_RECENT_SEARCHES);
+
+      saveSearchCollections();
+      renderSearchCollections();
+    }
+
+    function addSavedSearch(query) {
+      const cleanQuery = query.trim();
+
+      if (cleanQuery.length < MIN_SEARCH_CHARS) {
+        showToast(
+          `Enter at least ${MIN_SEARCH_CHARS} characters before saving.`,
+          true
+        );
+
+        return;
+      }
+
+      const alreadySaved = savedSearches.some(function (item) {
+        return normalize(item) === normalize(cleanQuery);
+      });
+
+      if (alreadySaved) {
+        showToast("This search is already saved.");
+        return;
+      }
+
+      savedSearches.unshift(cleanQuery);
+
+      saveSearchCollections();
+      renderSearchCollections();
+
+      showToast(`Saved search: ${cleanQuery}`);
+    }
+
+    function removeRecentSearch(query) {
+      recentSearches = recentSearches.filter(function (item) {
+        return normalize(item) !== normalize(query);
+      });
+
+      saveSearchCollections();
+      renderSearchCollections();
+    }
+
+    function removeSavedSearch(query) {
+      savedSearches = savedSearches.filter(function (item) {
+        return normalize(item) !== normalize(query);
+      });
+
+      saveSearchCollections();
+      renderSearchCollections();
+    }
+
+    function useStoredSearch(query) {
+      searchBox.value = query;
+
+      updateUrlQuietly(query);
+      showResults(query);
+      addRecentSearch(query);
+
+      searchBox.focus();
+
+      document.querySelector(".results-area").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function createSearchChip(query, collectionType) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "search-chip-wrapper";
+
+      const searchButton = document.createElement("button");
+      searchButton.className = "search-chip";
+      searchButton.type = "button";
+      searchButton.textContent = query;
+      searchButton.title = `Search for ${query}`;
+
+      searchButton.addEventListener("click", function () {
+        useStoredSearch(query);
+      });
+
+      const removeButton = document.createElement("button");
+      removeButton.className = "remove-search";
+      removeButton.type = "button";
+      removeButton.textContent = "×";
+      removeButton.title = `Remove ${query}`;
+      removeButton.setAttribute(
+        "aria-label",
+        `Remove search ${query}`
+      );
+
+      removeButton.addEventListener("click", function () {
+        if (collectionType === "recent") {
+          removeRecentSearch(query);
+        } else {
+          removeSavedSearch(query);
+        }
+      });
+
+      wrapper.appendChild(searchButton);
+      wrapper.appendChild(removeButton);
+
+      return wrapper;
+    }
+
+    function renderSearchCollection(container, collection, type) {
+      container.innerHTML = "";
+
+      if (collection.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-message";
+
+        emptyMessage.textContent =
+          type === "recent"
+            ? "Your recent searches will appear here."
+            : "Save useful searches so you can run them again.";
+
+        container.appendChild(emptyMessage);
+        return;
+      }
+
+      collection.forEach(function (query) {
+        container.appendChild(
+          createSearchChip(query, type)
+        );
+      });
+    }
+
+    function renderSearchCollections() {
+      renderSearchCollection(
+        recentSearchesContainer,
+        recentSearches,
+        "recent"
+      );
+
+      renderSearchCollection(
+        savedSearchesContainer,
+        savedSearches,
+        "saved"
+      );
+    }
+
+    async function loadPages() {
+      try {
+        searchStatus.textContent = "Loading search data...";
+
+        const controller = new AbortController();
+
+        const timeoutId = setTimeout(function () {
+          controller.abort();
+        }, 12000);
+
+        const response = await fetch(DATA_URL, {
+          cache: "no-cache",
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(
+            `Search data request failed with status ${response.status}.`
+          );
+        }
+
+        const data = await response.json();
+
+        if (!data.items || !Array.isArray(data.items)) {
+          throw new Error(
+            "Invalid links.json format. Expected an items array."
+          );
+        }
+
+        pages = data.items
+          .map(function (item) {
+            const safeUrl = getSafeUrl(item.url);
+
+            if (!safeUrl || !item.title) {
+              return null;
+            }
+
+            const tags = Array.isArray(item.tags)
+              ? item.tags
+                  .filter(function (tag) {
+                    return typeof tag === "string";
+                  })
+                  .map(function (tag) {
+                    return tag.trim();
+                  })
+                  .filter(Boolean)
+              : [];
+
+            const priorityValue = Number(item.priority);
+            const priority = Number.isFinite(priorityValue)
+              ? Math.max(-20, Math.min(20, priorityValue))
+              : 0;
+
+            const page = {
+              title: String(item.title).trim(),
+              url: safeUrl,
+              description: String(item.description || "").trim(),
+              type: String(item.type || "").trim(),
+              topic: String(item.topic || "").trim(),
+              tags,
+              priority
+            };
+
+            page.normalizedTitle = normalize(page.title);
+            page.normalizedDescription =
+              normalize(page.description);
+            page.normalizedType = normalize(page.type);
+            page.normalizedTopic = normalize(page.topic);
+            page.normalizedTags = normalize(page.tags.join(" "));
+
+            page.searchText = normalize([
+              page.title,
+              page.description,
+              page.type,
+              page.topic,
+              page.tags.join(" ")
+            ].join(" "));
+
+            return page;
+          })
+          .filter(Boolean);
+
+        searchStatus.textContent =
+          `${pages.length} searchable resources loaded.`;
+
+      } catch (error) {
+        console.error(error);
+
+        pages = [];
+
+        searchStatus.innerHTML = `
+          Search data could not be loaded.
+          Please check the data file and try again.
+          <br>
+          <code>${escapeHtml(DATA_URL)}</code>
+        `;
+      }
+    }
+
+    function countOccurrences(text, word) {
+      if (!text || !word) {
+        return 0;
+      }
+
+      return text.split(word).length - 1;
+    }
+
+    function scorePage(page, query) {
+      const words = getQueryWords(query);
+      const fullQuery = normalize(query);
+
+      let score = 0;
+      let matchedWords = 0;
+
+      if (page.normalizedTitle === fullQuery) {
+        score += 180;
+      } else if (page.normalizedTitle.startsWith(fullQuery)) {
+        score += 130;
+      } else if (page.normalizedTitle.includes(fullQuery)) {
+        score += 100;
+      }
+
+      if (page.normalizedTags.includes(fullQuery)) {
+        score += 70;
+      }
+
+      if (page.normalizedTopic.includes(fullQuery)) {
+        score += 50;
+      }
+
+      if (page.normalizedDescription.includes(fullQuery)) {
+        score += 35;
+      }
+
+      if (page.normalizedType.includes(fullQuery)) {
+        score += 25;
+      }
+
+      words.forEach(function (word) {
+        if (!page.searchText.includes(word)) {
+          return;
+        }
+
+        matchedWords += 1;
+
+        if (page.normalizedTitle.includes(word)) {
+          score += 30;
+        }
+
+        if (page.normalizedTags.includes(word)) {
+          score += 20;
+        }
+
+        if (page.normalizedTopic.includes(word)) {
+          score += 15;
+        }
+
+        if (page.normalizedDescription.includes(word)) {
+          score += 8;
+        }
+
+        if (page.normalizedType.includes(word)) {
+          score += 6;
+        }
+
+        score += Math.min(
+          countOccurrences(page.searchText, word),
+          4
+        );
+      });
+
+      const coverage =
+        words.length > 0
+          ? matchedWords / words.length
+          : 0;
+
+      score += Math.round(coverage * 45);
+      score += page.priority;
+
+      return {
+        score,
+        matchedWords,
+        coverage
+      };
+    }
+
+    function searchPages(query) {
+      const cleanQuery = query.trim();
+      const words = getQueryWords(cleanQuery);
+
+      if (
+        cleanQuery.length < MIN_SEARCH_CHARS ||
+        words.length === 0
+      ) {
+        return {
+          total: 0,
+          matches: []
+        };
+      }
+
+      const requiredMatches = Math.max(
+        1,
+        Math.ceil(words.length * 0.5)
+      );
+
+      const rankedPages = pages
+        .map(function (page) {
+          const ranking = scorePage(page, cleanQuery);
+
+          return {
+            ...page,
+            score: ranking.score,
+            matchedWords: ranking.matchedWords,
+            coverage: ranking.coverage
+          };
+        })
+        .filter(function (page) {
+          return (
+            page.matchedWords >= requiredMatches &&
+            page.score >= 20
+          );
+        })
+        .sort(function (a, b) {
+          if (b.score !== a.score) {
+            return b.score - a.score;
+          }
+
+          return a.title.localeCompare(b.title);
+        });
+
+      return {
+        total: rankedPages.length,
+        matches: rankedPages.slice(0, MAX_RESULTS)
+      };
+    }
+
+    function createMetadataPills(page) {
+      const values = [
+        page.topic,
+        page.type,
+        ...page.tags
+      ];
+
+      const uniqueValues = [];
+      const seen = new Set();
+
+      values.forEach(function (value) {
+        const cleanValue = String(value || "").trim();
+
+        if (!cleanValue) {
+          return;
+        }
+
+        const normalizedValue = normalize(cleanValue);
+
+        if (seen.has(normalizedValue)) {
+          return;
+        }
+
+        seen.add(normalizedValue);
+        uniqueValues.push(cleanValue);
+      });
+
+      return uniqueValues
+        .slice(0, 7)
+        .map(function (value) {
+          return `<span class="pill">${escapeHtml(value)}</span>`;
+        })
+        .join("");
     }
 
     function showResults(query) {
       const cleanQuery = query.trim();
 
+      results.innerHTML = "";
+
       if (!cleanQuery) {
-        results.innerHTML = `
-          <p class="status">
-            Type at least ${MIN_SEARCH_CHARS} characters to search.
-          </p>
-        `;
+        searchStatus.textContent =
+          `Type at least ${MIN_SEARCH_CHARS} characters to search.`;
+
         return;
       }
 
       if (cleanQuery.length < MIN_SEARCH_CHARS) {
-        results.innerHTML = `
-          <p class="status">
-            Keep typing. Search starts after ${MIN_SEARCH_CHARS} characters.
-          </p>
-        `;
+        searchStatus.textContent =
+          `Keep typing. Search starts after ${MIN_SEARCH_CHARS} characters.`;
+
         return;
       }
 
-      const matches = searchPages(cleanQuery);
+      if (pages.length === 0) {
+        searchStatus.textContent =
+          "Search data is not available.";
+
+        return;
+      }
+
+      const searchResult = searchPages(cleanQuery);
+      const matches = searchResult.matches;
+      const total = searchResult.total;
 
       if (matches.length === 0) {
-        results.innerHTML = `
-          <p class="status">
-            No strong results found for <strong>${escapeHtml(cleanQuery)}</strong>.
-            Try fewer or clearer words.
-          </p>
+        searchStatus.innerHTML = `
+          No useful results found for
+          <strong>${escapeHtml(cleanQuery)}</strong>.
+          Try fewer or different words.
         `;
+
         return;
       }
 
-      results.innerHTML = `
-        <p class="status">
-          Showing ${matches.length}  result(s) for <strong>${escapeHtml(cleanQuery)}</strong>.
-        </p>
-      `;
+      const resultWord = total === 1 ? "result" : "results";
+
+      if (total > MAX_RESULTS) {
+        searchStatus.innerHTML = `
+          Showing ${matches.length} of ${total}
+          ${resultWord} for
+          <strong>${escapeHtml(cleanQuery)}</strong>.
+        `;
+      } else {
+        searchStatus.innerHTML = `
+          Showing ${total} ${resultWord} for
+          <strong>${escapeHtml(cleanQuery)}</strong>.
+        `;
+      }
 
       matches.forEach(function (page) {
         const item = document.createElement("article");
         item.className = "result";
-        item.tabIndex = 0;
-        item.setAttribute("role", "link");
-        item.setAttribute("data-url", page.url);
-
-        const tagHtml = page.tags
-          .slice(0, 5)
-          .map(function (tag) {
-            return `<span class="pill">${escapeHtml(tag)}</span>`;
-          })
-          .join("");
 
         item.innerHTML = `
           <h2>
-            <a href="${escapeAttr(page.url)}" target="_blank" rel="noopener">
+            <a
+              href="${escapeHtml(page.url)}"
+              target="_blank"
+              rel="noopener noreferrer">
               ${highlight(page.title, cleanQuery)}
             </a>
           </h2>
 
-          <p>${highlight(page.description, cleanQuery)}</p>
+          ${
+            page.description
+              ? `<p>${highlight(page.description, cleanQuery)}</p>`
+              : ""
+          }
 
           <div class="meta">
-            ${page.topic ? `<span class="pill">${escapeHtml(page.topic)}</span>` : ""}
-            ${page.type ? `<span class="pill">${escapeHtml(page.type)}</span>` : ""}
-            ${tagHtml}
+            ${createMetadataPills(page)}
           </div>
 
-          <div class="url">${escapeHtml(page.url)}</div>
+          <div class="url">
+            ${escapeHtml(page.url)}
+          </div>
         `;
-
-        item.addEventListener("click", function (event) {
-          const clickedLink = event.target.closest("a");
-
-          if (clickedLink) {
-            return;
-          }
-
-          window.open(page.url, "_blank", "noopener");
-        });
-
-        item.addEventListener("keydown", function (event) {
-          if (event.key === "Enter") {
-            window.open(page.url, "_blank", "noopener");
-          }
-        });
 
         results.appendChild(item);
       });
@@ -603,29 +1445,226 @@
 
     function runLiveSearch() {
       const query = searchBox.value;
+
       updateUrlQuietly(query);
       showResults(query);
     }
 
-    searchBox.addEventListener("input", runLiveSearch);
+    function executeSearch(query, recordInHistory = true) {
+      const cleanQuery = query.trim();
+
+      updateUrlQuietly(cleanQuery);
+      showResults(cleanQuery);
+
+      if (
+        recordInHistory &&
+        cleanQuery.length >= MIN_SEARCH_CHARS
+      ) {
+        addRecentSearch(cleanQuery);
+      }
+    }
+
+    function exportSearchData() {
+      const exportData = {
+        application: "Champak Search",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        recentSearches,
+        savedSearches
+      };
+
+      const jsonText = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonText], {
+        type: "application/json"
+      });
+
+      const downloadUrl = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+
+      const datePart = new Date()
+        .toISOString()
+        .slice(0, 10);
+
+      downloadLink.href = downloadUrl;
+      downloadLink.download =
+        `champak-searches-${datePart}.json`;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      URL.revokeObjectURL(downloadUrl);
+
+      showToast("Search data saved as JSON.");
+    }
+
+    function importSearchData(file) {
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function () {
+        try {
+          const parsedData = JSON.parse(reader.result);
+
+          if (
+            !parsedData ||
+            typeof parsedData !== "object" ||
+            Array.isArray(parsedData)
+          ) {
+            throw new Error("The JSON root must be an object.");
+          }
+
+          const importedRecent =
+            sanitizeSearchArray(parsedData.recentSearches);
+
+          const importedSaved =
+            sanitizeSearchArray(parsedData.savedSearches);
+
+          if (
+            !Array.isArray(parsedData.recentSearches) &&
+            !Array.isArray(parsedData.savedSearches)
+          ) {
+            throw new Error(
+              "The JSON file does not contain recentSearches or savedSearches arrays."
+            );
+          }
+
+          recentSearches =
+            importedRecent.slice(0, MAX_RECENT_SEARCHES);
+
+          savedSearches = importedSaved;
+
+          saveSearchCollections();
+          renderSearchCollections();
+
+          showToast(
+            `Loaded ${recentSearches.length} recent and ` +
+            `${savedSearches.length} saved searches.`
+          );
+
+        } catch (error) {
+          console.error(error);
+
+          showToast(
+            "The selected file is not a valid Champak Search JSON file.",
+            true
+          );
+        } finally {
+          jsonFileInput.value = "";
+        }
+      });
+
+      reader.addEventListener("error", function () {
+        showToast("The JSON file could not be read.", true);
+        jsonFileInput.value = "";
+      });
+
+      reader.readAsText(file);
+    }
+
+    searchBox.addEventListener("input", function () {
+      clearTimeout(searchTimer);
+
+      searchTimer = setTimeout(function () {
+        runLiveSearch();
+      }, 150);
+    });
 
     form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
       const query = searchBox.value.trim();
 
-      if (query.length < MIN_SEARCH_CHARS) {
-        event.preventDefault();
-        showResults(query);
+      executeSearch(query, true);
+    });
+
+    saveSearchButton.addEventListener("click", function () {
+      addSavedSearch(searchBox.value);
+    });
+
+    clearRecentButton.addEventListener("click", function () {
+      if (recentSearches.length === 0) {
+        showToast("There are no recent searches to clear.");
+        return;
       }
+
+      recentSearches = [];
+
+      saveSearchCollections();
+      renderSearchCollections();
+
+      showToast("Recent searches cleared.");
+    });
+
+    clearSavedButton.addEventListener("click", function () {
+      if (savedSearches.length === 0) {
+        showToast("There are no saved searches to clear.");
+        return;
+      }
+
+      savedSearches = [];
+
+      saveSearchCollections();
+      renderSearchCollections();
+
+      showToast("Saved searches cleared.");
+    });
+
+    clearEverythingButton.addEventListener("click", function () {
+      recentSearches = [];
+      savedSearches = [];
+
+      localStorage.removeItem(STORAGE_KEYS.recent);
+      localStorage.removeItem(STORAGE_KEYS.saved);
+
+      renderSearchCollections();
+
+      showToast("All stored searches cleared.");
+    });
+
+    exportJsonButton.addEventListener("click", function () {
+      exportSearchData();
+    });
+
+    importJsonButton.addEventListener("click", function () {
+      jsonFileInput.click();
+    });
+
+    jsonFileInput.addEventListener("change", function () {
+      const selectedFile = jsonFileInput.files[0];
+      importSearchData(selectedFile);
+    });
+
+    window.addEventListener("popstate", function () {
+      const query = getQueryFromUrl();
+
+      searchBox.value = query;
+      showResults(query);
     });
 
     async function start() {
+      recentSearches =
+        loadStoredArray(STORAGE_KEYS.recent)
+          .slice(0, MAX_RECENT_SEARCHES);
+
+      savedSearches =
+        loadStoredArray(STORAGE_KEYS.saved);
+
+      renderSearchCollections();
+
       await loadPages();
 
       const query = getQueryFromUrl();
+
       searchBox.value = query;
       showResults(query);
 
-      searchBox.focus();
+      if (query.trim().length >= MIN_SEARCH_CHARS) {
+        addRecentSearch(query);
+      }
     }
 
     start();
