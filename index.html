@@ -17,20 +17,65 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Champak Search | Learn With Champak Search Engine</title>
 
-  <title>Champak Search</title>
-
-  <meta name="description"
-    content="Search Learn With Champak, Programmer's Picnic, editors, lessons and learning resources.">
-
+  <meta
+    name="description"
+    content="Search Learn With Champak, Programmer's Picnic, coding editors, Python, DSA, AI-ML, JavaScript, Angular, SQL, lessons and learning resources.">
+  <meta
+    name="keywords"
+    content="Champak Search, Learn With Champak, Programmer's Picnic, Python lessons, DSA lessons, AI ML lessons, JavaScript, Angular, SQL editor, coding resources, Champak Roy">
+  <meta name="author" content="Champak Roy">
+  <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#ea580c">
 
   <link rel="canonical" href="https://search.learnwithchampak.live/">
 
-  <link rel="search"
+  <meta property="og:title" content="Champak Search | Learn With Champak Search Engine">
+  <meta
+    property="og:description"
+    content="Search Learn With Champak, Programmer's Picnic, editors, lessons and coding resources from one place.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://search.learnwithchampak.live/">
+  <meta property="og:site_name" content="Champak Search">
+  <meta property="og:image" content="https://search.learnwithchampak.live/search-og.png">
+  <meta property="og:image:alt" content="Champak Search by Learn With Champak">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Champak Search | Learn With Champak Search Engine">
+  <meta
+    name="twitter:description"
+    content="Search Learn With Champak lessons, editors, tools and coding resources.">
+  <meta name="twitter:image" content="https://search.learnwithchampak.live/search-og.png">
+
+  <link rel="icon" href="https://search.learnwithchampak.live/favicon.ico">
+  <link rel="apple-touch-icon" href="https://search.learnwithchampak.live/apple-touch-icon.png">
+
+  <link
+    rel="search"
     type="application/opensearchdescription+xml"
     title="Champak Search"
     href="https://search.learnwithchampak.live/opensearch.xml">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Champak Search",
+      "alternateName": "Learn With Champak Search",
+      "url": "https://search.learnwithchampak.live/",
+      "description": "Search Learn With Champak, Programmer's Picnic, editors, lessons and coding resources.",
+      "publisher": {
+        "@type": "Person",
+        "name": "Champak Roy"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://search.learnwithchampak.live/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
 
   <style>
     :root {
@@ -432,6 +477,13 @@
       word-break: break-all;
     }
 
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
     mark {
       background: #fde68a;
       color: #78350f;
@@ -583,7 +635,7 @@
           id="saveSearchButton"
           class="secondary-button"
           type="button">
-          Save Search
+          Save Link
         </button>
       </form>
 
@@ -597,7 +649,7 @@
       </div>
     </section>
 
-    <section class="search-library" aria-label="Search history and saved searches">
+    <section class="search-library" aria-label="Search history and saved links">
       <article class="history-card">
         <div class="section-heading-row">
           <h2>Recent Searches</h2>
@@ -615,7 +667,7 @@
 
       <article class="history-card">
         <div class="section-heading-row">
-          <h2>Saved Searches</h2>
+          <h2>Saved Links</h2>
 
           <button
             id="clearSavedButton"
@@ -721,7 +773,7 @@
 
     const STORAGE_KEYS = {
       recent: "champakSearchRecentSearches",
-      saved: "champakSearchSavedSearches"
+      saved: "champakSearchSavedLinks"
     };
 
     let pages = [];
@@ -890,27 +942,57 @@
         return [];
       }
 
-      const uniqueSearches = new Map();
+      const uniqueItems = new Map();
 
       value.forEach(function (item) {
-        if (typeof item !== "string") {
+        if (typeof item === "string") {
+          const cleanValue = item.trim();
+
+          if (cleanValue.length < MIN_SEARCH_CHARS) {
+            return;
+          }
+
+          const normalizedValue = normalize(cleanValue);
+
+          if (!uniqueItems.has(normalizedValue)) {
+            uniqueItems.set(normalizedValue, cleanValue);
+          }
+
           return;
         }
 
-        const cleanValue = item.trim();
+        if (item && typeof item === "object" && item.url) {
+          const safeUrl = getSafeUrl(item.url);
 
-        if (cleanValue.length < MIN_SEARCH_CHARS) {
-          return;
-        }
+          if (!safeUrl) {
+            return;
+          }
 
-        const normalizedValue = normalize(cleanValue);
+          const normalizedUrl = normalize(safeUrl);
 
-        if (!uniqueSearches.has(normalizedValue)) {
-          uniqueSearches.set(normalizedValue, cleanValue);
+          if (!uniqueItems.has(normalizedUrl)) {
+            uniqueItems.set(normalizedUrl, {
+              title: String(item.title || "Untitled").trim(),
+              url: safeUrl,
+              description: String(item.description || "").trim(),
+              topic: String(item.topic || "").trim(),
+              type: String(item.type || "").trim(),
+              tags: Array.isArray(item.tags)
+                ? item.tags
+                    .filter(function (tag) {
+                      return typeof tag === "string";
+                    })
+                    .map(function (tag) {
+                      return tag.trim();
+                    })
+                    .filter(Boolean)
+                : []
+            });
+          }
         }
       });
 
-      return [...uniqueSearches.values()];
+      return [...uniqueItems.values()];
     }
 
     function saveSearchCollections() {
@@ -945,33 +1027,45 @@
       renderSearchCollections();
     }
 
-    function addSavedSearch(query) {
-      const cleanQuery = query.trim();
-
-      if (cleanQuery.length < MIN_SEARCH_CHARS) {
-        showToast(
-          `Enter at least ${MIN_SEARCH_CHARS} characters before saving.`,
-          true
-        );
-
+    function addSavedLink(page) {
+      if (!page || !page.url) {
+        showToast("This link cannot be saved.", true);
         return;
       }
 
+      const safeUrl = getSafeUrl(page.url);
+
+      if (!safeUrl) {
+        showToast("This link cannot be saved.", true);
+        return;
+      }
+
+      const savedLink = {
+        title: page.title || "Untitled",
+        url: safeUrl,
+        description: page.description || "",
+        topic: page.topic || "",
+        type: page.type || "",
+        tags: Array.isArray(page.tags) ? page.tags : []
+      };
+
       const alreadySaved = savedSearches.some(function (item) {
-        return normalize(item) === normalize(cleanQuery);
+        return item &&
+          typeof item === "object" &&
+          normalize(item.url) === normalize(savedLink.url);
       });
 
       if (alreadySaved) {
-        showToast("This search is already saved.");
+        showToast("This link is already saved.");
         return;
       }
 
-      savedSearches.unshift(cleanQuery);
+      savedSearches.unshift(savedLink);
 
       saveSearchCollections();
       renderSearchCollections();
 
-      showToast(`Saved search: ${cleanQuery}`);
+      showToast(`Saved link: ${savedLink.title}`);
     }
 
     function removeRecentSearch(query) {
@@ -985,6 +1079,10 @@
 
     function removeSavedSearch(query) {
       savedSearches = savedSearches.filter(function (item) {
+        if (item && typeof item === "object") {
+          return normalize(item.url) !== normalize(query.url);
+        }
+
         return normalize(item) !== normalize(query);
       });
 
@@ -1014,22 +1112,29 @@
       const searchButton = document.createElement("button");
       searchButton.className = "search-chip";
       searchButton.type = "button";
-      searchButton.textContent = query;
-      searchButton.title = `Search for ${query}`;
 
-      searchButton.addEventListener("click", function () {
-        useStoredSearch(query);
-      });
+      if (collectionType === "saved" && query && typeof query === "object") {
+        searchButton.textContent = query.title || "Saved Link";
+        searchButton.title = query.url || "Open saved link";
+
+        searchButton.addEventListener("click", function () {
+          window.open(query.url, "_blank", "noopener,noreferrer");
+        });
+      } else {
+        searchButton.textContent = query;
+        searchButton.title = `Search for ${query}`;
+
+        searchButton.addEventListener("click", function () {
+          useStoredSearch(query);
+        });
+      }
 
       const removeButton = document.createElement("button");
       removeButton.className = "remove-search";
       removeButton.type = "button";
       removeButton.textContent = "×";
-      removeButton.title = `Remove ${query}`;
-      removeButton.setAttribute(
-        "aria-label",
-        `Remove search ${query}`
-      );
+      removeButton.title = "Remove";
+      removeButton.setAttribute("aria-label", "Remove item");
 
       removeButton.addEventListener("click", function () {
         if (collectionType === "recent") {
@@ -1055,7 +1160,7 @@
         emptyMessage.textContent =
           type === "recent"
             ? "Your recent searches will appear here."
-            : "Save useful searches so you can run them again.";
+            : "Save useful links from search results so you can open them again.";
 
         container.appendChild(emptyMessage);
         return;
@@ -1437,7 +1542,19 @@
           <div class="url">
             ${escapeHtml(page.url)}
           </div>
+
+          <div class="result-actions">
+            <button class="small-button save-link-button" type="button">
+              Save Link
+            </button>
+          </div>
         `;
+
+        const saveLinkButton = item.querySelector(".save-link-button");
+
+        saveLinkButton.addEventListener("click", function () {
+          addSavedLink(page);
+        });
 
         results.appendChild(item);
       });
@@ -1467,10 +1584,10 @@
     function exportSearchData() {
       const exportData = {
         application: "Champak Search",
-        version: 1,
+        version: 2,
         exportedAt: new Date().toISOString(),
         recentSearches,
-        savedSearches
+        savedLinks: savedSearches
       };
 
       const jsonText = JSON.stringify(exportData, null, 2);
@@ -1487,7 +1604,7 @@
 
       downloadLink.href = downloadUrl;
       downloadLink.download =
-        `champak-searches-${datePart}.json`;
+        `champak-saved-links-${datePart}.json`;
 
       document.body.appendChild(downloadLink);
       downloadLink.click();
@@ -1495,7 +1612,7 @@
 
       URL.revokeObjectURL(downloadUrl);
 
-      showToast("Search data saved as JSON.");
+      showToast("Saved links data exported as JSON.");
     }
 
     function importSearchData(file) {
@@ -1521,28 +1638,37 @@
             sanitizeSearchArray(parsedData.recentSearches);
 
           const importedSaved =
-            sanitizeSearchArray(parsedData.savedSearches);
+            sanitizeSearchArray(
+              parsedData.savedLinks || parsedData.savedSearches
+            );
 
           if (
             !Array.isArray(parsedData.recentSearches) &&
+            !Array.isArray(parsedData.savedLinks) &&
             !Array.isArray(parsedData.savedSearches)
           ) {
             throw new Error(
-              "The JSON file does not contain recentSearches or savedSearches arrays."
+              "The JSON file does not contain recentSearches or savedLinks arrays."
             );
           }
 
           recentSearches =
-            importedRecent.slice(0, MAX_RECENT_SEARCHES);
+            importedRecent
+              .filter(function (item) {
+                return typeof item === "string";
+              })
+              .slice(0, MAX_RECENT_SEARCHES);
 
-          savedSearches = importedSaved;
+          savedSearches = importedSaved.filter(function (item) {
+            return item && typeof item === "object" && item.url;
+          });
 
           saveSearchCollections();
           renderSearchCollections();
 
           showToast(
-            `Loaded ${recentSearches.length} recent and ` +
-            `${savedSearches.length} saved searches.`
+            `Loaded ${recentSearches.length} recent searches and ` +
+            `${savedSearches.length} saved links.`
           );
 
         } catch (error) {
@@ -1582,7 +1708,7 @@
     });
 
     saveSearchButton.addEventListener("click", function () {
-      addSavedSearch(searchBox.value);
+      showToast("Use the Save Link button on a search result.");
     });
 
     clearRecentButton.addEventListener("click", function () {
@@ -1601,7 +1727,7 @@
 
     clearSavedButton.addEventListener("click", function () {
       if (savedSearches.length === 0) {
-        showToast("There are no saved searches to clear.");
+        showToast("There are no saved links to clear.");
         return;
       }
 
@@ -1610,7 +1736,7 @@
       saveSearchCollections();
       renderSearchCollections();
 
-      showToast("Saved searches cleared.");
+      showToast("Saved links cleared.");
     });
 
     clearEverythingButton.addEventListener("click", function () {
@@ -1622,7 +1748,7 @@
 
       renderSearchCollections();
 
-      showToast("All stored searches cleared.");
+      showToast("All stored searches and links cleared.");
     });
 
     exportJsonButton.addEventListener("click", function () {
@@ -1648,10 +1774,16 @@
     async function start() {
       recentSearches =
         loadStoredArray(STORAGE_KEYS.recent)
+          .filter(function (item) {
+            return typeof item === "string";
+          })
           .slice(0, MAX_RECENT_SEARCHES);
 
       savedSearches =
-        loadStoredArray(STORAGE_KEYS.saved);
+        loadStoredArray(STORAGE_KEYS.saved)
+          .filter(function (item) {
+            return item && typeof item === "object" && item.url;
+          });
 
       renderSearchCollections();
 
