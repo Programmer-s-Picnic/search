@@ -182,7 +182,7 @@
 
     .search-form {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 12px;
     }
 
@@ -630,13 +630,6 @@
         <button class="primary-button" type="submit">
           Search
         </button>
-
-        <button
-          id="saveSearchButton"
-          class="secondary-button"
-          type="button">
-          Save Link
-        </button>
       </form>
 
       <div id="searchHelp" class="helper">
@@ -645,7 +638,7 @@
           <code>https://search.learnwithchampak.live/?q=%s</code>
         </span>
 
-        <span>Data: live links.json</span>
+        <span></span>
       </div>
     </section>
 
@@ -684,14 +677,14 @@
             id="exportJsonButton"
             class="small-button"
             type="button">
-            Save as JSON
+            Export Saved Links
           </button>
 
           <button
             id="importJsonButton"
             class="small-button"
             type="button">
-            Reload from JSON
+            Import Saved Links
           </button>
 
           <button
@@ -787,8 +780,6 @@
     const results = document.getElementById("results");
     const searchStatus = document.getElementById("searchStatus");
 
-    const saveSearchButton =
-      document.getElementById("saveSearchButton");
 
     const recentSearchesContainer =
       document.getElementById("recentSearches");
@@ -1389,10 +1380,7 @@
         };
       }
 
-      const requiredMatches = Math.max(
-        1,
-        Math.ceil(words.length * 0.5)
-      );
+      const requiredMatches = words.length;
 
       const rankedPages = pages
         .map(function (page) {
@@ -1707,9 +1695,6 @@
       executeSearch(query, true);
     });
 
-    saveSearchButton.addEventListener("click", function () {
-      showToast("Use the Save Link button on a search result.");
-    });
 
     clearRecentButton.addEventListener("click", function () {
       if (recentSearches.length === 0) {
