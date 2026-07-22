@@ -72,6 +72,8 @@
     title="Champak Search"
     href="https://search.learnwithchampak.live/opensearch.xml">
 
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -384,6 +386,70 @@
       box-shadow: 0 10px 25px rgba(124, 45, 18, 0.07);
     }
 
+    .notification-card {
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(124, 45, 18, 0.08);
+    }
+
+    .notification-card h2 {
+      margin: 0 0 8px;
+      color: var(--brand-dark);
+      font-size: 22px;
+    }
+
+    .notification-card > p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .notification-controls,
+    .reminder-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .reminder-grid {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .field-group {
+      display: grid;
+      gap: 6px;
+      flex: 1 1 160px;
+    }
+
+    .field-group label {
+      color: #374151;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field-group select {
+      min-height: 44px;
+      border: 2px solid var(--border);
+      border-radius: 13px;
+      padding: 8px 11px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .notification-status {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
     .section-heading-row {
       display: flex;
       align-items: center;
@@ -684,15 +750,6 @@
       }
     }
   </style>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "c2869c95-73e5-4416-93ad-b26aadf35512",
-    });
-  });
-</script>
 </head>
 
 <body>
@@ -806,6 +863,69 @@
       </article>
     </section>
 
+    <section class="notification-card" aria-labelledby="notificationHeading">
+      <h2 id="notificationHeading">Learning Notifications</h2>
+      <p>
+        Receive new-lesson announcements and choose when you prefer study reminders.
+        Your browser will always ask before notifications are enabled.
+      </p>
+
+      <div class="notification-controls">
+        <button id="enableNotificationsButton" class="primary-button install-button" type="button">
+          Enable Notifications
+        </button>
+        <button id="disableNotificationsButton" class="danger-button" type="button" hidden>
+          Pause Notifications
+        </button>
+        <button id="testNotificationButton" class="small-button" type="button" hidden>
+          Test Notification
+        </button>
+      </div>
+
+      <form id="reminderForm" class="reminder-grid">
+        <div class="field-group">
+          <label for="reminderFrequency">Reminder frequency</label>
+          <select id="reminderFrequency" name="frequency">
+            <option value="off">No reminders</option>
+            <option value="daily">Every day</option>
+            <option value="weekdays">Monday to Friday</option>
+            <option value="weekly">Once a week</option>
+          </select>
+        </div>
+
+        <div id="reminderDayGroup" class="field-group" hidden>
+          <label for="reminderDay">Day</label>
+          <select id="reminderDay" name="day">
+            <option value="monday">Monday</option>
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="friday">Friday</option>
+            <option value="saturday">Saturday</option>
+            <option value="sunday">Sunday</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="reminderTime">Preferred time</label>
+          <select id="reminderTime" name="time">
+            <option value="07:00">7:00 AM</option>
+            <option value="09:00">9:00 AM</option>
+            <option value="18:00">6:00 PM</option>
+            <option value="20:00">8:00 PM</option>
+          </select>
+        </div>
+
+        <button class="secondary-button install-button" type="submit">
+          Save Reminder
+        </button>
+      </form>
+
+      <p id="notificationStatus" class="notification-status" role="status" aria-live="polite">
+        Checking notification availability…
+      </p>
+    </section>
+
     <section class="results-area" aria-labelledby="searchStatus">
       <p
         id="searchStatus"
@@ -863,6 +983,9 @@
     const DATA_URL =
       "https://programmer-s-picnic.github.io/json-images/links/links.json";
 
+    const ONESIGNAL_APP_ID = "c2869c95-73e5-4416-93ad-b26aadf35512";
+    const REMINDER_STORAGE_KEY = "champakSearchReminderPreferences";
+
     const MIN_SEARCH_CHARS = 3;
     const MAX_RESULTS = 25;
     const MAX_RECENT_SEARCHES = 10;
@@ -912,6 +1035,186 @@
     const toast = document.getElementById("toast");
     const installAppButton = document.getElementById("installAppButton");
     const networkStatus = document.getElementById("networkStatus");
+    const enableNotificationsButton = document.getElementById("enableNotificationsButton");
+    const disableNotificationsButton = document.getElementById("disableNotificationsButton");
+    const testNotificationButton = document.getElementById("testNotificationButton");
+    const reminderForm = document.getElementById("reminderForm");
+    const reminderFrequency = document.getElementById("reminderFrequency");
+    const reminderDay = document.getElementById("reminderDay");
+    const reminderDayGroup = document.getElementById("reminderDayGroup");
+    const reminderTime = document.getElementById("reminderTime");
+    const notificationStatus = document.getElementById("notificationStatus");
+
+    let oneSignalInstance = null;
+
+    const oneSignalReady = new Promise(function (resolve, reject) {
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push(async function (OneSignal) {
+        try {
+          await OneSignal.init({
+            appId: ONESIGNAL_APP_ID,
+            serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
+            serviceWorkerParam: { scope: "/push/onesignal/" },
+            autoResubscribe: true,
+            notificationClickHandlerMatch: "origin",
+            notificationClickHandlerAction: "navigate"
+          });
+
+          oneSignalInstance = OneSignal;
+          OneSignal.User.PushSubscription.addEventListener("change", updateNotificationControls);
+          updateNotificationControls();
+          resolve(OneSignal);
+        } catch (error) {
+          console.error("OneSignal initialization failed:", error);
+          notificationStatus.textContent = "Notifications could not start. Please reload or check the site configuration.";
+          resolve(null);
+        }
+      });
+    });
+
+    function notificationsSupported() {
+      return "Notification" in window && "serviceWorker" in navigator;
+    }
+
+    function updateNotificationControls() {
+      if (!notificationsSupported()) {
+        notificationStatus.textContent = "This browser does not support web notifications.";
+        enableNotificationsButton.hidden = true;
+        reminderForm.hidden = true;
+        return;
+      }
+
+      const optedIn = Boolean(
+        oneSignalInstance && oneSignalInstance.User.PushSubscription.optedIn
+      );
+
+      enableNotificationsButton.hidden = optedIn || Notification.permission === "denied";
+      disableNotificationsButton.hidden = !optedIn;
+      testNotificationButton.hidden = !optedIn;
+
+      if (Notification.permission === "denied") {
+        notificationStatus.textContent = "Notifications are blocked in browser settings. Allow them for this site, then reload.";
+      } else if (optedIn) {
+        notificationStatus.textContent = "Notifications are active on this device.";
+      } else {
+        notificationStatus.textContent = "Notifications are currently off.";
+      }
+    }
+
+    async function enableNotifications() {
+      if (!notificationsSupported()) {
+        showToast("This browser does not support notifications.", true);
+        return;
+      }
+
+      try {
+        const OneSignal = await oneSignalReady;
+        if (!OneSignal) throw new Error("OneSignal is unavailable.");
+        await OneSignal.Notifications.requestPermission();
+
+        if (Notification.permission === "granted") {
+          await OneSignal.User.PushSubscription.optIn();
+          await syncReminderTags();
+          showToast("Notifications enabled successfully.");
+        }
+
+        updateNotificationControls();
+      } catch (error) {
+        console.error(error);
+        showToast("Notifications could not be enabled.", true);
+      }
+    }
+
+    async function disableNotifications() {
+      try {
+        const OneSignal = await oneSignalReady;
+        if (!OneSignal) throw new Error("OneSignal is unavailable.");
+        await OneSignal.User.PushSubscription.optOut();
+        updateNotificationControls();
+        showToast("Notifications paused on this device.");
+      } catch (error) {
+        console.error(error);
+        showToast("Notifications could not be paused.", true);
+      }
+    }
+
+    function getReminderPreferences() {
+      try {
+        return JSON.parse(localStorage.getItem(REMINDER_STORAGE_KEY)) || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function loadReminderPreferences() {
+      const preferences = getReminderPreferences();
+      reminderFrequency.value = preferences.frequency || "off";
+      reminderDay.value = preferences.day || "monday";
+      reminderTime.value = preferences.time || "18:00";
+      reminderDayGroup.hidden = reminderFrequency.value !== "weekly";
+    }
+
+    async function syncReminderTags() {
+      if (!oneSignalInstance) return;
+
+      const preferences = getReminderPreferences();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata";
+
+      oneSignalInstance.User.addTags({
+        reminder_frequency: preferences.frequency || "off",
+        reminder_day: preferences.day || "monday",
+        reminder_time: preferences.time || "18:00",
+        reminder_timezone: timezone,
+        lesson_updates: "enabled"
+      });
+    }
+
+    async function saveReminderPreferences(event) {
+      event.preventDefault();
+
+      const preferences = {
+        frequency: reminderFrequency.value,
+        day: reminderDay.value,
+        time: reminderTime.value
+      };
+
+      localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(preferences));
+
+      try {
+        await oneSignalReady;
+        if (!oneSignalInstance) throw new Error("OneSignal is unavailable.");
+        await syncReminderTags();
+        showToast(
+          preferences.frequency === "off"
+            ? "Study reminders turned off."
+            : "Reminder preference saved."
+        );
+      } catch (error) {
+        showToast("Saved on this device; server sync will retry later.");
+      }
+    }
+
+    async function showTestNotification() {
+      if (Notification.permission !== "granted") {
+        showToast("Enable notifications first.", true);
+        return;
+      }
+
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification("Champak Search", {
+          body: "Notifications are working successfully. Keep learning!",
+          icon: "/icons/icon-192.png",
+          badge: "/icons/icon-192.png",
+          tag: "champak-search-test",
+          data: { url: "/" }
+        });
+        showToast("Test notification sent.");
+      } catch (error) {
+        console.error(error);
+        showToast("The test notification could not be shown.", true);
+      }
+    }
 
     function updateNetworkStatus() {
       const online = navigator.onLine;
@@ -1892,6 +2195,14 @@
       importSearchData(selectedFile);
     });
 
+    enableNotificationsButton.addEventListener("click", enableNotifications);
+    disableNotificationsButton.addEventListener("click", disableNotifications);
+    testNotificationButton.addEventListener("click", showTestNotification);
+    reminderForm.addEventListener("submit", saveReminderPreferences);
+    reminderFrequency.addEventListener("change", function () {
+      reminderDayGroup.hidden = reminderFrequency.value !== "weekly";
+    });
+
     window.addEventListener("popstate", function () {
       const query = getQueryFromUrl();
 
@@ -1901,6 +2212,7 @@
 
     async function start() {
       updateNetworkStatus();
+      loadReminderPreferences();
       recentSearches =
         loadStoredArray(STORAGE_KEYS.recent)
           .filter(function (item) {

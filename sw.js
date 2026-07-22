@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_VERSION = "champak-search-v1";
+const CACHE_VERSION = "champak-search-v2";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -82,4 +82,11 @@ self.addEventListener("fetch", (event) => {
       }))
     );
   }
+});
+
+self.addEventListener("notificationclick", (event) => {
+  if (!event.notification || !event.notification.data || !event.notification.data.url) return;
+
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url));
 });
