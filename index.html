@@ -17,6 +17,11 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="application-name" content="Champak Search">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Champak Search">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>Champak Search: Python, DSA, AI/ML & Coding Lessons</title>
 
   <meta
@@ -56,8 +61,10 @@
   <meta name="twitter:image" content="https://search.learnwithchampak.live/champakroy.png">
   <meta name="twitter:image:alt" content="Champak Roy, educator and creator of Champak Search">
 
-  <link rel="icon" href="https://search.learnwithchampak.live/favicon.ico">
-  <link rel="apple-touch-icon" href="https://search.learnwithchampak.live/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
 
   <link
     rel="search"
@@ -321,6 +328,45 @@
       padding: 3px 7px;
       border-radius: 8px;
       word-break: break-word;
+    }
+
+    .pwa-tools {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .install-button[hidden] {
+      display: none;
+    }
+
+    .install-button {
+      min-height: 46px;
+      padding: 12px 22px;
+    }
+
+    .network-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .network-status::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .network-status.offline::before {
+      background: var(--danger);
     }
 
     .search-library {
@@ -651,6 +697,13 @@
         Search Learn With Champak, Programmer's Picnic, editors,
         lessons and coding resources.
       </p>
+
+      <div class="pwa-tools">
+        <button id="installAppButton" class="primary-button install-button" type="button" hidden>
+          Install App
+        </button>
+        <span id="networkStatus" class="network-status" role="status" aria-live="polite">Online</span>
+      </div>
     </section>
 
     <section class="search-card">
@@ -815,6 +868,7 @@
     let savedSearches = [];
     let searchTimer = null;
     let toastTimer = null;
+    let deferredInstallPrompt = null;
 
     const form = document.getElementById("searchForm");
     const searchBox = document.getElementById("searchBox");
@@ -847,6 +901,45 @@
       document.getElementById("jsonFileInput");
 
     const toast = document.getElementById("toast");
+    const installAppButton = document.getElementById("installAppButton");
+    const networkStatus = document.getElementById("networkStatus");
+
+    function updateNetworkStatus() {
+      const online = navigator.onLine;
+      networkStatus.textContent = online ? "Online" : "Offline mode";
+      networkStatus.classList.toggle("offline", !online);
+    }
+
+    window.addEventListener("online", function () {
+      updateNetworkStatus();
+      showToast("You are back online.");
+    });
+
+    window.addEventListener("offline", function () {
+      updateNetworkStatus();
+      showToast("You are offline. Cached resources remain available.");
+    });
+
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installAppButton.hidden = false;
+    });
+
+    installAppButton.addEventListener("click", async function () {
+      if (!deferredInstallPrompt) return;
+
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installAppButton.hidden = true;
+    });
+
+    window.addEventListener("appinstalled", function () {
+      deferredInstallPrompt = null;
+      installAppButton.hidden = true;
+      showToast("Champak Search has been installed.");
+    });
 
     function escapeHtml(text) {
       return String(text)
@@ -1798,6 +1891,7 @@
     });
 
     async function start() {
+      updateNetworkStatus();
       recentSearches =
         loadStoredArray(STORAGE_KEYS.recent)
           .filter(function (item) {
@@ -1826,6 +1920,14 @@
     }
 
     start();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js").catch(function (error) {
+          console.error("Service worker registration failed:", error);
+        });
+      });
+    }
   </script>
 </body>
 
