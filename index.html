@@ -148,6 +148,10 @@
       box-sizing: border-box;
     }
 
+    [hidden] {
+      display: none !important;
+    }
+
     html {
       scroll-behavior: smooth;
     }
@@ -1053,8 +1057,8 @@
         try {
           await OneSignal.init({
             appId: ONESIGNAL_APP_ID,
-            serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
-            serviceWorkerParam: { scope: "/push/onesignal/" },
+            serviceWorkerPath: "sw.js",
+            serviceWorkerParam: { scope: "/" },
             autoResubscribe: true,
             notificationClickHandlerMatch: "origin",
             notificationClickHandlerAction: "navigate"
@@ -1066,7 +1070,12 @@
           resolve(OneSignal);
         } catch (error) {
           console.error("OneSignal initialization failed:", error);
-          notificationStatus.textContent = "Notifications could not start. Please reload or check the site configuration.";
+          const detail = error && error.message
+            ? String(error.message).slice(0, 180)
+            : "Unknown initialization error";
+
+          notificationStatus.textContent =
+            "Notifications could not start: " + detail;
           resolve(null);
         }
       });

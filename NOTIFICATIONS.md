@@ -9,12 +9,12 @@ In **Settings → Push & In-App → Web**:
 1. Use **Custom Code** integration.
 2. Set Site URL to `https://search.learnwithchampak.live`.
 3. Set the default icon URL to `https://search.learnwithchampak.live/icons/icon-512.png`.
-4. Set the service-worker path to `/push/onesignal/`.
-5. Set the worker filename to `OneSignalSDKWorker.js`.
-6. Set the registration scope to `/push/onesignal/`.
+4. Set the service-worker path to `/`.
+5. Set the worker filename to `sw.js`.
+6. Set the registration scope to `/`.
 7. Enable Auto Resubscribe and save.
 
-The notification worker is deliberately isolated from the root PWA worker. This prevents push delivery from replacing offline caching.
+OneSignal and PWA caching share the root `sw.js`. The worker imports OneSignal first and then installs the PWA caching and offline handlers. This avoids two root-scope workers competing with each other.
 
 ## Send a new-lesson broadcast
 
