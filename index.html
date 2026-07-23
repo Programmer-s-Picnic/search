@@ -411,40 +411,11 @@
       line-height: 1.55;
     }
 
-    .notification-controls,
-    .reminder-grid {
+    .notification-controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       align-items: end;
-    }
-
-    .reminder-grid {
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-    }
-
-    .field-group {
-      display: grid;
-      gap: 6px;
-      flex: 1 1 160px;
-    }
-
-    .field-group label {
-      color: #374151;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .field-group select {
-      min-height: 44px;
-      border: 2px solid var(--border);
-      border-radius: 13px;
-      padding: 8px 11px;
-      background: white;
-      color: var(--text);
-      font: inherit;
     }
 
     .notification-status {
@@ -870,8 +841,8 @@
     <section class="notification-card" aria-labelledby="notificationHeading">
       <h2 id="notificationHeading">Learning Notifications</h2>
       <p>
-        Receive new-lesson announcements and choose when you prefer study reminders.
-        Your browser will always ask before notifications are enabled.
+        Receive announcements about new lessons and learning resources.
+        Your browser will ask for permission before notifications are enabled.
       </p>
 
       <div class="notification-controls">
@@ -885,45 +856,6 @@
           Test Notification
         </button>
       </div>
-
-      <form id="reminderForm" class="reminder-grid">
-        <div class="field-group">
-          <label for="reminderFrequency">Reminder frequency</label>
-          <select id="reminderFrequency" name="frequency">
-            <option value="off">No reminders</option>
-            <option value="daily">Every day</option>
-            <option value="weekdays">Monday to Friday</option>
-            <option value="weekly">Once a week</option>
-          </select>
-        </div>
-
-        <div id="reminderDayGroup" class="field-group" hidden>
-          <label for="reminderDay">Day</label>
-          <select id="reminderDay" name="day">
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="friday">Friday</option>
-            <option value="saturday">Saturday</option>
-            <option value="sunday">Sunday</option>
-          </select>
-        </div>
-
-        <div class="field-group">
-          <label for="reminderTime">Preferred time</label>
-          <select id="reminderTime" name="time">
-            <option value="07:00">7:00 AM</option>
-            <option value="09:00">9:00 AM</option>
-            <option value="18:00">6:00 PM</option>
-            <option value="20:00">8:00 PM</option>
-          </select>
-        </div>
-
-        <button class="secondary-button install-button" type="submit">
-          Save Reminder
-        </button>
-      </form>
 
       <p id="notificationStatus" class="notification-status" role="status" aria-live="polite">
         Checking notification availability…
@@ -988,7 +920,6 @@
       "https://programmer-s-picnic.github.io/json-images/links/links.json";
 
     const ONESIGNAL_APP_ID = "c2869c95-73e5-4416-93ad-b26aadf35512";
-    const REMINDER_STORAGE_KEY = "champakSearchReminderPreferences";
 
     const MIN_SEARCH_CHARS = 3;
     const MAX_RESULTS = 25;
@@ -1042,11 +973,6 @@
     const enableNotificationsButton = document.getElementById("enableNotificationsButton");
     const disableNotificationsButton = document.getElementById("disableNotificationsButton");
     const testNotificationButton = document.getElementById("testNotificationButton");
-    const reminderForm = document.getElementById("reminderForm");
-    const reminderFrequency = document.getElementById("reminderFrequency");
-    const reminderDay = document.getElementById("reminderDay");
-    const reminderDayGroup = document.getElementById("reminderDayGroup");
-    const reminderTime = document.getElementById("reminderTime");
     const notificationStatus = document.getElementById("notificationStatus");
 
     let oneSignalInstance = null;
@@ -1089,7 +1015,6 @@
       if (!notificationsSupported()) {
         notificationStatus.textContent = "This browser does not support web notifications.";
         enableNotificationsButton.hidden = true;
-        reminderForm.hidden = true;
         return;
       }
 
@@ -1123,7 +1048,6 @@
 
         if (Notification.permission === "granted") {
           await OneSignal.User.PushSubscription.optIn();
-          await syncReminderTags();
           showToast("Notifications enabled successfully.");
         }
 
@@ -1144,62 +1068,6 @@
       } catch (error) {
         console.error(error);
         showToast("Notifications could not be paused.", true);
-      }
-    }
-
-    function getReminderPreferences() {
-      try {
-        return JSON.parse(localStorage.getItem(REMINDER_STORAGE_KEY)) || {};
-      } catch (error) {
-        return {};
-      }
-    }
-
-    function loadReminderPreferences() {
-      const preferences = getReminderPreferences();
-      reminderFrequency.value = preferences.frequency || "off";
-      reminderDay.value = preferences.day || "monday";
-      reminderTime.value = preferences.time || "18:00";
-      reminderDayGroup.hidden = reminderFrequency.value !== "weekly";
-    }
-
-    async function syncReminderTags() {
-      if (!oneSignalInstance) return;
-
-      const preferences = getReminderPreferences();
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata";
-
-      oneSignalInstance.User.addTags({
-        reminder_frequency: preferences.frequency || "off",
-        reminder_day: preferences.day || "monday",
-        reminder_time: preferences.time || "18:00",
-        reminder_timezone: timezone,
-        lesson_updates: "enabled"
-      });
-    }
-
-    async function saveReminderPreferences(event) {
-      event.preventDefault();
-
-      const preferences = {
-        frequency: reminderFrequency.value,
-        day: reminderDay.value,
-        time: reminderTime.value
-      };
-
-      localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(preferences));
-
-      try {
-        await oneSignalReady;
-        if (!oneSignalInstance) throw new Error("OneSignal is unavailable.");
-        await syncReminderTags();
-        showToast(
-          preferences.frequency === "off"
-            ? "Study reminders turned off."
-            : "Reminder preference saved."
-        );
-      } catch (error) {
-        showToast("Saved on this device; server sync will retry later.");
       }
     }
 
@@ -2207,10 +2075,6 @@
     enableNotificationsButton.addEventListener("click", enableNotifications);
     disableNotificationsButton.addEventListener("click", disableNotifications);
     testNotificationButton.addEventListener("click", showTestNotification);
-    reminderForm.addEventListener("submit", saveReminderPreferences);
-    reminderFrequency.addEventListener("change", function () {
-      reminderDayGroup.hidden = reminderFrequency.value !== "weekly";
-    });
 
     window.addEventListener("popstate", function () {
       const query = getQueryFromUrl();
@@ -2221,7 +2085,6 @@
 
     async function start() {
       updateNetworkStatus();
-      loadReminderPreferences();
       recentSearches =
         loadStoredArray(STORAGE_KEYS.recent)
           .filter(function (item) {

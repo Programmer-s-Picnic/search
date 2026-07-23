@@ -26,20 +26,6 @@ OneSignal and PWA caching share the root `sw.js`. The worker imports OneSignal f
 
 Never put a OneSignal REST API key in this website. API keys must remain in a protected server or secret store.
 
-## Study-reminder preferences
-
-The PWA records these OneSignal tags when a learner saves a reminder:
-
-| Tag | Example values |
-| --- | --- |
-| `reminder_frequency` | `off`, `daily`, `weekdays`, `weekly` |
-| `reminder_day` | `monday` through `sunday` |
-| `reminder_time` | `07:00`, `09:00`, `18:00`, `20:00` |
-| `reminder_timezone` | Browser timezone, such as `Asia/Calcutta` |
-| `lesson_updates` | `enabled` |
-
-Create OneSignal segments for the reminder combinations you want to serve. For example, a segment with `reminder_frequency = daily` and `reminder_time = 18:00` can receive a recurring 6 PM study message. Use OneSignal’s timezone-aware delivery option when scheduling.
-
 ## Test checklist
 
 1. Deploy all files over HTTPS.

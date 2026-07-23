@@ -13,6 +13,6 @@ Upload every file and folder in this directory to the root of the hosting reposi
 - `offline.html` — offline fallback page
 - `icons/` — standard, maskable and Apple touch icons
 - `sw.js` — combined PWA caching and OneSignal notification worker
-- `NOTIFICATIONS.md` — dashboard setup, broadcasts, reminder tags and testing
+- `NOTIFICATIONS.md` — dashboard setup, broadcasts and testing
 
 When `sw.js` changes, increment `CACHE_VERSION` so visitors receive the new cached files.
