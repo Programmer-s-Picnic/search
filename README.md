@@ -12,7 +12,8 @@ Upload every file and folder in this directory to the root of the hosting reposi
 - `sw.js` — app-shell and search-data caching
 - `offline.html` — offline fallback page
 - `icons/` — standard, maskable and Apple touch icons
-- `sw.js` — combined PWA caching and OneSignal notification worker
+- `OneSignalSDKWorker.js` — OneSignal-compatible root service worker
+- `sw.js` — combined notification and PWA caching logic
 - `NOTIFICATIONS.md` — dashboard setup, broadcasts and testing
 
 When `sw.js` changes, increment `CACHE_VERSION` so visitors receive the new cached files.

@@ -2,7 +2,7 @@ importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
 "use strict";
 
-const CACHE_VERSION = "champak-search-v3";
+const CACHE_VERSION = "champak-search-v4";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -15,7 +15,8 @@ const APP_SHELL = [
   "/icons/icon-maskable-192.png",
   "/icons/icon-maskable-512.png",
   "/icons/apple-touch-icon.png",
-  "/favicon.ico"
+  "/favicon.ico",
+  "/OneSignalSDKWorker.js"
 ];
 
 self.addEventListener("install", (event) => {

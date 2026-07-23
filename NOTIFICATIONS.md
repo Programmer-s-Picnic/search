@@ -6,15 +6,15 @@ The website is configured for OneSignal app ID `c2869c95-73e5-4416-93ad-b26aadf3
 
 In **Settings → Push & In-App → Web**:
 
-1. Use **Custom Code** integration.
+1. **Typical Site** or **Custom Code** integration can be used.
 2. Set Site URL to `https://search.learnwithchampak.live`.
 3. Set the default icon URL to `https://search.learnwithchampak.live/icons/icon-512.png`.
-4. Set the service-worker path to `/`.
-5. Set the worker filename to `sw.js`.
-6. Set the registration scope to `/`.
+4. Keep the service-worker path as `/`.
+5. Keep the worker filename as `OneSignalSDKWorker.js`.
+6. Keep the registration scope as `/`.
 7. Enable Auto Resubscribe and save.
 
-OneSignal and PWA caching share the root `sw.js`. The worker imports OneSignal first and then installs the PWA caching and offline handlers. This avoids two root-scope workers competing with each other.
+`OneSignalSDKWorker.js` is the root worker expected by OneSignal. It loads `sw.js`, which contains both OneSignal push support and PWA caching. This avoids two root-scope workers competing with each other.
 
 ## Send a new-lesson broadcast
 
