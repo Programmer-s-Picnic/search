@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "live.learnwithchampak.search",
+      "sha256_cert_fingerprints": [
+        "FA:1E:7C:E7:6D:D7:1B:E7:F3:8E:78:29:C5:D4:E8:EF:D7:41:64:94:3F:01:C2:73:48:72:B1:32:BD:5F:AD:A0"
+      ]
+    }
+  }
+]
